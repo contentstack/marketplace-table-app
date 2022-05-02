@@ -2,11 +2,7 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'prettier'],
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'prettier',
-  ],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
   // This allows us to provide some examples with
   // half-done bits of code
   rules: {
@@ -14,6 +10,8 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': [0],
     '@typescript-eslint/no-unused-vars': [0],
     '@typescript-eslint/no-empty-interface': [0],
+    'prefer-const': [0],
+    'no-case-declarations': [0],
     'prettier/prettier': [
       'error',
       {
