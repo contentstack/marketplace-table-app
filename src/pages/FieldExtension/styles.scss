@@ -330,6 +330,34 @@ html {
   display: flex;
   flex-direction: column;
   height: 46px;
+
+  .cell {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    padding: 0.3rem;
+    display: flex;
+    align-items: center;
+    height: 46px;
+
+    .cell-dropdown {
+      position: absolute;
+      right: 0;
+      top: 0;
+
+      svg {
+        &:hover {
+          path {
+            fill: #6c5ce7;
+          }
+          g {
+            path {
+              stroke: #ffffff;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .td-content {

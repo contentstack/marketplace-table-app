@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import ContentEditable from 'react-contenteditable';
+import { Button, Dropdown, ToggleSwitch } from '@contentstack/venus-components';
 import Relationship from './Relationship';
 import { usePopper } from 'react-popper';
 import { grey } from './colors';
 import { ReactComponent as PlusIcon } from '../../assets/plusIcon.svg';
 import { randomColor } from './utils';
+
+import { ReactComponent as CellActions } from '../../assets/cellActions.svg';
+import { ReactComponent as HeaderRow } from '../../assets/headerRow.svg';
+import { ReactComponent as HeaderColumn } from '../../assets/headerColumn.svg';
+import { ReactComponent as DeleteTable } from '../../assets/deleteTable.svg';
 
 export default function Cell({
   value: initialValue,
@@ -82,12 +88,76 @@ export default function Cell({
   switch (dataType) {
     case 'text':
       element = (
-        <ContentEditable
-          html={(value.value && value.value.toString()) || ''}
-          onChange={onChange}
-          onBlur={() => setValue((old) => ({ value: old.value, update: true }))}
-          className="data-input"
-        />
+        <div className="cell">
+          <ContentEditable
+            html={(value.value && value.value.toString()) || ''}
+            onChange={onChange}
+            onBlur={() => setValue((old) => ({ value: old.value, update: true }))}
+            className="data-input"
+          />
+          <div className="cell-dropdown">
+            <Dropdown
+              adjustWidthForContent={false}
+              arrowSecondary={false}
+              closeAfterSelect={false}
+              dropDownPosition="bottom"
+              dropDownType="primary"
+              highlightActive={false}
+              isMultiCheck={false}
+              list={[
+                {
+                  default: true,
+                  label: (
+                    <>
+                      <HeaderRow />
+                      <div className="label">Header Row</div>
+                      <div className="toggle">
+                        <ToggleSwitch
+                          name="headerRowChange"
+                          id="headerRowChange"
+                          // onChange={handleHeaderRowChange}
+                          // checked={headerRowChange}
+                          testId="cs-toggle-switch"
+                        />
+                      </div>
+                    </>
+                  ),
+                },
+                // {
+                //   label: (
+                //     <>
+                //       <HeaderColumn />
+                //       <div className="label">Header Column</div>
+                //       <div className="toggle">
+                //         <ToggleSwitch
+                //           name="headerColumnChange"
+                //           id="headerColumnChange"
+                //           onChange={handleHeaderColumnChange}
+                //           checked={headerColumnChange}
+                //           testId="cs-toggle-switch"
+                //         />
+                //       </div>
+                //     </>
+                //   ),
+                // },
+                {
+                  // action: deleteTable,
+                  label: (
+                    <>
+                      <DeleteTable />
+                      <div className="label">Delete Table</div>
+                    </>
+                  ),
+                },
+              ]}
+              testId="cs-dropdown"
+              type="click"
+              viewAs="label"
+            >
+              <CellActions />
+            </Dropdown>
+          </div>
+        </div>
       );
       break;
     case 'number':
