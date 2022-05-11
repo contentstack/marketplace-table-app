@@ -1,0 +1,44 @@
+format_version: 4
+pipelines:
+  dev-table-app-deploy:
+    group: ecosystem
+    label_template: "${dev-table-app-build}"
+    lock_behavior: none
+    display_order: 112
+    parameters:
+      E2E_TESTS_REPO_URL: git@github.com:contentstack/marketplace-table-app.git
+      E2E_TESTS_REPO_BRANCH: development
+    materials:
+      dev-table-app-build:
+        pipeline: dev-table-app-lint-test-build
+        stage: lint-test-build
+    stages:
+      - dev-deploy:
+          fetch_materials: true
+          keep_artifacts: false
+          clean_workspace: yes
+          approval:
+            type: success
+            allow_only_on_success: false
+          jobs:
+            dev-deploy:
+              elastic_profile_id: nonprod-ecosystem-aws-cli
+              timeout: 0
+              tasks:
+                - fetch:
+                    pipeline: dev-table-app-lint-test-build
+                    stage: lint-test-build
+                    job: lint-test-build
+                    source: build/
+                    is_file: no
+                    destination: ./
+                - exec:
+                    arguments:
+                      - -c
+                      - aws s3 cp build s3://dev-table-app --recursive
+                    command: sh
+                - exec:
+                    arguments:
+                      - -c
+                      - aws cloudfront create-invalidation --distribution-id E23EUEC84424OW --paths "/*"
+                    command: sh

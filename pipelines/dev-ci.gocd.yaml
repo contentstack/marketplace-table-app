@@ -1,0 +1,48 @@
+format_version: 4
+pipelines:
+  dev-table-app-lint-test-build:
+    group: ecosystem
+    label_template: ${git[:7]}
+    lock_behavior: none
+    display_order: 111
+    materials:
+      git:
+        git: git@github.com:contentstack/marketplace-table-app
+        shallow_clone: false
+        auto_update: true
+        branch: development
+    stages:
+      - lint-test-build:
+          fetch_materials: true
+          keep_artifacts: false
+          clean_workspace: false
+          approval:
+            type: success
+            allow_only_on_success: false
+          jobs:
+            lint-test-build:
+              elastic_profile_id: k8s-cicd-publish-npm-package
+              timeout: 0
+              artifacts:
+                - build:
+                    source: build
+              tasks:
+                - exec:
+                    arguments:
+                      - -c 
+                      - echo //npm.pkg.github.com/:_authToken=$GITHUB_PERSONAL_ACCESS_TOKEN > .npmrc
+                    command: sh
+                - exec:
+                    arguments:
+                      - -c 
+                      - echo "@contentstack:registry=https://npm.pkg.github.com/contentstack" >> .npmrc
+                    command: sh               
+                - exec:
+                    arguments:
+                      - install
+                    command: npm
+                - exec:
+                    arguments:
+                      - -c
+                      - "export CI='' && npm run build"
+                    command: sh
