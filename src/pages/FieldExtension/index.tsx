@@ -84,6 +84,39 @@ const FieldExtension: React.FC = () => {
           skipReset: true,
           data: [...tableState.data, {}, []],
         };
+      case 'insert_row_above':
+        console.log('insert_row_above');
+        return {
+          ...tableState,
+          skipReset: true,
+          data: [
+            ...tableState.data.slice(0, action.rowIndex),
+            {},
+            ...tableState.data.slice(action.rowIndex, tableState.data.length),
+          ],
+        };
+      case 'insert_row_below':
+        console.log('insert_row_below');
+        return {
+          ...tableState,
+          skipReset: true,
+          data: [
+            ...tableState.data.slice(0, action.rowIndex + 1),
+            {},
+            ...tableState.data.slice(action.rowIndex + 1, tableState.data.length),
+          ],
+        };
+      case 'delete_row':
+        console.log('deleteRow');
+        //TODO : If table has only one row then delete the table
+        return {
+          ...tableState,
+          skipReset: true,
+          data: [
+            ...tableState.data.slice(0, action.rowIndex),
+            ...tableState.data.slice(action.rowIndex + 1, tableState.data.length),
+          ],
+        };
       case 'update_column_type':
         const typeIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
         switch (action.dataType) {
@@ -172,7 +205,7 @@ const FieldExtension: React.FC = () => {
           default:
             return tableState;
         }
-      case 'add_column_to_left':
+      case 'insert_column_left':
         const leftIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
         let leftId = shortId();
         return {
@@ -191,7 +224,7 @@ const FieldExtension: React.FC = () => {
             ...tableState.columns.slice(leftIndex, tableState.columns.length),
           ],
         };
-      case 'add_column_to_right':
+      case 'insert_column_right':
         const rightIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
         const rightId = shortId();
         return {
