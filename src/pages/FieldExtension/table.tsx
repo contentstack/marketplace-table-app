@@ -1,10 +1,17 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
-import { useTable, useFlexLayout, useResizeColumns, useSortBy } from 'react-table';
+import {
+  useTable,
+  useFlexLayout,
+  useResizeColumns,
+  useSortBy,
+  useAsyncDebounce,
+  useFilters,
+  useGlobalFilter,
+} from 'react-table';
 import Cell from './cell';
 import Header from './header';
-import { ReactComponent as SortArrow } from '../../assets/plusIcon.svg';
-import { ReactComponent as TableActions } from '../../assets/tableActions.svg';
+import { ReactComponent as Search } from '../../assets/search.svg';
 
 const defaultColumn = {
   minWidth: 50,
@@ -15,7 +22,43 @@ const defaultColumn = {
   sortType: 'alphanumericFalsyLast',
 };
 
-export default function Table({ columns, data, dispatch: dataDispatch, skipReset }) {
+function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) {
+  const count = preGlobalFilteredRows.length;
+  const [value, setValue] = React.useState(globalFilter);
+  const onChange = useAsyncDebounce((value) => {
+    setGlobalFilter(value || undefined);
+  }, 200);
+
+  return (
+    <div className="search-wrapper">
+      <div className="Search Search--medium Search--secondary">
+        <div>
+          <Search />
+        </div>
+        <div className="Search-input-show">
+          <input
+            className="Search__input"
+            value={value || ''}
+            onChange={(e) => {
+              setValue(e.target.value);
+              onChange(e.target.value);
+            }}
+            placeholder={`Search`}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Table({
+  columns,
+  data,
+  dispatch: dataDispatch,
+  skipReset,
+  headerColumnChange,
+  headerRowChange,
+}) {
   const sortTypes = useMemo(
     () => ({
       alphanumericFalsyLast(rowA, rowB, columnId, desc) {
@@ -39,7 +82,17 @@ export default function Table({ columns, data, dispatch: dataDispatch, skipReset
     [],
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    state,
+    visibleColumns,
+    preGlobalFilteredRows,
+    setGlobalFilter,
+  } = useTable(
     {
       columns,
       data,
@@ -52,6 +105,8 @@ export default function Table({ columns, data, dispatch: dataDispatch, skipReset
     },
     useFlexLayout,
     useResizeColumns,
+    useFilters,
+    useGlobalFilter,
     useSortBy,
   );
 
@@ -69,17 +124,29 @@ export default function Table({ columns, data, dispatch: dataDispatch, skipReset
 
   return (
     <>
-      <div>
-        <TableActions />
-      </div>
+      {console.log('table component', headerGroups, columns, rows, data)}
       <div {...getTableProps()} className={clsx('table', isTableResizing() && 'noselect')}>
-        {/* <div>
-          {headerGroups.map((headerGroup) => (
-            <div {...headerGroup.getHeaderGroupProps()} className="tr">
-              {headerGroup.headers.map((column) => column.render('Header'))}
-            </div>
-          ))}
-        </div> */}
+        <GlobalFilter
+          preGlobalFilteredRows={preGlobalFilteredRows}
+          globalFilter={state.globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+        <div>
+          {headerRowChange &&
+            headerGroups &&
+            headerGroups.map((headerGroup) => (
+              <div {...headerGroup.getHeaderGroupProps()} className="tr">
+                {headerGroup.headers.map((column) => column.render('Header'))}
+              </div>
+            ))}
+          {/* {headerColumnChange &&
+            headerGroups &&
+            headerGroups.map((headerGroup) => (
+              <div {...headerGroup.getHeaderGroupProps()} className="tr">
+                {headerGroup.headers.map((column) => column.render('Header'))}
+              </div>
+            ))} */}
+        </div>
         <div {...getTableBodyProps()}>
           {rows.map((row, i) => {
             prepareRow(row);
@@ -93,10 +160,10 @@ export default function Table({ columns, data, dispatch: dataDispatch, skipReset
               </div>
             );
           })}
-          <div className="tr add-row" onClick={() => dataDispatch({ type: 'add_row' })}>
+          {/* <div className="tr add-row" onClick={() => dataDispatch({ type: 'add_row' })}>
             <span className="svg-icon svg-gray" style={{ marginRight: 4 }}></span>
             New
-          </div>
+          </div> */}
         </div>
       </div>
     </>

@@ -3,107 +3,98 @@
     width: 100%;
     .field-extension-wrapper {
       padding: 14px;
-      .Form__item {
-        width: 500px;
-      }
 
-      .asset-box {
-        border: 1px solid #a9b6cb;
-        box-sizing: border-box;
-        border-radius: 10px;
-        padding-bottom: 5px;
+      // .tool-bar {
+      .search-wrapper {
+        border: 1px solid #f5f5f5;
+        border-radius: 8px 8px 0px 0px;
+        background: none;
+        padding: 8px 0;
 
-        .box-header {
-          padding: 17px 15px;
-
-          span {
-            font-size: 12px;
-            font-weight: bold;
-            font-family: 'Inter';
-            letter-spacing: 0.01em;
-            color: #475161;
-            margin-right: 13px;
-            vertical-align: middle;
-          }
-
+        .Search {
           svg {
-            cursor: pointer;
-            margin-right: 5px;
-            vertical-align: middle;
+            height: 15px;
+            width: 13px;
+            top: calc(50% - 8px);
+            left: 15px;
+            position: absolute;
+          }
+          .Search__input {
+            border-bottom: none;
+            font-size: 13px;
+            margin-left: 10px;
+          }
+          .Search__cancel-icon {
+            display: none;
+          }
+          &:focus-within {
+            .Search__input {
+              border-bottom: none;
+              font-size: 13px;
+              margin-left: 10px;
+            }
+
+            // svg path {
+            //   stroke: #475161;
+            // }
+          }
+        }
+      }
+      // }
+
+      .table-actions {
+        position: absolute;
+        top: 57px;
+        left: 15px;
+        z-index: 9;
+
+        .Dropdown__header {
+          svg {
+            &:hover {
+              path {
+                fill: #f5f5f5;
+
+                &:first-child {
+                  fill: #6c5ce7;
+                }
+
+                &:last-child {
+                  fill: #f5f5f5;
+                }
+              }
+            }
           }
         }
 
-        .render-items {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-          max-height: 300px;
-          overflow-y: scroll;
-          border-top: 1px solid #edf1f7;
-          padding: 10px;
+        .Dropdown__menu--primary {
+          top: 0 !important;
+          left: 18px !important;
 
-          .asset-card-loading {
-            background: #f7f9fc;
-            border: 0.0625rem solid #edf1f7;
-            border-radius: 8px;
-            height: 180px;
-            height: 11.25rem;
-            margin-bottom: 1.25rem;
-            margin-right: 1.25rem;
-            overflow: hidden;
-            position: relative;
-            width: 10.535rem;
+          .Dropdown__menu__list__item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
-            .asset-card-loading-info {
-              padding: 5px 10px;
+            svg {
+              margin-right: 10px;
+            }
+            .label {
+              margin-right: auto;
+            }
+            .toggle {
+              margin-left: 40px;
             }
           }
+        }
+      }
 
-          .AssetCard {
-            font-family: 'Inter';
-            width: 10.535rem;
+      .table {
+        border: 1px solid #f5f5f5;
+        border-radius: 8px 8px 0px 0px;
 
-            &:hover {
-              .AssetCard__shortinfo__name {
-                color: #475161;
-                font-weight: bold;
-                font-size: 13px;
-              }
-            }
-
-            .AssetCard__shortinfo__name {
-              color: #222222;
-              font-size: 13px;
-              text-transform: uppercase;
-            }
-
-            .AssetCard__shortinfo__smalldetails {
-              color: #647696;
-            }
-
-            .AssetCard__action__delete {
-              &:hover {
-                background: #ffeeeb;
-
-                svg path {
-                  fill: #d62400;
-                  stroke: #d62400;
-                }
-              }
-            }
-
-            .AssetCard__action__custom {
-              &:hover {
-                svg path {
-                  fill: #222222;
-                  stroke: #222222;
-                }
-              }
-
-              svg {
-                width: 13px;
-                height: 12px;
-              }
-            }
+        .tr {
+          .td {
+            border: 1px solid #f5f5f5;
           }
         }
       }
@@ -117,50 +108,6 @@
       .add-product-btn {
         margin: 30px 0;
       }
-    }
-  }
-}
-
-.Component-horizontalScrollContainer-5 {
-  border-radius: 10px;
-}
-
-.MuiTableSortLabel-root {
-  display: block !important;
-  .MuiTableSortLabel-icon {
-    // opacity: 1 !important;
-    position: absolute;
-    right: 0;
-    bottom: 5px;
-    height: 10px;
-    width: 10px;
-  }
-  &:hover {
-    color: #222222 !important;
-
-    // .MuiTableSortLabel-icon {
-    //   opacity: 1 !important;
-    // }
-  }
-}
-
-.MuiTableCell-body {
-  border: 1px solid #f5f5f5;
-  font-family: 'Inter' !important;
-
-  div {
-    border-bottom: none !important;
-    font-size: 14px;
-  }
-}
-
-.table {
-  border: 1px solid #f5f5f5;
-  border-radius: 8px 8px 0px 0px;
-
-  .tr {
-    .td {
-      border: 1px solid #f5f5f5;
     }
   }
 }
@@ -247,16 +194,33 @@ html {
   padding: 0.5rem;
   color: #424242;
   font-size: 1rem;
-  border-radius: 4px;
+  // border-radius: 4px;
   resize: none;
   background-color: white;
   box-sizing: border-box;
   flex: 1 1 auto;
 }
 
-.data-input:focus {
-  outline: none;
+.data-input {
+  &:focus {
+    outline: none;
+    border: 1px solid #6c5ce7;
+  }
+
+  // &:focus-within {
+  //   background-color: #424242;
+  //   .tableActions {
+  //     background-color: #6c5ce7;
+  //   }
+  // }
 }
+
+.field-extension-wrapper > .data-input:focus-within + .table-actions {
+  background: blue;
+}
+// .data-input:focus + .tableActions {
+//   background-color: #6c5ce7;
+// }
 
 .shadow-5 {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.12),
@@ -342,6 +306,7 @@ html {
   font-weight: 500;
   font-size: 0.875rem;
   cursor: pointer;
+  background: #f5f5f5;
 }
 
 .th:hover {
@@ -354,6 +319,7 @@ html {
   padding: 0.5rem;
   display: flex;
   align-items: center;
+  height: 46px;
 }
 
 .td {
@@ -363,6 +329,7 @@ html {
   padding: 0;
   display: flex;
   flex-direction: column;
+  height: 46px;
 }
 
 .td-content {
@@ -371,8 +338,8 @@ html {
 
 .table {
   border-spacing: 0;
-  border-top: 1px solid #e0e0e0;
-  border-bottom: 1px solid #e0e0e0;
+  // border-top: 1px solid #e0e0e0;
+  // border-bottom: 1px solid #e0e0e0;
 }
 
 .th:last-child {
@@ -444,6 +411,8 @@ html {
 
 .icon-margin {
   margin-right: 4px;
+  position: absolute;
+  right: 0;
 }
 
 .font-weight-600 {

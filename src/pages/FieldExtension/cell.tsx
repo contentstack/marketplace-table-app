@@ -12,18 +12,18 @@ export default function Cell({
   column: { id, dataType, options },
   dataDispatch,
 }) {
-  const [value, setValue] = useState({ value: initialValue, update: false });
+  const [value, setValue] = useState({ value: initialValue, update: true });
   const [selectRef, setSelectRef] = useState<any>(null);
   const [selectPop, setSelectPop] = useState<any>(null);
   const [showSelect, setShowSelect] = useState(false);
   const onChange = (e) => {
-    setValue({ value: e.target.value, update: false });
+    setValue({ value: e.target.value, update: true });
   };
   const [showAdd, setShowAdd] = useState(false);
   const [addSelectRef, setAddSelectRef] = useState<any>(null);
 
   useEffect(() => {
-    setValue({ value: initialValue, update: false });
+    setValue({ value: initialValue, update: true });
   }, [initialValue]);
 
   useEffect(() => {
