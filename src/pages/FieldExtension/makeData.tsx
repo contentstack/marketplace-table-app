@@ -40,6 +40,14 @@ export default function makeData(count) {
       dataType: 'text',
       // options: [],
     },
+    {
+      id: 'column4',
+      // label: 'Last Name',
+      accessor: 'column4',
+      // minWidth: 100,
+      dataType: 'text',
+      // options: [],
+    },
     // {
     //   id: 999999,
     //   width: 10,

@@ -164,27 +164,41 @@ export default function Header({
   function setSortType(id, type) {
     setSortBy([{ id: id, desc: type }]);
 
-    const note = document.querySelector('.note');
-    css(note, {
-      'background-color': 'yellow',
-      color: 'red',
-    });
+    // const note = document.querySelector('.sort-box');
+    // css(note, {
+    //   fill: '#222222',
+    // });
   }
 
   function performSort(e) {
     if (sortState == undefined) {
-      dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: true });
-      const myTimeout = setTimeout(() => setSortType(id, false), 500);
+      setSortType(id, false);
+      const myTimeout = setTimeout(
+        () => dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: true }),
+        500,
+      );
+      //dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: true });
+      //const myTimeout = setTimeout(() => setSortType(id, false), 100);
       //setSortBy([{ id: id, desc: false }]);
       //sortState = true;
     } else if (sortState) {
-      dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: false });
-      const myTimeout = setTimeout(() => setSortType(id, true), 500);
+      setSortType(id, true);
+      const myTimeout = setTimeout(
+        () => dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: false }),
+        500,
+      );
+      //dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: false });
+      //const myTimeout = setTimeout(() => setSortType(id, true), 100);
       //setSortBy([{ id: id, desc: true }]);
       //sortState = false;
     } else {
-      dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: true });
-      const myTimeout = setTimeout(() => setSortType(id, false), 500);
+      setSortType(id, false);
+      const myTimeout = setTimeout(
+        () => dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: true }),
+        500,
+      );
+      //dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: true });
+      //const myTimeout = setTimeout(() => setSortType(id, false), 100);
       //setSortBy([{ id: id, desc: false }]);
       //sortState = true;
     }
