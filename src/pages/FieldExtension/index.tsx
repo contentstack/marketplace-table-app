@@ -345,7 +345,7 @@ const FieldExtension: React.FC = () => {
         <div className="field-extension-wrapper">
           {table ? (
             <>
-              <div className="table-actions">
+              <div className="table-actions" id="table-actions">
                 <Dropdown
                   adjustWidthForContent={false}
                   arrowSecondary={false}

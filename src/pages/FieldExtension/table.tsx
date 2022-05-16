@@ -124,7 +124,6 @@ export default function Table({
 
   return (
     <>
-      {console.log('table component', headerGroups, columns, rows, data)}
       <div {...getTableProps()} className={clsx('table', isTableResizing() && 'noselect')}>
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
@@ -147,19 +146,26 @@ export default function Table({
               </div>
             ))} */}
         </div>
+
         <div {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            return (
-              <div {...row.getRowProps()} className="tr">
-                {row.cells.map((cell) => (
-                  <div {...cell.getCellProps()} className="td">
-                    {cell.render('Cell')}
-                  </div>
-                ))}
-              </div>
-            );
-          })}
+          {rows.length > 0 ? (
+            rows.map((row, i) => {
+              prepareRow(row);
+              return (
+                <div {...row.getRowProps()} className="tr">
+                  {row.cells.map((cell) => (
+                    <div {...cell.getCellProps()} className="td">
+                      {cell.render('Cell')}
+                    </div>
+                  ))}
+                </div>
+              );
+            })
+          ) : (
+            <div className="not-found">
+              <span>No records found</span>
+            </div>
+          )}
           {/* <div className="tr add-row" onClick={() => dataDispatch({ type: 'add_row' })}>
             <span className="svg-icon svg-gray" style={{ marginRight: 4 }}></span>
             New

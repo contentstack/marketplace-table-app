@@ -94,6 +94,11 @@ export default function Cell({
     setShowAdd(false);
   }
 
+  function handleClick(e) {
+    let ele = document.getElementById('table-actions')!;
+    ele.style.display = 'block';
+  }
+
   const { styles, attributes } = usePopper(selectRef, selectPop, {
     placement: 'bottom-start',
     strategy: 'fixed',
@@ -118,6 +123,7 @@ export default function Cell({
           <ContentEditable
             html={(value.value && value.value.toString()) || ''}
             onChange={onChange}
+            onClick={handleClick}
             onBlur={() => setValue((old) => ({ value: old.value, update: true }))}
             className="data-input"
           />
