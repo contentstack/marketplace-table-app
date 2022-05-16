@@ -33,7 +33,12 @@ const FieldExtension: React.FC = () => {
       const config = await appSdk.getConfig();
       const initialData = appSdk.location.CustomField?.field.getData();
 
-      if (initialData !== null && initialData !== undefined && !isEmpty(initialData)) {
+      if (
+        initialData !== null &&
+        initialData !== undefined &&
+        !isEmpty(initialData.tableState.columns) &&
+        !isEmpty(initialData.tableState.data)
+      ) {
         console.log('table getData', initialData);
         setTableData(initialData.tableState);
         setTable(true);
@@ -56,7 +61,14 @@ const FieldExtension: React.FC = () => {
   }, [tableState]);
 
   const handleClick = () => {
+    console.log('tabb', tableState, tableData);
+
+    // if (isEmpty(tableState.columns) && isEmpty(tableState.data)) {
+    console.log('tabb999', tableState, tableData);
+    // dispatch(makeData(3));
     setTable(true);
+    // dispatch({ type: 'initial_data' });
+    // }
   };
 
   function reducer(tableState, action) {

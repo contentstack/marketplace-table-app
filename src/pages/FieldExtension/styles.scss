@@ -340,6 +340,13 @@ html {
   display: flex;
   align-items: center;
   height: 46px;
+
+  .sort-box {
+    svg {
+      height: 15px;
+      width: 15px;
+    }
+  }
 }
 
 .td {
