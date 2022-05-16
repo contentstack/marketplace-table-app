@@ -302,6 +302,17 @@ const FieldExtension: React.FC = () => {
           columns: [...tableData.columns],
           data: [...tableData.data],
         };
+      case 'update_sort_type':
+        const colIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
+        return {
+          ...tableState,
+          columns: [
+            ...tableState.columns.slice(0, colIndex),
+            { ...tableState.columns[colIndex], sortState: action.newSortType },
+            ...tableState.columns.slice(colIndex + 1, tableState.columns.length),
+          ],
+          //data: [...tableState.data],
+        };
       default:
         return tableState;
     }
