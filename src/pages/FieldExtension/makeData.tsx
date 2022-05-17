@@ -6,12 +6,9 @@ export default function makeData(count) {
   let options: any = [];
   for (let i = 0; i < count; i++) {
     let row = {
-      ID: faker.mersenne.rand(),
-      firstName: '',
-      lastName: '',
-      email: '',
-      age: '',
-      music: '',
+      column1: '',
+      column2: '',
+      column3: '',
     };
     // options.push({ label: row.music, backgroundColor: randomColor() });
 
@@ -20,28 +17,44 @@ export default function makeData(count) {
 
   let columns = [
     {
-      id: 'firstName',
-      label: 'First Name',
-      accessor: 'firstName',
-      minWidth: 100,
+      id: 'column1',
+      // label: 'First Name',
+      accessor: 'column1',
+      // minWidth: 100,
       dataType: 'text',
-      options: [],
+      // options: [],
     },
     {
-      id: 'lastName',
-      label: 'Last Name',
-      accessor: 'lastName',
-      minWidth: 100,
+      id: 'column2',
+      // label: 'Last Name',
+      accessor: 'column2',
+      // minWidth: 100,
       dataType: 'text',
-      options: [],
+      // options: [],
     },
     {
-      id: 999999,
-      width: 20,
-      label: '+',
-      disableResizing: true,
-      dataType: 'null',
+      id: 'column3',
+      // label: 'Last Name',
+      accessor: 'column3',
+      // minWidth: 100,
+      dataType: 'text',
+      // options: [],
     },
+    {
+      id: 'column4',
+      // label: 'Last Name',
+      accessor: 'column4',
+      // minWidth: 100,
+      dataType: 'text',
+      // options: [],
+    },
+    // {
+    //   id: 999999,
+    //   width: 10,
+    //   // label: '+',
+    //   // disableResizing: true,
+    //   dataType: 'null',
+    // },
   ];
   return { columns: columns, data: data, skipReset: false };
 }

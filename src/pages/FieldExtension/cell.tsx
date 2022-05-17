@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import ContentEditable from 'react-contenteditable';
+import { Button, Dropdown, ToggleSwitch } from '@contentstack/venus-components';
 import Relationship from './Relationship';
 import { usePopper } from 'react-popper';
 import { grey } from './colors';
 import { ReactComponent as PlusIcon } from '../../assets/plusIcon.svg';
 import { randomColor } from './utils';
+
+import { ReactComponent as CellActions } from '../../assets/cellActions.svg';
+import { ReactComponent as InsertRowAbove } from '../../assets/insertRowAbove.svg';
+import { ReactComponent as InsertRowBelow } from '../../assets/insertRowBelow.svg';
+import { ReactComponent as DeleteRow } from '../../assets/deleteRow.svg';
+import { ReactComponent as InsertColumnLeft } from '../../assets/insertColumnLeft.svg';
+import { ReactComponent as InsertColumnRight } from '../../assets/insertColumnRight.svg';
+import { ReactComponent as DeleteColumn } from '../../assets/deleteColumn.svg';
 
 export default function Cell({
   value: initialValue,
@@ -12,18 +21,18 @@ export default function Cell({
   column: { id, dataType, options },
   dataDispatch,
 }) {
-  const [value, setValue] = useState({ value: initialValue, update: false });
+  const [value, setValue] = useState({ value: initialValue, update: true });
   const [selectRef, setSelectRef] = useState<any>(null);
   const [selectPop, setSelectPop] = useState<any>(null);
   const [showSelect, setShowSelect] = useState(false);
   const onChange = (e) => {
-    setValue({ value: e.target.value, update: false });
+    setValue({ value: e.target.value, update: true });
   };
   const [showAdd, setShowAdd] = useState(false);
   const [addSelectRef, setAddSelectRef] = useState<any>(null);
 
   useEffect(() => {
-    setValue({ value: initialValue, update: false });
+    setValue({ value: initialValue, update: true });
   }, [initialValue]);
 
   useEffect(() => {
@@ -50,6 +59,29 @@ export default function Cell({
     setShowAdd(true);
   }
 
+  function deleteRow(e) {
+    dataDispatch({
+      type: 'delete_row',
+      rowIndex: index,
+    });
+  }
+
+  function HandleRowOperations(e, operation) {
+    if (e.target.value !== '') {
+      dataDispatch({
+        type: operation,
+        rowIndex: index,
+      });
+    }
+  }
+
+  function deleteColumn(e) {
+    dataDispatch({
+      type: 'delete_column',
+      columnId: id,
+    });
+  }
+
   function handleOptionBlur(e) {
     if (e.target.value !== '') {
       dataDispatch({
@@ -60,6 +92,11 @@ export default function Cell({
       });
     }
     setShowAdd(false);
+  }
+
+  function handleClick(e) {
+    let ele = document.getElementById('table-actions')!;
+    ele.style.display = 'block';
   }
 
   const { styles, attributes } = usePopper(selectRef, selectPop, {
@@ -82,12 +119,117 @@ export default function Cell({
   switch (dataType) {
     case 'text':
       element = (
-        <ContentEditable
-          html={(value.value && value.value.toString()) || ''}
-          onChange={onChange}
-          onBlur={() => setValue((old) => ({ value: old.value, update: true }))}
-          className="data-input"
-        />
+        <div className="cell">
+          <ContentEditable
+            html={(value.value && value.value.toString()) || ''}
+            onChange={onChange}
+            onClick={handleClick}
+            onBlur={() => setValue((old) => ({ value: old.value, update: true }))}
+            className="data-input"
+          />
+          <div className="cell-dropdown">
+            <Dropdown
+              adjustWidthForContent={false}
+              arrowSecondary={false}
+              closeAfterSelect={false}
+              dropDownPosition="bottom"
+              dropDownType="primary"
+              highlightActive={false}
+              isMultiCheck={false}
+              list={[
+                {
+                  default: true,
+                  label: (
+                    <>
+                      <InsertRowAbove />
+                      <div
+                        className="label"
+                        onClick={(e) => dataDispatch({ type: 'insert_row_above', rowIndex: index })}
+                      >
+                        Insert Row Above
+                      </div>
+                    </>
+                  ),
+                },
+                {
+                  default: true,
+                  label: (
+                    <>
+                      <InsertRowBelow />
+                      <div
+                        className="label"
+                        onClick={(e) => dataDispatch({ type: 'insert_row_below', rowIndex: index })}
+                      >
+                        Insert Row Below
+                      </div>
+                    </>
+                  ),
+                },
+                {
+                  // action: deleteTable,
+                  label: (
+                    <>
+                      <DeleteRow />
+                      <div
+                        className="label"
+                        onClick={(e) => dataDispatch({ type: 'delete_row', rowIndex: index })}
+                      >
+                        Delete Row
+                      </div>
+                    </>
+                  ),
+                },
+                {
+                  default: true,
+                  label: (
+                    <>
+                      <InsertColumnLeft />
+                      <div
+                        className="label"
+                        onClick={(e) => dataDispatch({ type: 'insert_column_left', columnId: id })}
+                      >
+                        Insert Column Left
+                      </div>
+                    </>
+                  ),
+                },
+                {
+                  default: true,
+                  label: (
+                    <>
+                      <InsertColumnRight />
+                      <div
+                        className="label"
+                        onClick={(e) => dataDispatch({ type: 'insert_column_right', columnId: id })}
+                      >
+                        Insert Column Right
+                      </div>
+                    </>
+                  ),
+                },
+                {
+                  // action: deleteTable,
+                  label: (
+                    <>
+                      <DeleteColumn />
+                      <div
+                        className="label"
+                        onClick={(e) => dataDispatch({ type: 'delete_column', columnId: id })}
+                      >
+                        Delete Column
+                      </div>
+                    </>
+                  ),
+                },
+              ]}
+              testId="cs-dropdown"
+              type="click"
+              viewAs="label"
+            >
+              <CellActions />
+            </Dropdown>
+          </div>
+        </div>
       );
       break;
     case 'number':
