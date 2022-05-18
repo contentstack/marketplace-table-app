@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { usePopper } from 'react-popper';
-import { grey } from './colors';
 import ArrowUpIcon from '../../assets/ArrowUp';
 import ArrowDownIcon from '../../assets/ArrowDown';
 import ArrowLeftIcon from '../../assets/ArrowLeft';
@@ -10,7 +9,7 @@ import TextIcon from '../../assets/Text';
 import MultiIcon from '../../assets/Multi';
 import HashIcon from '../../assets/Hash';
 import { ReactComponent as PlusIcon } from '../../assets/plusIcon.svg';
-import { shortId } from './utils';
+import utils from '../../common/utils/index';
 import { ReactComponent as SortIcon } from '../../assets/Sort.svg';
 //import { ReactComponent as SortDesc } from '../../assets/Sort.svg';
 
@@ -232,7 +231,7 @@ export default function Header({
               </div>
               <span
                 className="font-weight-600 font-size-75"
-                style={{ textTransform: 'uppercase', color: grey(500) }}
+                style={{ textTransform: 'uppercase', color: '#9e9e9e' }}
               >
                 Property Type
               </span>
@@ -273,9 +272,9 @@ export default function Header({
               )}
             </div>
             <div
-              key={shortId()}
+              key={utils.shortId()}
               style={{
-                borderTop: `2px solid ${grey(200)}`,
+                borderTop: `2px solid #eeeeee`,
                 padding: '4px 0px',
               }}
             >

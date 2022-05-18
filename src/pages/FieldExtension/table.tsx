@@ -153,8 +153,8 @@ export default function Table({
               prepareRow(row);
               return (
                 <div {...row.getRowProps()} className="tr">
-                  {row.cells.map((cell) => (
-                    <div {...cell.getCellProps()} className="td">
+                  {row.cells.map((cell, index) => (
+                    <div {...cell.getCellProps()} key={index} className="td">
                       {cell.render('Cell')}
                     </div>
                   ))}

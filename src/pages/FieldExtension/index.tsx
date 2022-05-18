@@ -3,12 +3,10 @@ import _, { isEmpty } from 'lodash';
 import ContentstackAppSdk from '@contentstack/app-sdk';
 import { Button, Dropdown, ToggleSwitch } from '@contentstack/venus-components';
 import strings from 'common/locale/en-us';
-import makeData from './makeData';
+import utils from '../../common/utils';
 import Table from './table';
-import { randomColor, shortId } from './utils';
 import { ReactComponent as TableActions } from '../../assets/tableActions.svg';
 import { ReactComponent as HeaderRow } from '../../assets/headerRow.svg';
-import { ReactComponent as HeaderColumn } from '../../assets/headerColumn.svg';
 import { ReactComponent as DeleteTable } from '../../assets/deleteTable.svg';
 import './styles.scss';
 
@@ -26,20 +24,19 @@ const FieldExtension: React.FC = () => {
   const [tableData, setTableData] = useState<any>({});
   const [headerColumnChange, setHeaderColumnChange] = useState<boolean>(false);
   const [headerRowChange, setHeaderRowChange] = useState<boolean>(false);
-  const [tableState, dispatch] = useReducer(reducer, makeData(3));
+  const [tableState, dispatch] = useReducer(reducer, utils.makeData(3));
 
   useEffect(() => {
     ContentstackAppSdk.init().then(async (appSdk) => {
       const config = await appSdk.getConfig();
       const initialData = appSdk.location.CustomField?.field.getData();
+      console.log('table getData', initialData);
 
       if (
-        initialData !== null &&
-        initialData !== undefined &&
+        !isEmpty(initialData) &&
         !isEmpty(initialData.tableState.columns) &&
         !isEmpty(initialData.tableState.data)
       ) {
-        console.log('table getData', initialData);
         setTableData(initialData.tableState);
         setTable(true);
         dispatch({ type: 'initial_data' });
@@ -56,15 +53,15 @@ const FieldExtension: React.FC = () => {
 
   useEffect(() => {
     const { location } = state;
-    console.log('table setData', tableState);
+    console.log('table setfaaa', tableState);
     location.CustomField?.field.setData({ tableState: tableState });
   }, [tableState]);
 
   const handleClick = () => {
-    console.log('tabb', tableState, tableData);
+    // console.log('tabb', tableState, tableData);
 
     // if (isEmpty(tableState.columns) && isEmpty(tableState.data)) {
-    console.log('tabb999', tableState, tableData);
+    // console.log('tabb999', tableState, tableData);
     // dispatch(makeData(3));
     setTable(true);
     // dispatch({ type: 'initial_data' });
@@ -97,7 +94,6 @@ const FieldExtension: React.FC = () => {
           data: [...tableState.data, {}, []],
         };
       case 'insert_row_above':
-        console.log('insert_row_above');
         return {
           ...tableState,
           skipReset: true,
@@ -108,7 +104,6 @@ const FieldExtension: React.FC = () => {
           ],
         };
       case 'insert_row_below':
-        console.log('insert_row_below');
         return {
           ...tableState,
           skipReset: true,
@@ -119,7 +114,8 @@ const FieldExtension: React.FC = () => {
           ],
         };
       case 'delete_row':
-        console.log('deleteRow');
+        console.log(action, 'delete row', tableState, tableState.data[action.rowIndex]);
+        // tableState.data[action.rowIndex].classList.add('delete-option');
         //TODO : If table has only one row then delete the table
         return {
           ...tableState,
@@ -168,7 +164,7 @@ const FieldExtension: React.FC = () => {
                 if (row[action.columnId]) {
                   options.push({
                     label: row[action.columnId],
-                    backgroundColor: randomColor(),
+                    backgroundColor: utils.randomColor(),
                   });
                 }
               });
@@ -219,7 +215,7 @@ const FieldExtension: React.FC = () => {
         }
       case 'insert_column_left':
         const leftIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
-        let leftId = shortId();
+        let leftId = utils.shortId();
         return {
           ...tableState,
           skipReset: true,
@@ -238,7 +234,7 @@ const FieldExtension: React.FC = () => {
         };
       case 'insert_column_right':
         const rightIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
-        const rightId = shortId();
+        const rightId = utils.shortId();
         return {
           ...tableState,
           skipReset: true,
@@ -299,15 +295,11 @@ const FieldExtension: React.FC = () => {
           skipReset: true,
           data: [row, ...tableState.data],
         };
-      case 'add_column_header':
-        let firstColumn = tableState.data.map((a) => a.column1);
-
-        return tableState;
-      case 'delete_table':
-        console.log('delete table');
-        return tableState;
+      // case 'delete_table':
+      //   console.log('delete table');
+      //   return tableState;
       case 'initial_data':
-        if (tableData.columns) setHeaderRowChange(true);
+        if (tableData.columns[0].label) setHeaderRowChange(true);
         return {
           ...tableState,
           skipReset: true,
@@ -331,8 +323,6 @@ const FieldExtension: React.FC = () => {
   }
 
   const handleHeaderRowChange = () => {
-    console.log(tableState.data, tableState.columns);
-
     if (!headerRowChange) {
       dispatch({ type: 'add_row_header' });
     } else {
@@ -342,26 +332,31 @@ const FieldExtension: React.FC = () => {
     setHeaderRowChange(!headerRowChange);
   };
 
-  const handleHeaderColumnChange = () => {
-    console.log(tableState.data, tableState.columns);
-
-    if (!headerColumnChange) {
-      dispatch({ type: 'add_column_header' });
-    } else {
-      dispatch({ type: 'remove_column_header' });
-    }
-
-    setHeaderColumnChange(!headerColumnChange);
-  };
-
   const deleteTable = () => {
-    dispatch({ type: 'delete_table' });
+    // dispatch({ type: 'delete_table' });
     tableState.data = [];
     tableState.columns = [];
     setTable(false);
   };
 
-  console.log('actions', tableState);
+  const CustomDelete = () => {
+    useEffect(() => {
+      const collection = document.getElementsByClassName('label')!;
+
+      for (let i = 0; i <= collection.length; i++) {
+        collection[i]?.parentElement?.classList.add('delete-option');
+      }
+    }, []);
+
+    return (
+      <>
+        <DeleteTable />
+        <div className="label">Delete Table</div>
+      </>
+    );
+  };
+
+  // console.log('actions', tableState);
   return (
     <div className="field-extension">
       {state.appSdkInitialized && (
@@ -383,7 +378,7 @@ const FieldExtension: React.FC = () => {
                       label: (
                         <>
                           <HeaderRow />
-                          <div className="label">Header Row</div>
+                          <div>Header Row</div>
                           <div className="toggle">
                             <ToggleSwitch
                               name="headerRowChange"
@@ -396,31 +391,9 @@ const FieldExtension: React.FC = () => {
                         </>
                       ),
                     },
-                    // {
-                    //   label: (
-                    //     <>
-                    //       <HeaderColumn />
-                    //       <div className="label">Header Column</div>
-                    //       <div className="toggle">
-                    //         <ToggleSwitch
-                    //           name="headerColumnChange"
-                    //           id="headerColumnChange"
-                    //           onChange={handleHeaderColumnChange}
-                    //           checked={headerColumnChange}
-                    //           testId="cs-toggle-switch"
-                    //         />
-                    //       </div>
-                    //     </>
-                    //   ),
-                    // },
                     {
                       action: deleteTable,
-                      label: (
-                        <>
-                          <DeleteTable />
-                          <div className="label">Delete Table</div>
-                        </>
-                      ),
+                      label: <CustomDelete />,
                     },
                   ]}
                   testId="cs-dropdown"
@@ -444,9 +417,11 @@ const FieldExtension: React.FC = () => {
               <span>{strings.tableNotAddedText}</span>
             </div>
           )}
-          <Button className="add-product-btn" buttonType="control" onClick={() => handleClick()}>
-            {strings.ctaText}
-          </Button>
+          {!table && (
+            <Button className="add-product-btn" buttonType="control" onClick={() => handleClick()}>
+              {strings.ctaText}
+            </Button>
+          )}
         </div>
       )}
     </div>
