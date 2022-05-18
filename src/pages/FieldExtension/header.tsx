@@ -216,7 +216,6 @@ export default function Header({
           {/* <span className="svg-icon svg-gray icon-margin">{propertyIcon}</span> */}
           {label}
           <div className="sort-box">
-            <SortIcon onClick={performSort} />
             {/* <SortAsc onClick={() => setSortBy([{ id: id, desc: false }])} /> */}
           </div>
         </div>

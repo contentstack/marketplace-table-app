@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import {
   useTable,
@@ -12,6 +12,9 @@ import {
 import Cell from './cell';
 import Header from './header';
 import { ReactComponent as Search } from '../../assets/search.svg';
+import { ReactComponent as HoverSortIcon } from '../../assets/hoverSortIcon.svg';
+import { ReactComponent as SortedDescUpArrow } from '../../assets/sortDescUpArrow.svg';
+import { ReactComponent as SortedAscDownArrow } from '../../assets/sortAscDownArrow.svg';
 
 const defaultColumn = {
   minWidth: 50,
@@ -59,6 +62,20 @@ export default function Table({
   headerColumnChange,
   headerRowChange,
 }) {
+  const [hoveredColumnId, setColumnId] = useState('');
+  const [displaySortIcon, setDisplay] = useState('notdisplayed');
+  const showButton = (e, columnId) => {
+    e.preventDefault();
+    setDisplay('sort-displayed');
+    setColumnId(columnId);
+  };
+
+  const hideButton = (e) => {
+    e.preventDefault();
+    setDisplay('notdisplayed');
+    setColumnId('');
+  };
+
   const sortTypes = useMemo(
     () => ({
       alphanumericFalsyLast(rowA, rowB, columnId, desc) {
@@ -135,7 +152,31 @@ export default function Table({
             headerGroups &&
             headerGroups.map((headerGroup) => (
               <div {...headerGroup.getHeaderGroupProps()} className="tr">
-                {headerGroup.headers.map((column) => column.render('Header'))}
+                {/* {headerGroup.headers.map((column) => column.render('Header'))} */}
+                {headerGroup.headers.map((column) => (
+                  <div
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    onMouseEnter={(e) => showButton(e, column.id)}
+                    onMouseLeave={(e) => hideButton(e)}
+                  >
+                    {column.render('Header')}
+                    <div className="sort-box">
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <SortedDescUpArrow />
+                        ) : (
+                          <SortedAscDownArrow />
+                        )
+                      ) : (
+                        <HoverSortIcon
+                          className={
+                            column.id == hoveredColumnId ? displaySortIcon : 'notdisplayed'
+                          }
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
           {/* {headerColumnChange &&

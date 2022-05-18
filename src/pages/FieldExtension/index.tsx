@@ -294,8 +294,8 @@ const FieldExtension: React.FC = () => {
       if (
         initialData !== null &&
         initialData !== undefined &&
-        !isEmpty(initialData.tableState.columns) &&
-        !isEmpty(initialData.tableState.data)
+        !isEmpty(initialData.tableState?.columns) &&
+        !isEmpty(initialData.tableState?.data)
       ) {
         console.log('table getData', initialData);
         setTableData(initialData.tableState);
