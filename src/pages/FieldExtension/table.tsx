@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import {
   useTable,
@@ -12,6 +12,9 @@ import {
 import Cell from './cell';
 import Header from './header';
 import { ReactComponent as Search } from '../../assets/search.svg';
+import { ReactComponent as HoverSortIcon } from '../../assets/hoverSortIcon.svg';
+import { ReactComponent as SortedDescUpArrow } from '../../assets/sortDescUpArrow.svg';
+import { ReactComponent as SortedAscDownArrow } from '../../assets/sortAscDownArrow.svg';
 
 const defaultColumn = {
   minWidth: 50,
@@ -59,6 +62,20 @@ export default function Table({
   headerColumnChange,
   headerRowChange,
 }) {
+  const [hoveredColumnId, setColumnId] = useState('');
+  const [displaySortIcon, setDisplay] = useState('notdisplayed');
+  const showButton = (e, columnId) => {
+    e.preventDefault();
+    setDisplay('sort-displayed');
+    setColumnId(columnId);
+  };
+
+  const hideButton = (e) => {
+    e.preventDefault();
+    setDisplay('notdisplayed');
+    setColumnId('');
+  };
+
   const sortTypes = useMemo(
     () => ({
       alphanumericFalsyLast(rowA, rowB, columnId, desc) {
@@ -124,7 +141,6 @@ export default function Table({
 
   return (
     <>
-      {console.log('table component', headerGroups, columns, rows, data)}
       <div {...getTableProps()} className={clsx('table', isTableResizing() && 'noselect')}>
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
@@ -136,7 +152,32 @@ export default function Table({
             headerGroups &&
             headerGroups.map((headerGroup) => (
               <div {...headerGroup.getHeaderGroupProps()} className="tr">
-                {headerGroup.headers.map((column) => column.render('Header'))}
+                {/* {headerGroup.headers.map((column) => column.render('Header'))} */}
+                {headerGroup.headers.map((column) => (
+                  <div
+                    className="test"
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    onMouseEnter={(e) => showButton(e, column.id)}
+                    onMouseLeave={(e) => hideButton(e)}
+                  >
+                    {column.render('Header')}
+                    <div className="sort-box">
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <SortedDescUpArrow />
+                        ) : (
+                          <SortedAscDownArrow />
+                        )
+                      ) : (
+                        <HoverSortIcon
+                          className={
+                            column.id == hoveredColumnId ? displaySortIcon : 'notdisplayed'
+                          }
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
           {/* {headerColumnChange &&
@@ -147,19 +188,26 @@ export default function Table({
               </div>
             ))} */}
         </div>
+
         <div {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            return (
-              <div {...row.getRowProps()} className="tr">
-                {row.cells.map((cell) => (
-                  <div {...cell.getCellProps()} className="td">
-                    {cell.render('Cell')}
-                  </div>
-                ))}
-              </div>
-            );
-          })}
+          {rows.length > 0 ? (
+            rows.map((row, i) => {
+              prepareRow(row);
+              return (
+                <div {...row.getRowProps()} className="tr">
+                  {row.cells.map((cell, index) => (
+                    <div {...cell.getCellProps()} key={index} className="td">
+                      {cell.render('Cell')}
+                    </div>
+                  ))}
+                </div>
+              );
+            })
+          ) : (
+            <div className="not-found">
+              <span>No records found</span>
+            </div>
+          )}
           {/* <div className="tr add-row" onClick={() => dataDispatch({ type: 'add_row' })}>
             <span className="svg-icon svg-gray" style={{ marginRight: 4 }}></span>
             New
