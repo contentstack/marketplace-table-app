@@ -333,6 +333,9 @@ html {
   cursor: pointer;
   background: #f5f5f5;
   padding: 0 5px;
+
+  //To-do: handle width
+  width: 256px !important;
 }
 
 .th:hover {
@@ -529,4 +532,24 @@ html {
 
 .flex-1 {
   flex: 1;
+}
+
+.sort-box {
+  display: inline-block;
+  position: absolute;
+  z-index: 1;
+  right: 15px;
+  top: 15px;
+}
+
+.sort-displayed {
+  display: inline-block;
+  position: absolute;
+  z-index: 1;
+  right: 0px;
+  top: 7px;
+}
+
+.notdisplayed {
+  display: none;
 }
