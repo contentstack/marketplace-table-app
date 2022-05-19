@@ -32,14 +32,6 @@ function makeData(count) {
   return { columns: columns, data: data, skipReset: false };
 }
 
-function uniqueIdGenerator() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    let r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
 function shortId() {
   return '_' + Math.random().toString(36).substr(2, 9);
 }
@@ -52,7 +44,6 @@ const utils = {
   makeData,
   shortId,
   randomColor,
-  uniqueIdGenerator,
 };
 
 export default utils;
