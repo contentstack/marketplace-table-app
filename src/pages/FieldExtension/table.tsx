@@ -156,7 +156,7 @@ export default function Table({
                 {/* {headerGroup.headers.map((column) => column.render('Header'))} */}
                 {headerGroup.headers.map((column) => (
                   <div
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    {...column.getHeaderProps(column.getSortByToggleProps({ title: undefined }))}
                     onMouseEnter={(e) => showButton(e, column.id)}
                     onMouseLeave={(e) => hideButton(e)}
                   >
