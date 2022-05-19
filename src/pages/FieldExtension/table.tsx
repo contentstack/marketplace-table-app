@@ -18,7 +18,6 @@ import { ReactComponent as SortedAscDownArrow } from '../../assets/sortAscDownAr
 
 const defaultColumn = {
   minWidth: 50,
-  width: 150,
   maxWidth: 400,
   Cell: Cell,
   Header: Header,
@@ -157,7 +156,7 @@ export default function Table({
                 {/* {headerGroup.headers.map((column) => column.render('Header'))} */}
                 {headerGroup.headers.map((column) => (
                   <div
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    {...column.getHeaderProps(column.getSortByToggleProps({ title: undefined }))}
                     onMouseEnter={(e) => showButton(e, column.id)}
                     onMouseLeave={(e) => hideButton(e)}
                   >
