@@ -5,6 +5,7 @@ import { Button, Dropdown, ToggleSwitch } from '@contentstack/venus-components';
 import strings from 'common/locale/en-us';
 import utils from '../../common/utils';
 import Table from './table';
+import CustomDelete from './customDelete';
 import { ReactComponent as TableActions } from '../../assets/tableActions.svg';
 import { ReactComponent as HeaderRow } from '../../assets/headerRow.svg';
 import { ReactComponent as DeleteTable } from '../../assets/deleteTable.svg';
@@ -29,7 +30,6 @@ const FieldExtension: React.FC = () => {
     ContentstackAppSdk.init().then(async (appSdk) => {
       const config = await appSdk.getConfig();
       const initialData = appSdk.location.CustomField?.field.getData();
-      console.log('table getData', initialData);
 
       if (
         !isEmpty(initialData) &&
@@ -52,12 +52,10 @@ const FieldExtension: React.FC = () => {
 
   useEffect(() => {
     const { location } = state;
-    console.log('table setfaaa', tableState);
     location.CustomField?.field.setData({ tableState: tableState });
   }, [tableState]);
 
   const handleClick = () => {
-    console.log('table State', tableState);
     setTable(true);
     dispatch({ type: 'initial_table', payload: utils.makeData(3) });
   };
@@ -108,7 +106,6 @@ const FieldExtension: React.FC = () => {
           ],
         };
       case 'delete_row':
-        console.log(action, 'delete row', tableState, tableState.data[action.rowIndex]);
         // tableState.data[action.rowIndex].classList.add('delete-option');
         //TODO : If table has only one row then delete the table
         return {
@@ -336,23 +333,6 @@ const FieldExtension: React.FC = () => {
     dispatch({ type: 'delete_table' });
   };
 
-  const CustomDelete = () => {
-    useEffect(() => {
-      const collection = document.getElementsByClassName('label')!;
-
-      for (let i = 0; i <= collection.length; i++) {
-        collection[i]?.parentElement?.classList.add('delete-option');
-      }
-    }, []);
-
-    return (
-      <>
-        <DeleteTable />
-        <div className="label">Delete Table</div>
-      </>
-    );
-  };
-
   return (
     <div className="field-extension">
       {state.appSdkInitialized && (
@@ -389,7 +369,7 @@ const FieldExtension: React.FC = () => {
                     },
                     {
                       action: deleteTable,
-                      label: <CustomDelete />,
+                      label: <CustomDelete text={'Delete Table'} Icon={<DeleteTable />} />,
                     },
                   ]}
                   testId="cs-dropdown"
