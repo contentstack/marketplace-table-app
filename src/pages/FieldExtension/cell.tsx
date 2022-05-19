@@ -7,6 +7,7 @@ import { ReactComponent as DeleteRow } from '../../assets/deleteRow.svg';
 import { ReactComponent as InsertColumnLeft } from '../../assets/insertColumnLeft.svg';
 import { ReactComponent as InsertColumnRight } from '../../assets/insertColumnRight.svg';
 import { ReactComponent as DeleteColumn } from '../../assets/deleteColumn.svg';
+import CustomDelete from './customDelete';
 
 export default function Cell({
   value: initialValue,
@@ -60,23 +61,6 @@ export default function Cell({
     dataDispatch({ type: 'delete_column', columnId: id });
   };
 
-  const CustomDelete = () => {
-    useEffect(() => {
-      const collection = document.getElementsByClassName('label')!;
-
-      for (let i = 0; i <= collection.length; i++) {
-        collection[i]?.parentElement?.classList.add('delete-option');
-      }
-    }, []);
-
-    return (
-      <>
-        <DeleteRow />
-        <div className="label">Delete Row</div>
-      </>
-    );
-  };
-
   useEffect(() => {
     if (addSelectRef && showAdd) {
       addSelectRef.focus();
@@ -90,7 +74,6 @@ export default function Cell({
         <div
           className="cell"
           onFocus={(e: any) => {
-            console.log('onFocus', e.target?.parentNode, e.target);
             document
               .querySelector('.cs-extension-table .cell.active-cell')
               ?.classList.remove('active-cell');
@@ -139,7 +122,7 @@ export default function Cell({
                 },
                 {
                   action: deleteRow,
-                  label: <CustomDelete />,
+                  label: <CustomDelete text={'Delete Row'} Icon={<DeleteRow />} />,
                 },
                 {
                   default: true,
@@ -163,12 +146,7 @@ export default function Cell({
                 },
                 {
                   action: deleteColumn,
-                  label: (
-                    <>
-                      <DeleteColumn />
-                      <div className="label">Delete Column</div>
-                    </>
-                  ),
+                  label: <CustomDelete text={'Delete Column'} Icon={<DeleteColumn />} />,
                 },
               ]}
               testId="cs-dropdown"
