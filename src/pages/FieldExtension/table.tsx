@@ -18,7 +18,6 @@ import { ReactComponent as SortedAscDownArrow } from '../../assets/sortAscDownAr
 
 const defaultColumn = {
   minWidth: 50,
-  width: 150,
   maxWidth: 400,
   Cell: Cell,
   Header: Header,
