@@ -18,7 +18,6 @@ import { ReactComponent as SortedAscDownArrow } from '../../assets/sortAscDownAr
 
 const defaultColumn = {
   minWidth: 50,
-  width: 150,
   maxWidth: 400,
   Cell: Cell,
   Header: Header,
@@ -59,7 +58,6 @@ export default function Table({
   data,
   dispatch: dataDispatch,
   skipReset,
-  headerColumnChange,
   headerRowChange,
 }) {
   const [hoveredColumnId, setColumnId] = useState('');
@@ -141,7 +139,10 @@ export default function Table({
 
   return (
     <>
-      <div {...getTableProps()} className={clsx('table', isTableResizing() && 'noselect')}>
+      <div
+        {...getTableProps()}
+        className={clsx('table cs-extension-table', isTableResizing() && 'noselect')}
+      >
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
           globalFilter={state.globalFilter}
@@ -155,7 +156,6 @@ export default function Table({
                 {/* {headerGroup.headers.map((column) => column.render('Header'))} */}
                 {headerGroup.headers.map((column) => (
                   <div
-                    className="test"
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     onMouseEnter={(e) => showButton(e, column.id)}
                     onMouseLeave={(e) => hideButton(e)}
@@ -180,13 +180,6 @@ export default function Table({
                 ))}
               </div>
             ))}
-          {/* {headerColumnChange &&
-            headerGroups &&
-            headerGroups.map((headerGroup) => (
-              <div {...headerGroup.getHeaderGroupProps()} className="tr">
-                {headerGroup.headers.map((column) => column.render('Header'))}
-              </div>
-            ))} */}
         </div>
 
         <div {...getTableBodyProps()}>
@@ -195,8 +188,8 @@ export default function Table({
               prepareRow(row);
               return (
                 <div {...row.getRowProps()} className="tr">
-                  {row.cells.map((cell, index) => (
-                    <div {...cell.getCellProps()} key={index} className="td">
+                  {row.cells.map((cell) => (
+                    <div {...cell.getCellProps()} className="td">
                       {cell.render('Cell')}
                     </div>
                   ))}
@@ -208,10 +201,6 @@ export default function Table({
               <span>No records found</span>
             </div>
           )}
-          {/* <div className="tr add-row" onClick={() => dataDispatch({ type: 'add_row' })}>
-            <span className="svg-icon svg-gray" style={{ marginRight: 4 }}></span>
-            New
-          </div> */}
         </div>
       </div>
     </>
