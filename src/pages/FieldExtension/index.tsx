@@ -214,7 +214,7 @@ const FieldExtension: React.FC = () => {
             ...tableState.columns.slice(0, leftIndex),
             {
               id: leftId,
-              label: 'Column',
+              label: '',
               accessor: leftId,
               dataType: 'text',
               created: action.focus && true,
@@ -233,7 +233,7 @@ const FieldExtension: React.FC = () => {
             ...tableState.columns.slice(0, rightIndex + 1),
             {
               id: rightId,
-              label: 'Column',
+              label: '',
               accessor: rightId,
               dataType: 'text',
               created: action.focus && true,
