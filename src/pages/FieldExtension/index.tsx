@@ -281,16 +281,19 @@ const FieldExtension: React.FC = () => {
           row[value] = labels[index];
         });
 
+        let columns = _.map(tableState.columns, (o) => _.omit(o, ['label']));
+
         return {
           ...tableState,
           skipReset: true,
+          columns: [...columns],
           data: [row, ...tableState.data],
         };
       case 'delete_table':
         setTable(false);
         return { ...tableState, columns: [], data: [] };
       case 'initial_data':
-        if (tableData.columns[0].label) setHeaderRowChange(true);
+        if (_.has(tableData, 'columns[0].label')) setHeaderRowChange(true);
         return {
           ...tableState,
           skipReset: true,
