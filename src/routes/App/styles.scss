@@ -1,0 +1,14 @@
+.app {
+  display: flex;
+  .layout-container {
+    width: 100%;
+    display: flex;
+    .page-wrapper {
+      width: 60%;
+      display: flex;
+      flex-direction: row;
+      padding: 60px 50px;
+      margin: 2px;
+    }
+  }
+}
