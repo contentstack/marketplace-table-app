@@ -1,19 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ContentEditable from 'react-contenteditable';
-import { Button, Dropdown, ToggleSwitch } from '@contentstack/venus-components';
-import Relationship from './Relationship';
-import { usePopper } from 'react-popper';
-import { grey } from './colors';
-import { ReactComponent as PlusIcon } from '../../assets/plusIcon.svg';
-import { randomColor } from './utils';
-
-import { ReactComponent as CellActions } from '../../assets/cellActions.svg';
+import { Dropdown, Icon } from '@contentstack/venus-components';
 import { ReactComponent as InsertRowAbove } from '../../assets/insertRowAbove.svg';
 import { ReactComponent as InsertRowBelow } from '../../assets/insertRowBelow.svg';
 import { ReactComponent as DeleteRow } from '../../assets/deleteRow.svg';
 import { ReactComponent as InsertColumnLeft } from '../../assets/insertColumnLeft.svg';
 import { ReactComponent as InsertColumnRight } from '../../assets/insertColumnRight.svg';
 import { ReactComponent as DeleteColumn } from '../../assets/deleteColumn.svg';
+import CustomDelete from './customDelete';
 
 export default function Cell({
   value: initialValue,
@@ -22,9 +16,6 @@ export default function Cell({
   dataDispatch,
 }) {
   const [value, setValue] = useState({ value: initialValue, update: true });
-  const [selectRef, setSelectRef] = useState<any>(null);
-  const [selectPop, setSelectPop] = useState<any>(null);
-  const [showSelect, setShowSelect] = useState(false);
   const onChange = (e) => {
     setValue({ value: e.target.value, update: true });
   };
@@ -41,73 +32,34 @@ export default function Cell({
     }
   }, [value, dataDispatch, id, index]);
 
-  function handleOptionKeyDown(e) {
-    if (e.key === 'Enter') {
-      if (e.target.value !== '') {
-        dataDispatch({
-          type: 'add_option_to_column',
-          option: e.target.value,
-          backgroundColor: randomColor(),
-          columnId: id,
-        });
-      }
-      setShowAdd(false);
-    }
-  }
+  const handleClick = (e) => {
+    let tableActions = document.getElementById('table-actions')!;
+    tableActions.style.display = 'block';
+  };
 
-  function handleAddOption(e) {
-    setShowAdd(true);
-  }
+  const insertRowAbove = () => {
+    dataDispatch({ type: 'insert_row_above', rowIndex: index });
+  };
 
-  function deleteRow(e) {
-    dataDispatch({
-      type: 'delete_row',
-      rowIndex: index,
-    });
-  }
+  const insertRowBelow = () => {
+    dataDispatch({ type: 'insert_row_below', rowIndex: index });
+  };
 
-  function HandleRowOperations(e, operation) {
-    if (e.target.value !== '') {
-      dataDispatch({
-        type: operation,
-        rowIndex: index,
-      });
-    }
-  }
+  const deleteRow = () => {
+    dataDispatch({ type: 'delete_row', rowIndex: index });
+  };
 
-  function deleteColumn(e) {
-    dataDispatch({
-      type: 'delete_column',
-      columnId: id,
-    });
-  }
+  const insertColumnLeft = () => {
+    dataDispatch({ type: 'insert_column_left', columnId: id });
+  };
 
-  function handleOptionBlur(e) {
-    if (e.target.value !== '') {
-      dataDispatch({
-        type: 'add_option_to_column',
-        option: e.target.value,
-        backgroundColor: randomColor(),
-        columnId: id,
-      });
-    }
-    setShowAdd(false);
-  }
+  const insertColumnRight = () => {
+    dataDispatch({ type: 'insert_column_right', columnId: id });
+  };
 
-  function handleClick(e) {
-    let ele = document.getElementById('table-actions')!;
-    ele.style.display = 'block';
-  }
-
-  const { styles, attributes } = usePopper(selectRef, selectPop, {
-    placement: 'bottom-start',
-    strategy: 'fixed',
-  });
-
-  function getColor() {
-    let match = options.find((option) => option.label === value.value);
-    return (match && match.backgroundColor) || grey(300);
-  }
+  const deleteColumn = () => {
+    dataDispatch({ type: 'delete_column', columnId: id });
+  };
 
   useEffect(() => {
     if (addSelectRef && showAdd) {
@@ -119,7 +71,18 @@ export default function Cell({
   switch (dataType) {
     case 'text':
       element = (
-        <div className="cell">
+        <div
+          className="cell"
+          onFocus={(e: any) => {
+            document
+              .querySelector('.cs-extension-table .cell.active-cell')
+              ?.classList.remove('active-cell');
+
+            e.target?.parentNode.focus();
+
+            e.target?.parentNode.classList.add('active-cell');
+          }}
+        >
           <ContentEditable
             html={(value.value && value.value.toString()) || ''}
             onChange={onChange}
@@ -139,184 +102,61 @@ export default function Cell({
               list={[
                 {
                   default: true,
+                  action: insertRowAbove,
                   label: (
                     <>
                       <InsertRowAbove />
-                      <div
-                        className="label"
-                        onClick={(e) => dataDispatch({ type: 'insert_row_above', rowIndex: index })}
-                      >
-                        Insert Row Above
-                      </div>
+                      <div>Insert Row Above</div>
                     </>
                   ),
                 },
                 {
                   default: true,
+                  action: insertRowBelow,
                   label: (
                     <>
                       <InsertRowBelow />
-                      <div
-                        className="label"
-                        onClick={(e) => dataDispatch({ type: 'insert_row_below', rowIndex: index })}
-                      >
-                        Insert Row Below
-                      </div>
+                      <div>Insert Row Below</div>
                     </>
                   ),
                 },
                 {
-                  // action: deleteTable,
-                  label: (
-                    <>
-                      <DeleteRow />
-                      <div
-                        className="label"
-                        onClick={(e) => dataDispatch({ type: 'delete_row', rowIndex: index })}
-                      >
-                        Delete Row
-                      </div>
-                    </>
-                  ),
+                  action: deleteRow,
+                  label: <CustomDelete text={'Delete Row'} Icon={<DeleteRow />} />,
                 },
                 {
                   default: true,
+                  action: insertColumnLeft,
                   label: (
                     <>
                       <InsertColumnLeft />
-                      <div
-                        className="label"
-                        onClick={(e) => dataDispatch({ type: 'insert_column_left', columnId: id })}
-                      >
-                        Insert Column Left
-                      </div>
+                      <div>Insert Column Left</div>
                     </>
                   ),
                 },
                 {
                   default: true,
+                  action: insertColumnRight,
                   label: (
                     <>
                       <InsertColumnRight />
-                      <div
-                        className="label"
-                        onClick={(e) => dataDispatch({ type: 'insert_column_right', columnId: id })}
-                      >
-                        Insert Column Right
-                      </div>
+                      <div>Insert Column Right</div>
                     </>
                   ),
                 },
                 {
-                  // action: deleteTable,
-                  label: (
-                    <>
-                      <DeleteColumn />
-                      <div
-                        className="label"
-                        onClick={(e) => dataDispatch({ type: 'delete_column', columnId: id })}
-                      >
-                        Delete Column
-                      </div>
-                    </>
-                  ),
+                  action: deleteColumn,
+                  label: <CustomDelete text={'Delete Column'} Icon={<DeleteColumn />} />,
                 },
               ]}
               testId="cs-dropdown"
               type="click"
               viewAs="label"
             >
-              <CellActions />
+              <Icon icon={'DownArrowEnabled'} size="small" />
             </Dropdown>
           </div>
         </div>
-      );
-      break;
-    case 'number':
-      element = (
-        <ContentEditable
-          html={(value.value && value.value.toString()) || ''}
-          onChange={onChange}
-          onBlur={() => setValue((old) => ({ value: old.value, update: true }))}
-          className="data-input text-align-right"
-        />
-      );
-      break;
-    case 'select':
-      element = (
-        <>
-          <div
-            ref={setSelectRef}
-            className="cell-padding d-flex cursor-default align-items-center flex-1"
-            onClick={() => setShowSelect(true)}
-          >
-            {value.value && <Relationship value={value.value} backgroundColor={getColor()} />}
-          </div>
-          {showSelect && <div className="overlay" onClick={() => setShowSelect(false)} />}
-          {showSelect && (
-            <div
-              className="shadow-5 bg-white border-radius-md"
-              ref={setSelectPop}
-              {...attributes.popper}
-              style={{
-                ...styles.popper,
-                zIndex: 4,
-                minWidth: 200,
-                maxWidth: 320,
-                padding: '0.75rem',
-              }}
-            >
-              <div className="d-flex flex-wrap-wrap" style={{ marginTop: '-0.5rem' }}>
-                {options.map((option) => (
-                  <div
-                    className="cursor-pointer"
-                    style={{ marginRight: '0.5rem', marginTop: '0.5rem' }}
-                    onClick={() => {
-                      setValue({ value: option.label, update: true });
-                      setShowSelect(false);
-                    }}
-                  >
-                    <Relationship value={option.label} backgroundColor={option.backgroundColor} />
-                  </div>
-                ))}
-                {showAdd && (
-                  <div
-                    style={{
-                      marginRight: '0.5rem',
-                      marginTop: '0.5rem',
-                      width: 120,
-                      padding: '2px 4px',
-                      backgroundColor: grey(200),
-                      borderRadius: 4,
-                    }}
-                  >
-                    <input
-                      type="text"
-                      className="option-input"
-                      onBlur={handleOptionBlur}
-                      ref={setAddSelectRef}
-                      onKeyDown={handleOptionKeyDown}
-                    />
-                  </div>
-                )}
-                <div
-                  className="cursor-pointer"
-                  style={{ marginRight: '0.5rem', marginTop: '0.5rem' }}
-                  onClick={handleAddOption}
-                >
-                  <Relationship
-                    value={
-                      <span className="svg-icon-sm svg-text">
-                        <PlusIcon />
-                      </span>
-                    }
-                    backgroundColor={grey(200)}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </>
       );
       break;
     default:

@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { usePopper } from 'react-popper';
-import { grey } from './colors';
 import ArrowUpIcon from '../../assets/ArrowUp';
 import ArrowDownIcon from '../../assets/ArrowDown';
 import ArrowLeftIcon from '../../assets/ArrowLeft';
@@ -10,12 +9,10 @@ import TextIcon from '../../assets/Text';
 import MultiIcon from '../../assets/Multi';
 import HashIcon from '../../assets/Hash';
 import { ReactComponent as PlusIcon } from '../../assets/plusIcon.svg';
-import { shortId } from './utils';
-import { ReactComponent as SortIcon } from '../../assets/Sort.svg';
-//import { ReactComponent as SortDesc } from '../../assets/Sort.svg';
+import utils from '../../common/utils/index';
 
 export default function Header({
-  column: { id, created, label, dataType, getResizerProps, getHeaderProps, sortState },
+  column: { id, created, label, dataType, getResizerProps, getHeaderProps },
   setSortBy,
   dataDispatch,
 }) {
@@ -157,53 +154,6 @@ export default function Header({
     setHeader(e.target.value);
   }
 
-  function css(element, style) {
-    for (const property in style) element.style[property] = style[property];
-  }
-
-  function setSortType(id, type) {
-    setSortBy([{ id: id, desc: type }]);
-
-    // const note = document.querySelector('.sort-box');
-    // css(note, {
-    //   fill: '#222222',
-    // });
-  }
-
-  function performSort(e) {
-    if (sortState == undefined) {
-      setSortType(id, false);
-      const myTimeout = setTimeout(
-        () => dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: true }),
-        500,
-      );
-      //dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: true });
-      //const myTimeout = setTimeout(() => setSortType(id, false), 100);
-      //setSortBy([{ id: id, desc: false }]);
-      //sortState = true;
-    } else if (sortState) {
-      setSortType(id, true);
-      const myTimeout = setTimeout(
-        () => dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: false }),
-        500,
-      );
-      //dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: false });
-      //const myTimeout = setTimeout(() => setSortType(id, true), 100);
-      //setSortBy([{ id: id, desc: true }]);
-      //sortState = false;
-    } else {
-      setSortType(id, false);
-      const myTimeout = setTimeout(
-        () => dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: true }),
-        500,
-      );
-      //dataDispatch({ type: 'update_sort_type', columnId: id, newSortType: true });
-      //const myTimeout = setTimeout(() => setSortType(id, false), 100);
-      //setSortBy([{ id: id, desc: false }]);
-      //sortState = true;
-    }
-  }
-
   function handleBlur(e) {
     e.preventDefault();
     dataDispatch({ type: 'update_column_header', columnId: id, label: header });
@@ -213,12 +163,8 @@ export default function Header({
     <>
       <div {...getHeaderProps({ style: { display: 'inline-block' } })} className="th noselect">
         <div className="th-content" ref={setReferenceElement}>
-          {/* <span className="svg-icon svg-gray icon-margin">{propertyIcon}</span> */}
           {label}
-          <div className="sort-box">
-            <SortIcon onClick={performSort} />
-            {/* <SortAsc onClick={() => setSortBy([{ id: id, desc: false }])} /> */}
-          </div>
+          <div className="sort-box"></div>
         </div>
         <div {...getResizerProps()} className="resizer" />
       </div>
@@ -246,7 +192,7 @@ export default function Header({
               </div>
               <span
                 className="font-weight-600 font-size-75"
-                style={{ textTransform: 'uppercase', color: grey(500) }}
+                style={{ textTransform: 'uppercase', color: '#9e9e9e' }}
               >
                 Property Type
               </span>
@@ -287,9 +233,9 @@ export default function Header({
               )}
             </div>
             <div
-              key={shortId()}
+              key={utils.shortId()}
               style={{
-                borderTop: `2px solid ${grey(200)}`,
+                borderTop: `2px solid #eeeeee`,
                 padding: '4px 0px',
               }}
             >

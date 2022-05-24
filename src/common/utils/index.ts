@@ -1,28 +1,49 @@
-const merge = (target, source) => {
-  // Iterate through `source` properties and if an `Object` set property to merge of `target` and `source` properties
-  for (const key of Object.keys(source)) {
-    if (source[key] instanceof Object && key in target)
-      Object.assign(source[key], merge(target[key], source[key]));
+function makeData(count) {
+  let data: any = [];
+
+  for (let i = 0; i < count; i++) {
+    let row = {
+      column1: '',
+      column2: '',
+      column3: '',
+    };
+
+    data.push(row);
   }
 
-  // Join `target` and modified `source`
-  Object.assign(target || {}, source);
-  return target;
-};
+  let columns = [
+    {
+      id: 'column1',
+      accessor: 'column1',
+      dataType: 'text',
+    },
+    {
+      id: 'column2',
+      accessor: 'column2',
+      dataType: 'text',
+    },
+    {
+      id: 'column3',
+      accessor: 'column3',
+      dataType: 'text',
+    },
+  ];
 
-const popupWindow = ({ url, title, w, h }) => {
-  const left = screen.width / 2 - w / 2;
-  const top = screen.height / 2 - h / 2;
-  return window.open(
-    url,
-    title,
-    `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${w}, height=${h}, top=${top}, left=${left}`,
-  );
-};
+  return { columns: columns, data: data, skipReset: false };
+}
+
+function shortId() {
+  return '_' + Math.random().toString(36).substr(2, 9);
+}
+
+function randomColor() {
+  return `hsl(${Math.floor(Math.random() * 360)}, 95%, 90%)`;
+}
 
 const utils = {
-  merge,
-  popupWindow,
+  makeData,
+  shortId,
+  randomColor,
 };
 
 export default utils;
