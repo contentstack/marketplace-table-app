@@ -148,59 +148,61 @@ export default function Table({
           globalFilter={state.globalFilter}
           setGlobalFilter={setGlobalFilter}
         />
-        <div>
-          {headerRowChange &&
-            headerGroups &&
-            headerGroups.map((headerGroup) => (
-              <div {...headerGroup.getHeaderGroupProps()} className="tr">
-                {/* {headerGroup.headers.map((column) => column.render('Header'))} */}
-                {headerGroup.headers.map((column) => (
-                  <div
-                    {...column.getHeaderProps(column.getSortByToggleProps({ title: undefined }))}
-                    onMouseEnter={(e) => showButton(e, column.id)}
-                    onMouseLeave={(e) => hideButton(e)}
-                  >
-                    {column.render('Header')}
-                    <div className="sort-box">
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
-                          <SortedDescUpArrow />
+        <div className="table-data">
+          <div>
+            {headerRowChange &&
+              headerGroups &&
+              headerGroups.map((headerGroup) => (
+                <div {...headerGroup.getHeaderGroupProps()} className="tr">
+                  {/* {headerGroup.headers.map((column) => column.render('Header'))} */}
+                  {headerGroup.headers.map((column) => (
+                    <div
+                      {...column.getHeaderProps(column.getSortByToggleProps({ title: undefined }))}
+                      onMouseEnter={(e) => showButton(e, column.id)}
+                      onMouseLeave={(e) => hideButton(e)}
+                    >
+                      {column.render('Header')}
+                      <div className="sort-box">
+                        {column.isSorted ? (
+                          column.isSortedDesc ? (
+                            <SortedDescUpArrow />
+                          ) : (
+                            <SortedAscDownArrow />
+                          )
                         ) : (
-                          <SortedAscDownArrow />
-                        )
-                      ) : (
-                        <HoverSortIcon
-                          className={
-                            column.id == hoveredColumnId ? displaySortIcon : 'notdisplayed'
-                          }
-                        />
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))}
-        </div>
-
-        <div {...getTableBodyProps()}>
-          {rows.length > 0 ? (
-            rows.map((row, i) => {
-              prepareRow(row);
-              return (
-                <div {...row.getRowProps()} className="tr">
-                  {row.cells.map((cell) => (
-                    <div {...cell.getCellProps()} className="td">
-                      {cell.render('Cell')}
+                          <HoverSortIcon
+                            className={
+                              column.id == hoveredColumnId ? displaySortIcon : 'notdisplayed'
+                            }
+                          />
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
-              );
-            })
-          ) : (
-            <div className="not-found">
-              <span>No records found</span>
-            </div>
-          )}
+              ))}
+          </div>
+
+          <div {...getTableBodyProps()}>
+            {rows.length > 0 ? (
+              rows.map((row, i) => {
+                prepareRow(row);
+                return (
+                  <div {...row.getRowProps()} className="tr">
+                    {row.cells.map((cell) => (
+                      <div {...cell.getCellProps()} className="td">
+                        {cell.render('Cell')}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })
+            ) : (
+              <div className="not-found">
+                <span>No records found</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>
