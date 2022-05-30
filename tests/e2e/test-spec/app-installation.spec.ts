@@ -4,7 +4,6 @@ import { getInstalledApp, uninstallApp, deleteApp } from '../utils/pre-installat
 const jsonFile = require('jsonfile');
 
 let AppId: string;
-let savedCredentials: any = {};
 let authToken;
 
 test.beforeAll(async () => {

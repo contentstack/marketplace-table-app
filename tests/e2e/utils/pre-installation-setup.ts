@@ -49,7 +49,7 @@ export const createContentType = async (
   extension_uid: ExtensionUid[],
   stackApiKey: string,
 ) => {
-  const generateUid = `Test Content Type_${Math.floor(Math.random() * 1000)}`;
+  const generateUid = `Test Content Type_${Math.floor(Math.random() * 10000)}`;
   let options = {
     url: `https://${process.env.BASE_API_URL}/v3/content_types`,
     method: 'POST',
@@ -132,10 +132,8 @@ export const createEntry = async (
       },
     },
   };
-  console.log('content type...', options);
   try {
-    let result = await axios(options);
-    return result.data.entry.title;
+    return (await axios(options)).data.entry;
   } catch (error) {
     return error;
   }

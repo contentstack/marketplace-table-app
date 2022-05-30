@@ -14,15 +14,17 @@ export class AppLogin {
     this.venusPasswordInput = this.page.locator('#password');
     this.loginButton = this.page.locator('button:has-text("Log In"), button:has-text("LOGIN")');
   }
-
+  // check app url
   async checkAppUrl(url: string) {
     await expect(this.page).toHaveURL(url);
   }
 
+  // goto login url
   async getLoginPage() {
     await this.page.goto(`${process.env.APP_HOST_URL}`);
   }
 
+  // contentstack login
   async contentstackLogin(id, pass) {
     // check for classic UI and venus UI
     if ((await this.page.$('.user-session-page')) !== null) {
