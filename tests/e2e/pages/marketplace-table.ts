@@ -29,7 +29,7 @@ export class MarketplaceTable {
 
   async deleteTable() {
     await this.tableIframe.locator('.Dropdown__header').nth(0).click();
-    await this.tableIframe.locator('.delete-option').click();
+    await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Delete Table"').click();
     expect(await this.tableIframe.locator('.no-asset').innerText()).toContain('Table has not been added');
   }
 
@@ -83,13 +83,13 @@ export class MarketplaceTable {
 
   async addColumnToLeft() {
     await this.cellDropdown(0); // cell selection
-    await this.tableIframe.locator('.Dropdown__menu__list__item').nth(3).click();
+    await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Insert Column Left"').click();
     await this.addContent(5);
   }
 
   async addColumnToRight() {
     await this.cellDropdown(1); // cell selection
-    await this.tableIframe.locator('.Dropdown__menu__list__item').nth(4).click(); // select operation
+    await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Insert Column Right"').click(); // select operation
     await this.addContent(5); // no of content to be added
   }
 
