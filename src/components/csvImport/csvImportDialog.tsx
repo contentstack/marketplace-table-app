@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   cbModal,
@@ -9,6 +9,7 @@ import {
 } from '@contentstack/venus-components';
 import './styles.scss';
 import strings from 'common/locale/en-us';
+import { ReactComponent as ImportTableIcon } from '../../assets/importTableIcon.svg';
 
 export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) => void }) => {
   const onClose = (_data: any) => {
@@ -18,12 +19,6 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
   return cbModal({
     component: (modalProps) => {
       const [appendData, setAppendData] = useState(true);
-      const radioOptionAppend = useRef(null);
-
-      useEffect(() => {
-        // Update the document title using the browser API
-        console.log('radioOptionAppend..', radioOptionAppend);
-      }, []);
 
       const onCancel = () => {
         modalProps.closeModal();
@@ -48,8 +43,7 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
             <span className="radio-block">
               <div className="Radio-wrapper">
                 <Radio
-                  //checked={true}
-                  ref={radioOptionAppend}
+                  checked={true}
                   label={strings.appendDataText}
                   name="option"
                   value="AppendData"
@@ -79,8 +73,7 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
                 {strings.cancelText}{' '}
               </Button>
               <Button buttonType="primary" onClick={onSave}>
-                {' '}
-                {strings.importTableText}{' '}
+                <ImportTableIcon /> {strings.importTableText}{' '}
               </Button>
             </div>
           </ModalFooter>

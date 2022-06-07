@@ -231,14 +231,14 @@ export default function Table({
             globalFilter={state.globalFilter}
             setGlobalFilter={setGlobalFilter}
           />
-          <Tooltip content={strings.importCSVTitleText} position="top" showArrow={true}>
+          <Tooltip content={strings.importCSVTitleText} position="auto" showArrow={true}>
             <ImportCSV className="importCSV" type="button" onClick={() => ImportCSVClicked()} />
           </Tooltip>
           <input
             type="file"
             id="fileElem"
-            accept="csv/*"
             style={{ display: 'none' }}
+            accept=".csv, text/csv"
             onChange={fileHandler}
           />
         </div>

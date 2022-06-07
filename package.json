@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@contentstack/app-sdk": "github:contentstack/app-sdk#develop",
-    "@contentstack/venus-components": "github:contentstack/venus-components#master",
+    "@contentstack/app-sdk": "^1.1.0",
+    "@contentstack/venus-components": "^1.0.73",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@faker-js/faker": "^6.2.0",
