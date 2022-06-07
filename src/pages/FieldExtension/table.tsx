@@ -163,9 +163,9 @@ export default function Table({
       onSave: (bAppend) => {
         console.log('onSave : ', bAppend);
         setAppendData(bAppend);
-        let el = document.getElementById('fileElem');
-        if (el) {
-          el.click();
+        let elFile = document.getElementById('fileElem');
+        if (elFile) {
+          elFile.click();
         }
       },
     });
@@ -173,7 +173,6 @@ export default function Table({
 
   const fileHandler = (e) => {
     let fileObj = e.target.files[0];
-    console.log(fileObj);
 
     //just pass the fileObj as parameter
     ExcelRenderer(fileObj, (err, resp) => {

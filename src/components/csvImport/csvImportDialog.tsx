@@ -32,7 +32,6 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
 
       const handleToggleAppendData = (value) => {
         setAppendData(value);
-        console.log(value);
       };
 
       return (
@@ -47,10 +46,7 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
                   label={strings.appendDataText}
                   name="option"
                   value="AppendData"
-                  //onChange={handleToggleAppendData(true)}
-                  //onClick={console.log('appendData')}
                   onClick={() => handleToggleAppendData(true)}
-                  //onChange={(e) => handleToggleAppendData(e)}
                 />
               </div>
               <div className="Radio-wrapper">
@@ -58,10 +54,7 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
                   label={strings.replaceDataText}
                   name="option"
                   value="ReplaceData"
-                  //onChange={console.log('ReplaceData')}
-                  //onClick={console.log('ReplaceData')}
                   onClick={() => handleToggleAppendData(false)}
-                  //onChange={(e) => handleToggleAppendData(e)}
                 />
               </div>
             </span>
