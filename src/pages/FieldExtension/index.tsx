@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useRef } from 'react';
 import _, { isEmpty } from 'lodash';
 import ContentstackAppSdk from '@contentstack/app-sdk';
 import { Button, Dropdown, ToggleSwitch } from '@contentstack/venus-components';
@@ -22,12 +22,19 @@ const FieldExtension: React.FC = () => {
     appSdkInitialized: false,
   });
   const [table, setTable] = useState<boolean>();
+  const iframeRef = useRef(null);
   const [tableData, setTableData] = useState<any>({});
   const [headerRowChange, setHeaderRowChange] = useState<boolean>(false);
   const [tableState, dispatch] = useReducer(reducer, utils.makeData(3));
 
   useEffect(() => {
     ContentstackAppSdk.init().then(async (appSdk) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.iframeRef = document.getElementById('root'); //iframeRef.current; //document.body;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.postRobot = appSdk.postRobot;
       const config = await appSdk.getConfig();
       const initialData = appSdk.location.CustomField?.field.getData();
 
@@ -317,6 +324,16 @@ const FieldExtension: React.FC = () => {
           ],
           //data: [...tableState.data],
         };
+      case 'append_data_to_table':
+        const columnsArray = [
+          ...tableState.columns.slice(0, tableState.columns.length),
+          ...action.payload.columns.slice(tableState.columns.length, action.payload.columns.length),
+        ];
+        return {
+          ...tableState,
+          columns: columnsArray,
+          data: [...tableState.data.slice(0, tableState.data.length), ...action.payload.data],
+        };
       default:
         return tableState;
     }
@@ -337,7 +354,7 @@ const FieldExtension: React.FC = () => {
   };
 
   return (
-    <div className="field-extension">
+    <div className="field-extension" ref={iframeRef}>
       {state.appSdkInitialized && (
         <div className="field-extension-wrapper">
           {table ? (
@@ -396,9 +413,15 @@ const FieldExtension: React.FC = () => {
             </div>
           )}
           {!table && (
-            <Button className="add-product-btn" buttonType="control" onClick={() => handleClick()}>
-              {strings.ctaText}
-            </Button>
+            <span>
+              <Button
+                className="add-product-btn"
+                buttonType="control"
+                onClick={() => handleClick()}
+              >
+                {strings.ctaText}
+              </Button>
+            </span>
           )}
         </div>
       )}

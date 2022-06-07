@@ -15,6 +15,11 @@ import { ReactComponent as Search } from '../../assets/search.svg';
 import { ReactComponent as HoverSortIcon } from '../../assets/hoverSortIcon.svg';
 import { ReactComponent as SortedDescUpArrow } from '../../assets/sortDescUpArrow.svg';
 import { ReactComponent as SortedAscDownArrow } from '../../assets/sortAscDownArrow.svg';
+import { Tooltip, Button } from '@contentstack/venus-components';
+import { ImportCSVModal } from 'components/csvImport/csvImportDialog';
+import { ExcelRenderer } from 'react-excel-renderer';
+import { ReactComponent as ImportCSV } from '../../assets/importCSV.svg';
+import strings from 'common/locale/en-us';
 
 const defaultColumn = {
   minWidth: 50,
@@ -62,6 +67,7 @@ export default function Table({
 }) {
   const [hoveredColumnId, setColumnId] = useState('');
   const [displaySortIcon, setDisplay] = useState('notdisplayed');
+  const [appendData, setAppendData] = useState(true);
   const showButton = (e, columnId) => {
     e.preventDefault();
     setDisplay('sort-displayed');
@@ -137,17 +143,105 @@ export default function Table({
     return false;
   }
 
+  function headerTooltip(column) {
+    const tooltip = column.isSorted
+      ? column.isSortedDesc
+        ? 'Clear Sorting'
+        : 'Sort Descending'
+      : column.id == hoveredColumnId
+      ? 'Sort Ascending'
+      : '';
+
+    return tooltip;
+  }
+
+  const ImportCSVClicked = () => {
+    ImportCSVModal({
+      onCancel: () => {
+        console.log('onRuledCancelled');
+      },
+      onSave: (bAppend) => {
+        console.log('onSave : ', bAppend);
+        setAppendData(bAppend);
+        let el = document.getElementById('fileElem');
+        if (el) {
+          el.click();
+        }
+      },
+    });
+  };
+
+  const fileHandler = (e) => {
+    let fileObj = e.target.files[0];
+    console.log(fileObj);
+
+    //just pass the fileObj as parameter
+    ExcelRenderer(fileObj, (err, resp) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(resp);
+        let newData = convertExcelToTableData(resp);
+        if (appendData) dataDispatch({ type: 'append_data_to_table', payload: newData });
+        else dataDispatch({ type: 'initial_table', payload: newData });
+      }
+    });
+    e.target.value = '';
+  };
+
+  function convertExcelToTableData(excelData) {
+    let data: any = [];
+    let columnCount = excelData?.cols?.length;
+
+    for (let i = 0; i < excelData?.rows?.length; i++) {
+      let row = {};
+      for (let j = 0; j < columnCount; j++) {
+        let columnKey: string;
+        columnKey = 'column' + (j + 1);
+
+        row[columnKey] = excelData?.rows[i][j];
+      }
+
+      data.push(row);
+    }
+
+    let columns: any = [];
+    for (let j = 0; j < columnCount; j++) {
+      let columnKey: string;
+      let column = {};
+      columnKey = 'column' + (j + 1);
+      column['id'] = columnKey;
+      column['accessor'] = columnKey;
+      column['dataType'] = 'text';
+      columns.push(column);
+    }
+
+    return { columns: columns, data: data, skipReset: false };
+  }
+
   return (
     <>
       <div
         {...getTableProps()}
         className={clsx('table cs-extension-table', isTableResizing() && 'noselect')}
       >
-        <GlobalFilter
-          preGlobalFilteredRows={preGlobalFilteredRows}
-          globalFilter={state.globalFilter}
-          setGlobalFilter={setGlobalFilter}
-        />
+        <div className="toolbar">
+          <GlobalFilter
+            preGlobalFilteredRows={preGlobalFilteredRows}
+            globalFilter={state.globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
+          <Tooltip content={strings.importCSVTitleText} position="top" showArrow={true}>
+            <ImportCSV className="importCSV" type="button" onClick={() => ImportCSVClicked()} />
+          </Tooltip>
+          <input
+            type="file"
+            id="fileElem"
+            accept="csv/*"
+            style={{ display: 'none' }}
+            onChange={fileHandler}
+          />
+        </div>
         <div>
           {headerRowChange &&
             headerGroups &&
@@ -155,28 +249,31 @@ export default function Table({
               <div {...headerGroup.getHeaderGroupProps()} className="tr">
                 {/* {headerGroup.headers.map((column) => column.render('Header'))} */}
                 {headerGroup.headers.map((column) => (
-                  <div
-                    {...column.getHeaderProps(column.getSortByToggleProps({ title: undefined }))}
-                    onMouseEnter={(e) => showButton(e, column.id)}
-                    onMouseLeave={(e) => hideButton(e)}
-                  >
-                    {column.render('Header')}
-                    <div className="sort-box">
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
-                          <SortedDescUpArrow />
+                  <Tooltip content={headerTooltip(column)} position="top" showArrow={false}>
+                    <div
+                      className="tooltip-wrapper"
+                      {...column.getHeaderProps(column.getSortByToggleProps({ title: undefined }))}
+                      onMouseEnter={(e) => showButton(e, column.id)}
+                      onMouseLeave={(e) => hideButton(e)}
+                    >
+                      {column.render('Header')}
+                      <div className="sort-box">
+                        {column.isSorted ? (
+                          column.isSortedDesc ? (
+                            <SortedDescUpArrow />
+                          ) : (
+                            <SortedAscDownArrow />
+                          )
                         ) : (
-                          <SortedAscDownArrow />
-                        )
-                      ) : (
-                        <HoverSortIcon
-                          className={
-                            column.id == hoveredColumnId ? displaySortIcon : 'notdisplayed'
-                          }
-                        />
-                      )}
+                          <HoverSortIcon
+                            className={
+                              column.id == hoveredColumnId ? displaySortIcon : 'notdisplayed'
+                            }
+                          />
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  </Tooltip>
                 ))}
               </div>
             ))}

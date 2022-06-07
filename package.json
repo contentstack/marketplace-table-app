@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@contentstack/app-sdk": "0.0.8-beta",
-    "@contentstack/venus-components": "1.0.66",
+    "@contentstack/app-sdk": "github:contentstack/app-sdk#develop",
+    "@contentstack/venus-components": "github:contentstack/venus-components#master",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@faker-js/faker": "^6.2.0",
@@ -27,6 +27,7 @@
     "react": "^17.0.2",
     "react-contenteditable": "^3.3.6",
     "react-dom": "^17.0.2",
+    "react-excel-renderer": "^1.1.0",
     "react-popper": "^2.3.0",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
