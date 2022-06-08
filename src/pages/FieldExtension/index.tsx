@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useRef } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import _, { isEmpty } from 'lodash';
 import ContentstackAppSdk from '@contentstack/app-sdk';
 import { Button, Dropdown, ToggleSwitch } from '@contentstack/venus-components';
@@ -22,7 +22,6 @@ const FieldExtension: React.FC = () => {
     appSdkInitialized: false,
   });
   const [table, setTable] = useState<boolean>();
-  const iframeRef = useRef(null);
   const [tableData, setTableData] = useState<any>({});
   const [headerRowChange, setHeaderRowChange] = useState<boolean>(false);
   const [tableState, dispatch] = useReducer(reducer, utils.makeData(3));
@@ -31,7 +30,7 @@ const FieldExtension: React.FC = () => {
     ContentstackAppSdk.init().then(async (appSdk) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      window.iframeRef = document.getElementById('root'); //iframeRef.current; //document.body;
+      window.iframeRef = document.getElementById('root');
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       window.postRobot = appSdk.postRobot;
@@ -354,7 +353,7 @@ const FieldExtension: React.FC = () => {
   };
 
   return (
-    <div className="field-extension" ref={iframeRef}>
+    <div className="field-extension">
       {state.appSdkInitialized && (
         <div className="field-extension-wrapper">
           {table ? (
