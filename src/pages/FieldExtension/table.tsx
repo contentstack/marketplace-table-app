@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import clsx from 'clsx';
 import {
   useTable,
@@ -68,6 +68,7 @@ export default function Table({
   const [hoveredColumnId, setColumnId] = useState('');
   const [displaySortIcon, setDisplay] = useState('notdisplayed');
   const [appendData, setAppendData] = useState(true);
+  const fileElement = useRef(null);
   const showButton = (e, columnId) => {
     e.preventDefault();
     setDisplay('sort-displayed');
@@ -162,9 +163,13 @@ export default function Table({
       },
       onSave: (bAppend) => {
         setAppendData(bAppend);
-        let elFile = document.getElementById('fileElem');
-        if (elFile) {
-          elFile.click();
+        if (fileElement) {
+          let elFile = fileElement.current;
+          if (elFile) {
+            // eslint-disable-next-line
+            // @ts-ignore
+            elFile.click();
+          }
         }
       },
     });
@@ -234,7 +239,7 @@ export default function Table({
           </Tooltip>
           <input
             type="file"
-            id="fileElem"
+            ref={fileElement}
             style={{ display: 'none' }}
             accept=".csv, text/csv"
             onChange={fileHandler}

@@ -12,7 +12,7 @@ import strings from 'common/locale/en-us';
 import { ReactComponent as ImportTableIcon } from '../../assets/importTableIcon.svg';
 
 export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) => void }) => {
-  const onClose = (_data: any) => {
+  const onClose = () => {
     props.onCancel();
   };
 
