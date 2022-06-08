@@ -158,10 +158,9 @@ export default function Table({
   const ImportCSVClicked = () => {
     ImportCSVModal({
       onCancel: () => {
-        console.log('onRuledCancelled');
+        // do nothing.
       },
       onSave: (bAppend) => {
-        console.log('onSave : ', bAppend);
         setAppendData(bAppend);
         let elFile = document.getElementById('fileElem');
         if (elFile) {
@@ -192,23 +191,23 @@ export default function Table({
     let data: any = [];
     let columnCount = excelData?.cols?.length;
 
-    for (let i = 0; i < excelData?.rows?.length; i++) {
+    for (let rowIndex = 0; rowIndex < excelData?.rows?.length; rowIndex++) {
       let row = {};
-      for (let j = 0; j < columnCount; j++) {
+      for (let colIndex = 0; colIndex < columnCount; colIndex++) {
         let columnKey: string;
-        columnKey = 'column' + (j + 1);
+        columnKey = 'column' + (colIndex + 1);
 
-        row[columnKey] = excelData?.rows[i][j];
+        row[columnKey] = excelData?.rows[rowIndex][colIndex];
       }
 
       data.push(row);
     }
 
     let columns: any = [];
-    for (let j = 0; j < columnCount; j++) {
+    for (let colIndex = 0; colIndex < columnCount; colIndex++) {
       let columnKey: string;
       let column = {};
-      columnKey = 'column' + (j + 1);
+      columnKey = 'column' + (colIndex + 1);
       column['id'] = columnKey;
       column['accessor'] = columnKey;
       column['dataType'] = 'text';
