@@ -28,6 +28,12 @@ const FieldExtension: React.FC = () => {
 
   useEffect(() => {
     ContentstackAppSdk.init().then(async (appSdk) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.iframeRef = document.getElementById('root');
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.postRobot = appSdk.postRobot;
       const config = await appSdk.getConfig();
       const initialData = appSdk.location.CustomField?.field.getData();
 
@@ -317,6 +323,16 @@ const FieldExtension: React.FC = () => {
           ],
           //data: [...tableState.data],
         };
+      case 'append_data_to_table':
+        const columnsArray = [
+          ...tableState.columns.slice(0, tableState.columns.length),
+          ...action.payload.columns.slice(tableState.columns.length, action.payload.columns.length),
+        ];
+        return {
+          ...tableState,
+          columns: columnsArray,
+          data: [...tableState.data.slice(0, tableState.data.length), ...action.payload.data],
+        };
       default:
         return tableState;
     }
@@ -396,9 +412,15 @@ const FieldExtension: React.FC = () => {
             </div>
           )}
           {!table && (
-            <Button className="add-product-btn" buttonType="control" onClick={() => handleClick()}>
-              {strings.ctaText}
-            </Button>
+            <span>
+              <Button
+                className="add-product-btn"
+                buttonType="control"
+                onClick={() => handleClick()}
+              >
+                {strings.ctaText}
+              </Button>
+            </span>
           )}
         </div>
       )}
