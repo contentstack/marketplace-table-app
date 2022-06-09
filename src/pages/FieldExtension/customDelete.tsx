@@ -3,9 +3,10 @@ import React, { useEffect } from 'react';
 export type IconProps = {
   text: string;
   Icon: JSX.Element;
+  type: string;
 };
 
-const CustomDelete: React.FC<IconProps> = ({ text, Icon }) => {
+const CustomDelete: React.FC<IconProps> = ({ text, Icon, type }) => {
   useEffect(() => {
     const collection = document.getElementsByClassName('label')!;
 
@@ -19,31 +20,47 @@ const CustomDelete: React.FC<IconProps> = ({ text, Icon }) => {
       style={{ display: 'flex' }}
       onMouseEnter={(e) => {
         let el = e.relatedTarget;
-        let rowEl = (el as Element)?.closest('.tr');
-        let tableEl = (el as Element)?.closest('.table-actions')?.nextSibling
-          ?.lastChild as HTMLElement;
 
-        // let x = document.getElementsByClassName('tr');
-        // console.log('rorrrr-----------', x);
-        // for (let i = 0; i < x.length; i++) {
-        //   console.log('rorrrr', x[i].getElementsByClassName('td'));
-        //   console.log(Array.prototype.indexOf.call(x, x[i]));
-        // }
-
-        // console.log('mouseOver', rowEl, tableEl, e);
-        tableEl?.classList.add('highlight-table');
-        rowEl?.classList.add('highlight-row');
-      }}
-      onMouseLeave={(e) => {
-        let el = e.relatedTarget;
-        if (el) {
+        if (type === 'row') {
           let rowEl = (el as Element)?.closest('.tr');
+
+          rowEl?.classList.add('highlight-row');
+        } else if (type === 'column') {
+          let colEl: any = (el as Element)?.closest('.td') as HTMLElement;
+          let trEls = document.getElementsByClassName('tr');
+
+          const index = Array.from(colEl.parentElement.children).indexOf(colEl);
+
+          Array.from(trEls).forEach((trEl) => {
+            trEl.children[index].classList.add('highlight-column');
+          });
+        } else {
           let tableEl = (el as Element)?.closest('.table-actions')?.nextSibling
             ?.lastChild as HTMLElement;
 
-          // console.log('onMouseLeave', rowEl, tableEl);
-          tableEl?.classList.remove('highlight-table');
+          tableEl?.classList.add('highlight-table');
+        }
+      }}
+      onMouseLeave={(e) => {
+        let el = e.relatedTarget;
+        if (type === 'row') {
+          let rowEl = (el as Element)?.closest('.tr');
+
           rowEl?.classList.remove('highlight-row');
+        } else if (type === 'column') {
+          let colEl: any = (el as Element)?.closest('.td') as HTMLElement;
+          let trEls = document.getElementsByClassName('tr');
+
+          const index = Array.from(colEl.parentElement.children).indexOf(colEl);
+
+          Array.from(trEls).forEach((trEl) => {
+            trEl.children[index].classList.remove('highlight-column');
+          });
+        } else {
+          let tableEl = (el as Element)?.closest('.table-actions')?.nextSibling
+            ?.lastChild as HTMLElement;
+
+          tableEl?.classList.remove('highlight-table');
         }
       }}
     >

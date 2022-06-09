@@ -122,7 +122,7 @@ export default function Cell({
                 },
                 {
                   action: deleteRow,
-                  label: <CustomDelete text={'Delete Row'} Icon={<DeleteRow />} />,
+                  label: <CustomDelete text={'Delete Row'} Icon={<DeleteRow />} type={'row'} />,
                 },
                 {
                   default: true,
@@ -146,7 +146,9 @@ export default function Cell({
                 },
                 {
                   action: deleteColumn,
-                  label: <CustomDelete text={'Delete Column'} Icon={<DeleteColumn />} />,
+                  label: (
+                    <CustomDelete text={'Delete Column'} Icon={<DeleteColumn />} type={'column'} />
+                  ),
                 },
               ]}
               testId="cs-dropdown"
