@@ -42,3 +42,68 @@ pipelines:
                       - -c
                       - aws cloudfront create-invalidation --distribution-id E23EUEC84424OW --paths "/*"
                     command: sh
+      - sanity:
+          fetch_materials: true
+          keep_artifacts: false
+          clean_workspace: false
+          approval:
+            type: success
+            allow_only_on_success: false
+          secure_variables:
+            # Installation Environment
+            APP_HOST_URL: AES:P1fAxsT5nNpS6tlX2A7z+w==:xXoPi9jsz64blalG/hyktLqsj22jPlEMpVa1AQX/G6A=
+            # Add login credentials 
+            CONTENTSTACK_LOGIN: AES:Bfa3W776K+n8cYJBRhuk4Q==:NTn+w9mbEAiCzmZahSmqKBckueb818WwNmr5TNk5OsU=
+            CONTENTSTACK_PASSWORD: AES:LSqx0oBhLbJ5nP12dNbNdg==:2xMnYCGcQ0ngbqNr7xnKNKVMZe+AYB5lZy1v4IpoXwI=
+            # basic auth credentials
+            BASIC_AUTH_USERNAME: AES:RIUdhzLzXmDXK0Cn3xtSdw==:u/r21V145oTtL/YvwvCCAw==
+            BASIC_AUTH_PASSWORD: AES:XKJJ++HzAIlAOxIFr8RpSw==:tQZzK/eNQ26j0DKU/DFljkYcYKsq/Gau7Ou5Wlm3OtQ=
+            # Organization ID
+            CONTENTSTACK_ORGANIZATION_UID: AES:N5INizcJUg7z0dLijmQf/w==:k6f/cgFC1nBp1louqRCLbqIignUTO+TGoiVGNnBfjww=
+            # Add test stack api key
+            STACK_API_KEY: AES:6UddcTcE2+0xseq/Oyt3rA==:pUk5ajadK2br0H7UE2IPcl0nY1aLiKcatR0sskXSp0o=
+            # Add the app baseurl for the app you want to test (e.g https://stag-cloudinary-app.contentstackmarket.com/) based on specific environment
+            APP_BASE_URL: AES:XmNGj4Ct9M4qBUv+6XdpwA==:ampa3D/HSQKE1nyN8hzalOziD3ujavPUUIxXhxNZMTSr4j/W6n2XLRO5xW+/Ya6O
+            # Based on the env make sure to add proper credentials for the below variables
+            DEVELOPER_HUB_API: AES:CImVXmQqA2nRwSnPzkUdQQ==:YCmgbwHjAQaazeo2GTArlp76qcG1mgNkpV1PW3jN07f0ouVk5eOS3nmL/V2fF+nk
+            BASE_API_URL: AES:SMZdAnXuOgVZTflM3nTa4Q==:eAwRt8ePwws1tqQRd34MUxXnSqINWvOxPCKs7A70gCU=
+          jobs:
+            sanity:
+              elastic_profile_id: k8s-cicd-playwright
+              timeout: 0
+              artifacts:
+                - test:
+                    source: e2e-tests/playwright-report
+                    destination: playwright-report
+              tabs:
+                Report: playwright-report/playwright-report/index.html
+              tasks:
+                - exec:
+                    arguments:
+                      - -c
+                      - "git clone --single-branch --branch #{E2E_TESTS_REPO_BRANCH} #{E2E_TESTS_REPO_URL} e2e-tests"
+                    command: sh            
+                - exec:
+                    working_directory: e2e-tests
+                    arguments:
+                      - -c 
+                      - echo //npm.pkg.github.com/:_authToken=$GITHUB_PERSONAL_ACCESS_TOKEN > .npmrc
+                    command: sh
+                - exec:
+                    working_directory: e2e-tests
+                    arguments:
+                      - -c 
+                      - echo "@contentstack:registry=https://npm.pkg.github.com/contentstack" >> .npmrc
+                    command: sh
+                - exec:
+                    working_directory: e2e-tests
+                    arguments:
+                      - -c
+                      - npm install
+                    command: sh
+                - exec:
+                    working_directory: e2e-tests
+                    arguments:
+                      - -c
+                      - npm run test:chrome
+                    command: sh
