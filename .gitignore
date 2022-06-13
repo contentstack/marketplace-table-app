@@ -25,3 +25,5 @@ yarn-error.log*
 .npmrc
 .env
 .vercel
+data.json
+storageState.json

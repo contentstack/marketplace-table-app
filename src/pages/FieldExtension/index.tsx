@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
-import _, { isEmpty } from 'lodash';
+import { isEmpty, has, omit, map } from 'lodash';
 import ContentstackAppSdk from '@contentstack/app-sdk';
 import { Button, Dropdown, ToggleSwitch } from '@contentstack/venus-components';
 import strings from 'common/locale/en-us';
@@ -232,7 +232,7 @@ function reducer(tableState, action) {
         row[value] = labels[index];
       });
 
-      let columns = _.map(tableState.columns, (o) => _.omit(o, ['label']));
+      let columns = map(tableState.columns, (o) => omit(o, ['label']));
 
       return {
         ...tableState,
@@ -288,6 +288,12 @@ const FieldExtension: React.FC = () => {
 
   useEffect(() => {
     ContentstackAppSdk.init().then(async (appSdk) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.iframeRef = document.getElementById('root');
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.postRobot = appSdk.postRobot;
       const config = await appSdk.getConfig();
       const initialData = appSdk.location.CustomField?.field.getData();
 
@@ -298,7 +304,7 @@ const FieldExtension: React.FC = () => {
       ) {
         setTableData(initialData.tableState);
         setTable(true);
-        if (_.has(tableData, 'columns[0].label')) setHeaderRowChange(true);
+        if (has(tableData, 'columns[0].label')) setHeaderRowChange(true);
         dispatch({ type: 'initial_data', payload: tableData });
       }
 
@@ -398,9 +404,15 @@ const FieldExtension: React.FC = () => {
             </div>
           )}
           {!table && (
-            <Button className="add-product-btn" buttonType="control" onClick={() => handleClick()}>
-              {strings.ctaText}
-            </Button>
+            <span>
+              <Button
+                className="add-product-btn"
+                buttonType="control"
+                onClick={() => handleClick()}
+              >
+                {strings.ctaText}
+              </Button>
+            </span>
           )}
         </div>
       )}

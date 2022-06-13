@@ -10,6 +10,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': [0],
     '@typescript-eslint/no-unused-vars': [0],
     '@typescript-eslint/no-empty-interface': [0],
+    '@typescript-eslint/no-var-requires': [0],
     'prefer-const': [0],
     'no-case-declarations': [0],
     'prettier/prettier': [
