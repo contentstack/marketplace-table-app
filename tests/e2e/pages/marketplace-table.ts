@@ -13,7 +13,7 @@ export class MarketplaceTable {
   }
 
   // opens newly created entry
-  async openEntry(entryUID: string, apiKey: string, contentTypeUID: string) {
+  async openEntry(entryUID: string, apiKey: string | undefined, contentTypeUID: string) {
     await this.page.goto(`/#!/stack/${apiKey}/content-type/${contentTypeUID}/en-us/entry/${entryUID}/edit`);
     await this.page.waitForLoadState();
   }
@@ -22,7 +22,7 @@ export class MarketplaceTable {
     await this.page.waitForLoadState();
     await this.page.waitForSelector('.app-extension-component');
     const elementHandle = await this.page.$('.app-extension-component');
-    this.tableIframe = await elementHandle.contentFrame();
+    this.tableIframe = await elementHandle?.contentFrame();
     expect(await this.tableIframe.locator('.no-asset').innerText()).toContain('Table has not been added');
     await this.tableIframe.locator('.Button__icon').click();
   }
