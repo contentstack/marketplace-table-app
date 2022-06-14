@@ -47,7 +47,7 @@ export const getAuthToken = async (): Promise<string> => {
 export const createContentType = async (
   authToken: string,
   extension_uid: ExtensionUid[],
-  stackApiKey: string,
+  stackApiKey: string | undefined,
 ) => {
   const generateUid = `Test Content Type_${Math.floor(Math.random() * 10000)}`;
   let options = {
@@ -102,8 +102,7 @@ export const createContentType = async (
     },
   };
   try {
-    const result = await axios(options);
-    return result.data;
+    return (await axios(options)).data;
   } catch (error) {
     return error;
   }
@@ -113,7 +112,7 @@ export const createContentType = async (
 export const createEntry = async (
   authToken: string,
   contentTypeId: string,
-  stackApiKey: string,
+  stackApiKey: string | undefined,
 ) => {
   let generateTitle = `Test Entry ${Math.floor(Math.random() * 1000)}`;
   let options = {
@@ -142,7 +141,7 @@ export const createEntry = async (
 // get list of apps/extension IDs
 export const getExtensionFieldUid = async (
   authToken: string,
-  stackApiKey: string,
+  stackApiKey: string | undefined,
 ): Promise<ExtensionUid[]> => {
   let options = {
     url: `https://${process.env.BASE_API_URL}/v3/extensions`,
@@ -177,8 +176,7 @@ export const getInstalledApp = async (authToken: string, appId: string) => {
     },
   };
   try {
-    const result = await axios(options);
-    return result.data;
+    return (await axios(options)).data;
   } catch (error) {
     return error;
   }
@@ -196,8 +194,7 @@ export const uninstallApp = async (authToken: string, installId: string) => {
     },
   };
   try {
-    let result = await axios(options);
-    return result.data;
+    return (await axios(options)).data;
   } catch (error) {
     return error;
   }
@@ -250,13 +247,12 @@ export const createApp = async (authToken: string) => {
       authtoken: authToken,
     },
     data: {
-      name: `Dev tools App ${Math.floor(Math.random() * 1000)}`,
+      name: `Table App ${Math.floor(Math.random() * 1000)}`,
       target_type: 'stack',
     },
   };
   try {
-    let result = await axios(options);
-    return result.data.data.uid;
+    return (await axios(options)).data.data.uid;
   } catch (error) {
     return error;
   }
@@ -283,6 +279,7 @@ export const updateApp = async (authToken: string, appId: string) => {
                 path: '/field-extension',
                 signed: false,
                 enabled: true,
+                data_type: 'json',
               },
             ],
           },
@@ -293,15 +290,18 @@ export const updateApp = async (authToken: string, appId: string) => {
     },
   };
   try {
-    let result = await axios(options);
-    return result.data;
+    return (await axios(options)).data;
   } catch (error) {
     return error;
   }
 };
 
 // install app in stack & return installation id
-export const installApp = async (authToken: string, appId: string, stackApiKey: string) => {
+export const installApp = async (
+  authToken: string,
+  appId: string,
+  stackApiKey: string | undefined,
+) => {
   let options = {
     url: `https://${process.env.DEVELOPER_HUB_API}/apps/${appId}/install`,
     method: 'POST',
@@ -316,7 +316,7 @@ export const installApp = async (authToken: string, appId: string, stackApiKey: 
     },
   };
   try {
-    let result = await axios(options);
+    const result = await axios(options);
     return result.data.data.installation_uid;
   } catch (error) {
     return error;
