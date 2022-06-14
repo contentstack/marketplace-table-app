@@ -187,15 +187,20 @@
           width: auto;
 
           .importCSV {
-            margin-top: 5px;
+            margin-top: 10px;
             align-self: center;
             padding: 0rem;
-            width: 45px;
-            height: 45px;
             border-radius: 10px;
           }
 
-          .importCSV:hover {
+          .exportCSV {
+            margin-top: 20px;
+            align-self: center;
+            padding: 0rem;
+          }
+
+          .importCSV:hover,
+          .exportCSV:hover {
             background-color: rgb(236, 235, 235);
           }
         }
