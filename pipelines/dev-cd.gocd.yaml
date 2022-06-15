@@ -61,7 +61,7 @@ pipelines:
             # Organization ID
             CONTENTSTACK_ORGANIZATION_UID: AES:N5INizcJUg7z0dLijmQf/w==:k6f/cgFC1nBp1louqRCLbqIignUTO+TGoiVGNnBfjww=
             # Add test stack api key
-            STACK_API_KEY: AES:6UddcTcE2+0xseq/Oyt3rA==:pUk5ajadK2br0H7UE2IPcl0nY1aLiKcatR0sskXSp0o=
+            STACK_API_KEY: AES:KNECeclxOgaDpxNEKsLBmg==:9JhwVNIrg+1+KUGuo5C1H+Cmek9hxtf1r0ZUyo9qFYc=
             # Add the app baseurl for the app you want to test (e.g https://stag-cloudinary-app.contentstackmarket.com/) based on specific environment
             APP_BASE_URL: AES:XmNGj4Ct9M4qBUv+6XdpwA==:ampa3D/HSQKE1nyN8hzalOziD3ujavPUUIxXhxNZMTSr4j/W6n2XLRO5xW+/Ya6O
             # Based on the env make sure to add proper credentials for the below variables
