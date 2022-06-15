@@ -285,7 +285,7 @@ export const updateApp = async (authToken: string, appId: string) => {
           },
         ],
         signed: true,
-        base_url: `${process.env.APP_BASE_URL}/#`,
+        base_url: `${process.env.APP_BASE_URL}`,
       },
     },
   };
