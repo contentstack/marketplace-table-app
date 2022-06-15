@@ -15,11 +15,13 @@ import { ReactComponent as Search } from '../../assets/search.svg';
 import { ReactComponent as HoverSortIcon } from '../../assets/hoverSortIcon.svg';
 import { ReactComponent as SortedDescUpArrow } from '../../assets/sortDescUpArrow.svg';
 import { ReactComponent as SortedAscDownArrow } from '../../assets/sortAscDownArrow.svg';
-import { Tooltip, Button } from '@contentstack/venus-components';
+import { Tooltip, Button, cbModal } from '@contentstack/venus-components';
 import { ImportCSVModal } from 'components/csvImport/csvImportDialog';
 import { ExcelRenderer } from 'react-excel-renderer';
 import { ReactComponent as ImportCSV } from '../../assets/importCSV.svg';
 import strings from 'common/locale/en-us';
+import FullScreenPage from './fullScreenPage';
+import { ReactComponent as MaximizeScreen } from '../../assets/maximize-button.svg';
 
 const defaultColumn = {
   minWidth: 50,
@@ -64,6 +66,7 @@ export default function Table({
   dispatch: dataDispatch,
   skipReset,
   headerRowChange,
+  fullScreen,
 }) {
   const [hoveredColumnId, setColumnId] = useState('');
   const [displaySortIcon, setDisplay] = useState('notdisplayed');
@@ -222,6 +225,15 @@ export default function Table({
     return { columns: columns, data: data, skipReset: false };
   }
 
+  const openModal = () => {
+    cbModal({
+      component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
+      modalProps: {
+        size: 'customSize',
+      },
+    });
+  };
+
   return (
     <>
       <div
@@ -244,6 +256,11 @@ export default function Table({
             accept=".csv, text/csv"
             onChange={fileHandler}
           />
+          {!fullScreen && (
+            <Tooltip content={strings.maximizerText} position="auto" showArrow={true}>
+              <MaximizeScreen className="importCSV" type="button" onClick={openModal} />
+            </Tooltip>
+          )}
         </div>
         <div className="table-data">
           <div>

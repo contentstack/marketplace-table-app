@@ -42,7 +42,7 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
             <span className="radio-block">
               <div className="Radio-wrapper">
                 <Radio
-                  checked={true}
+                  defaultChecked
                   label={strings.appendDataText}
                   name="option"
                   value="AppendData"

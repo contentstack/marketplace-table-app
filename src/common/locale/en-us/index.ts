@@ -8,6 +8,8 @@ const strings = {
   replaceDataText: 'Replace Data',
   cancelText: 'Cancel',
   importTableText: 'Import Table',
+  fullScreenTitle: 'Table',
+  maximizerText: 'Full Screen',
 };
 
 export default strings;
