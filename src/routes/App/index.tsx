@@ -12,7 +12,7 @@ const App: React.FC = () => {
         <HashRouter>
           <Switch>
             <Route path="/field-extension">
-              <FieldExtension />
+              <FieldExtension fullScreen={false} />
             </Route>
           </Switch>
         </HashRouter>
