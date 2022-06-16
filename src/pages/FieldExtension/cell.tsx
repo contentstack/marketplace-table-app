@@ -33,8 +33,7 @@ export default function Cell({
   }, [value, dataDispatch, id, index]);
 
   const handleClick = (e) => {
-    let tableActions = document.getElementById('table-actions')!;
-    tableActions.style.display = 'block';
+    dataDispatch({ type: 'enable_table_action' });
   };
 
   const insertRowAbove = () => {
