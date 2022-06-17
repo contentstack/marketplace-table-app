@@ -1,34 +1,26 @@
 import React from 'react';
+import { TrackJS } from 'trackjs';
 
-interface MyProps {}
+interface MyProps {
+  children: React.ReactElement;
+}
 
 interface MyState {
   hasError: boolean;
 }
 
+TrackJS.install({
+  token: process.env.REACT_APP_TRACKER_TOKEN as string,
+  console: { display: false },
+});
+
 class ErrorBoundary extends React.Component<MyProps, MyState> {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI.
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    // You can also log the error to an error reporting service
-    // logErrorToMyService(error, errorInfo);
-    throw new Error(errorInfo);
+  componentDidCatch(error: any) {
+    // error tracker for error reporting service
+    TrackJS.track(error);
   }
 
   render() {
-    if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
-    }
-
     return this.props.children;
   }
 }
