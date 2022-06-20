@@ -10,7 +10,8 @@ interface MyState {
 }
 
 TrackJS.install({
-  token: process.env.REACT_APP_TRACKER_TOKEN as string,
+  token: `${process.env.REACT_APP_TRACKER_TOKEN}`,
+  application: process.env.REACT_APP_TRACKER_ENV,
   console: { display: false },
 });
 
