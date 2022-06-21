@@ -9,17 +9,23 @@ import {
   useFilters,
   useGlobalFilter,
 } from 'react-table';
+import { has } from 'lodash';
+import { useExportData } from 'react-table-plugins';
+import Papa from 'papaparse';
 import Cell from './cell';
 import Header from './header';
 import { ReactComponent as Search } from '../../assets/search.svg';
 import { ReactComponent as HoverSortIcon } from '../../assets/hoverSortIcon.svg';
 import { ReactComponent as SortedDescUpArrow } from '../../assets/sortDescUpArrow.svg';
 import { ReactComponent as SortedAscDownArrow } from '../../assets/sortAscDownArrow.svg';
-import { Tooltip, Button } from '@contentstack/venus-components';
+import { Tooltip, Button, cbModal } from '@contentstack/venus-components';
 import { ImportCSVModal } from 'components/csvImport/csvImportDialog';
 import { ExcelRenderer } from 'react-excel-renderer';
 import { ReactComponent as ImportCSV } from '../../assets/importCSV.svg';
+import { ReactComponent as ExportCSV } from '../../assets/exportCSV.svg';
 import strings from 'common/locale/en-us';
+import FullScreenPage from './fullScreenPage';
+import { ReactComponent as MaximizeScreen } from '../../assets/maximize-button.svg';
 
 const defaultColumn = {
   minWidth: 50,
@@ -64,6 +70,7 @@ export default function Table({
   dispatch: dataDispatch,
   skipReset,
   headerRowChange,
+  fullScreen,
 }) {
   const [hoveredColumnId, setColumnId] = useState('');
   const [displaySortIcon, setDisplay] = useState('notdisplayed');
@@ -114,6 +121,7 @@ export default function Table({
     visibleColumns,
     preGlobalFilteredRows,
     setGlobalFilter,
+    exportData,
   } = useTable(
     {
       columns,
@@ -124,12 +132,14 @@ export default function Table({
       autoResetFilters: !skipReset,
       autoResetRowState: !skipReset,
       sortTypes,
+      getExportFileBlob,
     },
     useFlexLayout,
     useResizeColumns,
     useFilters,
     useGlobalFilter,
     useSortBy,
+    useExportData,
   );
 
   function isTableResizing() {
@@ -222,6 +232,28 @@ export default function Table({
     return { columns: columns, data: data, skipReset: false };
   }
 
+  function getExportFileBlob({ columns, data, fileType }) {
+    if (fileType === 'csv') {
+      let csvString;
+      if (has(columns[0], 'label')) {
+        const headerNames = columns.map((col) => col.label);
+        csvString = Papa.unparse({ fields: headerNames, data });
+      } else {
+        csvString = Papa.unparse({ data });
+      }
+
+      return new Blob([csvString], { type: 'text/csv' });
+    }
+  }
+  const openModal = () => {
+    cbModal({
+      component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
+      modalProps: {
+        size: 'customSize',
+      },
+    });
+  };
+
   return (
     <>
       <div
@@ -244,6 +276,18 @@ export default function Table({
             accept=".csv, text/csv"
             onChange={fileHandler}
           />
+          <Tooltip content={strings.exportTableText} position="auto" showArrow={true}>
+            <ExportCSV
+              className="exportCSV"
+              type="button"
+              onClick={() => exportData('csv', true)}
+            />
+          </Tooltip>
+          {!fullScreen && (
+            <Tooltip content={strings.maximizerText} position="auto" showArrow={true}>
+              <MaximizeScreen className="importCSV" type="button" onClick={openModal} />
+            </Tooltip>
+          )}
         </div>
         <div className="table-data">
           <div>
