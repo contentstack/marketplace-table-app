@@ -9,6 +9,7 @@ import {
   installApp,
   deleteApp,
   getInstalledApp,
+  deleteContentType,
   uninstallApp,
 } from '../utils/pre-installation-setup';
 const jsonFile = require('jsonfile');
@@ -55,20 +56,23 @@ test('Table operations', async ({ context }) => {
   await MP.openEntry(appDetails.entryUID, stackKey, appDetails.contentTypeUID); // Navigate to entry page
   await MP.createTable(); // Create a new table
   await MP.addTableContent(); // Add content to the table
-  await MP.saveContent(); // Saves table content
+  // await MP.saveContent(); // Saves table content
   await MP.checkTableContent(); // Check table is properly saved
   await MP.addRowAbove(); // Add new row above operation
   await MP.addRowBelow(); // Add new row below operation
-  await MP.addColumnToRight(); // Add new column to right operation
   await MP.addColumnToLeft(); // Add new column to left operation
-  await MP.deleteRow(); // Delete row operation
-  await MP.deleteCol(); // Delete column operation
+  await MP.addColumnToRight(); // Add new column to right operation
+  // await MP.saveContent(); // Save table content
   await MP.searchValue(); // Search particular keyword
   await MP.clearSearch(); // Clear search filed
-  await MP.enableTableHeader(); // Create new a header for table
+  await MP.deleteCol(); // Delete column operation
+  await MP.deleteRow(); // Delete row operation
+  // await MP.enableTableHeader(); // Create new a header for table
   await MP.saveContent(); // Save table content
-  await MP.sortAscending(); // Sort ascending operation
-  await MP.sortDescending(); // Sort descending operation
+  // await entryPage.waitForTimeout(3000);
+  // await MP.sortAscending(); // Sort ascending operation
+  // await entryPage.waitForTimeout(3000);
+  // await MP.sortDescending(); // Sort descending operation
   await MP.deleteTable(); // Delete table from entry
 });
 
@@ -78,4 +82,5 @@ test.afterAll(async () => {
     installations.data[0].uid && (await uninstallApp(authToken, installations.data[0].uid));
   }
   await deleteApp(authToken, appDetails.appUID);
+  await deleteContentType(authToken, appDetails.contentTypeUID);
 });
