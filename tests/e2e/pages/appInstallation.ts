@@ -57,5 +57,6 @@ export class AppInstallation {
     await newTab.click('button:has-text("Install")');
     await newTab.waitForNavigation();
     await expect(newTab.url()).toContain('installed-apps');
+    await newTab.close();
   }
 }
