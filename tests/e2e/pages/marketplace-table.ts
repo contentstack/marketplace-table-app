@@ -37,8 +37,8 @@ export class MarketplaceTable {
   async cellDropdown(cellIndex: number) {
     await this.tableIframe.locator('.data-input').nth(cellIndex).click();
     await this.tableIframe
-      .locator('[data-test-id="cs-dropdown"]')
-      .nth(cellIndex + 1)
+      .locator('.cell-dropdown')
+      .nth(cellIndex)
       .click();
   }
 
@@ -88,7 +88,7 @@ export class MarketplaceTable {
   }
 
   async addColumnToRight() {
-    await this.cellDropdown(1); // cell selection
+    await this.cellDropdown(0); // cell selection
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Insert Column Right"').click(); // select operation
     await this.addContent(5); // no of content to be added
   }
@@ -96,11 +96,13 @@ export class MarketplaceTable {
   async deleteRow() {
     await this.cellDropdown(0); //cell selection
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Delete Row"').click(); // select operation
+    await this.tableIframe.waitForTimeout(2000);
   }
 
   async deleteCol() {
-    await this.cellDropdown(0);
+    await this.cellDropdown(0); //cell selection
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Delete Column"').click();
+    await this.tableIframe.waitForTimeout(2000);
   }
 
   // add table header
@@ -109,24 +111,22 @@ export class MarketplaceTable {
     await this.tableIframe
       .locator('.Dropdown__menu__list__item >> text="Insert Row Above"')
       .click();
-    const totalCell = await this.tableIframe.locator('.data-input').count();
-    let rowCount = 0;
-    for (let index = 0; index < totalCell; index++) {
+    for (let index = 0; index < 4; index++) {
       if (!(await this.tableIframe.locator('.data-input').nth(index).innerHTML())) {
         await this.tableIframe.locator('.data-input').nth(index).type(`Title ${index}`);
-        rowCount += 1;
+        await this.tableIframe.waitForTimeout(2000);
       }
     }
-    await this.tableIframe.locator('.Dropdown__header').nth(0).click();
+    await this.tableIframe.locator('#table-actions').click();
     await this.tableIframe.locator('.Dropdown__menu__list__item >> [data-test-id="cs-toggle-switch"]').click();
-    await this.tableIframe.locator('.Dropdown__header').nth(0).click();
+    await this.tableIframe.locator('#table-actions').click();
   }
 
   async searchValue() {
     await this.tableIframe.locator('.Search__input').click();
     await this.tableIframe.locator('.Search__input').fill('e');
     await this.tableIframe.waitForTimeout(3000);
-    await this.checkTableData(['d', 'e', 's', 'f']);
+    await this.checkTableData([ 's', 'x', 'd', 'e', 'f']);
   }
 
   async clearSearch() {
@@ -138,10 +138,10 @@ export class MarketplaceTable {
     await this.tableIframe.locator('.th-content').nth(0).click();
     await this.tableIframe.waitForTimeout(2000);
     await this.checkTableData([
-      'a', 'b', 'q', 'c',
-      'd', 'e', 's', 'f',
-      'g', 'h', 't', 'i',
-      'm', 'n', 'r', 'o',
+      'a', 'q', 'b', 'c',
+      'd', 's', 'e', 'f',
+      'g', 't', 'h', 'i',
+      'm', 'r', 'n', 'o',
     ]);
   }
 
@@ -149,10 +149,10 @@ export class MarketplaceTable {
     await this.tableIframe.locator('.th-content').nth(0).click();
     await this.tableIframe.waitForTimeout(2000);
     await this.checkTableData([
-      'm', 'n', 'r', 'o',
-      'g', 'h', 't', 'i',
-      'd', 'e', 's', 'f',
-      'a', 'b', 'q', 'c',
+      'm', 'r', 'n', 'o',
+      'g', 't', 'h', 'i',
+      'd', 's', 'e', 'f',
+      'a', 'q', 'b', 'c',
     ]);
   }
 
