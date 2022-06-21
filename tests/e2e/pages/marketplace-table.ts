@@ -96,13 +96,11 @@ export class MarketplaceTable {
   async deleteRow() {
     await this.cellDropdown(0); //cell selection
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Delete Row"').click(); // select operation
-    await this.tableIframe.waitForTimeout(2000);
   }
 
   async deleteCol() {
     await this.cellDropdown(0); //cell selection
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Delete Column"').click();
-    await this.tableIframe.waitForTimeout(2000);
   }
 
   // add table header
@@ -136,7 +134,6 @@ export class MarketplaceTable {
 
   async sortAscending() {
     await this.tableIframe.locator('.th-content').nth(0).click();
-    await this.tableIframe.waitForTimeout(2000);
     await this.checkTableData([
       'a', 'q', 'b', 'c',
       'd', 's', 'e', 'f',
@@ -147,7 +144,6 @@ export class MarketplaceTable {
 
   async sortDescending() {
     await this.tableIframe.locator('.th-content').nth(0).click();
-    await this.tableIframe.waitForTimeout(2000);
     await this.checkTableData([
       'm', 'r', 'n', 'o',
       'g', 't', 'h', 'i',
