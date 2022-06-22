@@ -44,5 +44,5 @@ pipelines:
                 - exec:
                     arguments:
                       - -c
-                      - "export CI='' && npm run build"
+                      - "export CI='' && export SKIP_PREFLIGHT_CHECK=true && npm run build"
                     command: sh
