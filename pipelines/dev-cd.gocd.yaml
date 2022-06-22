@@ -67,6 +67,8 @@ pipelines:
             # Based on the env make sure to add proper credentials for the below variables
             DEVELOPER_HUB_API: AES:CImVXmQqA2nRwSnPzkUdQQ==:YCmgbwHjAQaazeo2GTArlp76qcG1mgNkpV1PW3jN07f0ouVk5eOS3nmL/V2fF+nk
             BASE_API_URL: AES:SMZdAnXuOgVZTflM3nTa4Q==:eAwRt8ePwws1tqQRd34MUxXnSqINWvOxPCKs7A70gCU=
+            REACT_APP_TRACKER_TOKEN: AES:0fOA64XJhj0QBX3cAUnncg==:tOoJbUVrdmGnnSYaDqCC5+aSvugRO3P+FRSDZyPNUYaLzehffalSDeJ8+zuMe2t5
+            REACT_APP_TRACKER_ENV: AES:kHVev0a1X4GFv5wv86adjQ==:iFTGxjLNwVL4CQFP1/Qq3iuMX0nwRKgwAPhBfJEwzI8=
           jobs:
             sanity:
               elastic_profile_id: k8s-cicd-playwright
