@@ -288,6 +288,11 @@ function reducer(tableState, action) {
         ...tableState,
         tableActionEnabled: true,
       };
+    case 'drag_rows_update':
+      return {
+        ...tableState,
+        data: action.payload.data,
+      };
     default:
       return tableState;
   }

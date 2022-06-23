@@ -177,10 +177,28 @@
             width: fill-available;
             min-width: 150px;
 
-            .tooltip-wrapper {
-              width: inherit !important;
+            // .tooltip-wrapper {
+            //   width: inherit !important;
+            // }
+
+            .dragIcon {
+              position: absolute;
+              top: -7px;
+              z-index: 9;
+              left: 104px;
+              cursor: grabbing;
             }
           }
+        }
+
+        .rowDragIcon {
+          position: absolute;
+          z-index: 9;
+          left: -7px;
+          cursor: grabbing;
+          transform: rotate(90deg);
+          margin-top: 17px;
+          height: 12px;
         }
 
         .not-found {
