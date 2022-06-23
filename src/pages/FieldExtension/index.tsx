@@ -11,12 +11,15 @@ import { ReactComponent as HeaderRow } from '../../assets/headerRow.svg';
 import { ReactComponent as DeleteTable } from '../../assets/deleteTable.svg';
 import './styles.scss';
 import { useTableData } from './store';
+import useJsErrorTracker from 'hooks/useJsErrorTracker';
 
 export type fullScreenProps = {
   fullScreen: boolean;
 };
 
 const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen }) => {
+  // error tracking hook
+  const { addMetadata } = useJsErrorTracker();
   const [state, setState] = useState<{
     config: any;
     location: Partial<{ customField: { [key: string]: any }; [key: string]: any }>;
@@ -55,6 +58,13 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen }) => {
         }
         dispatch({ type: 'initial_data', payload: initialData.tableState });
       }
+      // setting metadata for js error tracker
+      addMetadata('stack', `${appSdk?.stack._data.name}`);
+      addMetadata('organization', `${appSdk?.currentUser.defaultOrganization}`);
+      addMetadata('api_key', `${appSdk?.stack._data.api_key}`);
+      addMetadata('user_email', `${appSdk?.stack._data.collaborators[0].email}`);
+      addMetadata('application_type', 'marketplace');
+      addMetadata('application_name', 'Table App');
 
       appSdk.location.CustomField?.frame.enableAutoResizing();
       setState({ config, appSdkInitialized: true, location: appSdk.location });

@@ -1,6 +1,6 @@
 {
   "name": "table-app",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "dependencies": {
     "@contentstack/app-sdk": "1.1.0",
@@ -37,6 +37,7 @@
     "react-table-plugins": "^1.3.2",
     "save-dev": "^0.0.1-security",
     "styled-components": "^5.3.5",
+    "trackjs": "^3.10.1",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
