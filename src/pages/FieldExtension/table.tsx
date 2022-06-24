@@ -258,7 +258,12 @@ export default function Table({
     <>
       <div
         {...getTableProps()}
-        className={clsx('table cs-extension-table', isTableResizing() && 'noselect')}
+        className={clsx(
+          'table cs-extension-table',
+          isTableResizing() && 'noselect',
+          fullScreen && 'fs-table-min-width',
+          !fullScreen && 'table-min-width',
+        )}
       >
         <div className="toolbar">
           <GlobalFilter
