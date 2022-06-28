@@ -49,7 +49,6 @@ const RowContainer = styled.div`
 
   .rowDragIcon {
     left: ${({ isDragging }) => (isDragging ? '-18px !important' : '-7px')};
-    left: ${({ isDroppable }) => (isDroppable ? '-18px !important' : '-7px')};
 
     path {
       fill: ${({ isDragging }) => isDragging && '#f5f5f5'};
@@ -61,8 +60,9 @@ const RowContainer = styled.div`
 `;
 
 const HeaderContainer = styled.div`
-  width: ${({ isDragging }) => isDragging && 'inherit'};
-
+  border: ${({ isDragging }) => isDragging && '2px solid #6C5CE7'};
+  height: ${({ isDragging, height }) => isDragging && height + 'px !important'};
+  opacity: ${({ isDragging }) => isDragging && '0.5'};
   svg {
     path {
       fill: ${({ isDragging }) => isDragging && '#f5f5f5'};
@@ -73,13 +73,22 @@ const HeaderContainer = styled.div`
   }
 `;
 
+const Clone = styled(HeaderContainer)`
+  + div {
+    display: none !important;
+  }
+`;
+
+const Wrapper = styled.div`
+  .tippy-wrapper {
+    width: ${({ width }) => width + 'px'};
+  }
+`;
+
 const getItemStyle = ({ isDragging, isDropAnimating }, draggableStyle) => ({
   ...draggableStyle,
   // some basic styles to make the items look a bit nicer
   userSelect: 'none',
-
-  // change background colour if dragging
-  // background: isDragging ? 'lightgreen' : 'grey',
 
   ...(!isDragging && {
     transform: 'translate(0,0)',
@@ -357,7 +366,7 @@ export default function Table({
           )}
         </div>
 
-        <div className="table-data">
+        <div className="table-data" id="tableRef">
           <div>
             {headerRowChange &&
               headerGroups &&
@@ -379,11 +388,14 @@ export default function Table({
                   }}
                 >
                   <Droppable droppableId="droppable" direction="horizontal">
-                    {(droppableProvided, snapshot) => (
-                      <div
+                    {(droppableProvided, droppableSnapshot) => (
+                      <Wrapper
                         {...headerGroup.getHeaderGroupProps()}
                         ref={droppableProvided.innerRef}
                         className="tr"
+                        width={
+                          (document.getElementsByClassName('td')[0] as HTMLElement)?.offsetWidth
+                        }
                       >
                         {headerGroup.headers.map((column, index) => (
                           <Draggable
@@ -397,51 +409,57 @@ export default function Table({
                                 <Tooltip
                                   content={headerTooltip(column)}
                                   position="top"
+                                  // disabled={true}
                                   showArrow={false}
                                 >
-                                  <HeaderContainer
-                                    className="tooltip-wrapper"
-                                    {...column.getHeaderProps(
-                                      column.getSortByToggleProps({ title: undefined }),
-                                    )}
-                                    onMouseEnter={(e) => showButton(e, column.id)}
-                                    onMouseLeave={(e) => hideButton(e)}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    ref={provided.innerRef}
-                                    isDragging={snapshot.isDragging}
-                                    style={{
-                                      ...getItemStyle(snapshot, provided.draggableProps.style),
-                                      // ...style
-                                    }}
-                                  >
-                                    <DragIcon className="dragIcon" />
-                                    {column.render('Header')}
-                                    <div className="sort-box">
-                                      {column.isSorted ? (
-                                        column.isSortedDesc ? (
-                                          <SortedDescUpArrow />
-                                        ) : (
-                                          <SortedAscDownArrow />
-                                        )
-                                      ) : (
-                                        <HoverSortIcon
-                                          className={
-                                            column.id == hoveredColumnId
-                                              ? displaySortIcon
-                                              : 'notdisplayed'
-                                          }
-                                        />
+                                  <>
+                                    <HeaderContainer
+                                      className="tooltip-wrapper"
+                                      {...column.getHeaderProps(
+                                        column.getSortByToggleProps({ title: undefined }),
                                       )}
-                                    </div>
-                                  </HeaderContainer>
+                                      onMouseEnter={(e) => showButton(e, column.id)}
+                                      onMouseLeave={(e) => hideButton(e)}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      ref={provided.innerRef}
+                                      isDragging={snapshot.isDragging}
+                                      height={document.getElementById('tableRef')?.clientHeight}
+                                      style={{
+                                        ...getItemStyle(snapshot, provided.draggableProps.style),
+                                      }}
+                                    >
+                                      <DragIcon className="dragIcon" />
+                                      {column.render('Header')}
+                                      <div className="sort-box">
+                                        {column.isSorted ? (
+                                          column.isSortedDesc ? (
+                                            <SortedDescUpArrow />
+                                          ) : (
+                                            <SortedAscDownArrow />
+                                          )
+                                        ) : (
+                                          <HoverSortIcon
+                                            className={
+                                              column.id == hoveredColumnId
+                                                ? displaySortIcon
+                                                : 'notdisplayed'
+                                            }
+                                          />
+                                        )}
+                                      </div>
+                                    </HeaderContainer>
+                                    {snapshot.isDragging && (
+                                      <Clone>{column.render('Header')}</Clone>
+                                    )}
+                                  </>
                                 </Tooltip>
                               );
                             }}
                           </Draggable>
                         ))}
                         {droppableProvided.placeholder}
-                      </div>
+                      </Wrapper>
                     )}
                   </Droppable>
                 </DragDropContext>
@@ -481,10 +499,9 @@ export default function Table({
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 isDragging={snapshot.isDragging}
-                                isDroppable={snapshot.isDroppable}
                               >
+                                <DragIcon className="rowDragIcon" />
                                 <div {...row.getRowProps()} className="tr">
-                                  <DragIcon className="rowDragIcon" />
                                   {row.cells.map((cell) => (
                                     <div {...cell.getCellProps()} className="td">
                                       {cell.render('Cell')}
