@@ -176,13 +176,31 @@
           }
 
           .tippy-wrapper {
-            width: fill-available;
-            min-width: 150px;
+            box-sizing: border-box;
+            flex: 150 0 auto;
+            min-width: 50px;
 
-            .tooltip-wrapper {
-              width: inherit !important;
+            .dragIcon {
+              position: absolute;
+              top: -7px;
+              z-index: 9;
+              left: 50%;
+              -webkit-transform: translateX(-50%);
+              -ms-transform: translateX(-50%);
+              transform: translateX(-50%);
+              cursor: grabbing;
             }
           }
+        }
+
+        .rowDragIcon {
+          position: absolute;
+          z-index: 9;
+          left: -7px;
+          cursor: grabbing;
+          transform: rotate(90deg);
+          margin-top: 17px;
+          height: 12px;
         }
 
         .not-found {
@@ -397,7 +415,9 @@ html {
   padding: 0 5px;
 
   //To-do: handle width
-  width: fill-available !important;
+  // width: fill-available !important;
+
+  width: 100% !important;
 }
 
 .th:hover {
