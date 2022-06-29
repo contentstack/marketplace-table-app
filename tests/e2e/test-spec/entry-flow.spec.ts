@@ -1,4 +1,5 @@
-import { test } from '@playwright/test';
+/* eslint-disable prettier/prettier */
+import { chromium, test } from '@playwright/test';
 import { MarketplaceTable } from '../pages/marketplace-table';
 import {
   createEntry,
@@ -15,6 +16,7 @@ import {
 const jsonFile = require('jsonfile');
 
 let authToken: string;
+let MP;
 const stackKey = process.env.STACK_API_KEY;
 
 let appDetails = {
@@ -30,6 +32,9 @@ test.beforeAll(async () => {
   const file = 'data.json'; // global filename
   const token = await jsonFile.readFileSync(file); // read authToken from global file
   authToken = token.authToken;
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  MP = new MarketplaceTable(page);
   try {
     if (authToken) {
       const appId: string = await createApp(authToken); //Create table app on developerHub
@@ -50,30 +55,109 @@ test.beforeAll(async () => {
   }
 });
 
-test('Table operations', async ({ context }) => {
-  const entryPage = await context.newPage();
-  const MP = new MarketplaceTable(entryPage);
-  await MP.openEntry(appDetails.entryUID, stackKey, appDetails.contentTypeUID); // Navigate to entry page
-  await MP.createTable(); // Create a new table
-  await MP.addTableContent(); // Add content to the table
-  // await MP.saveContent(); // Saves table content
-  await MP.checkTableContent(); // Check table is properly saved
-  await MP.addRowAbove(); // Add new row above operation
-  await MP.addRowBelow(); // Add new row below operation
-  await MP.addColumnToLeft(); // Add new column to left operation
-  await MP.addColumnToRight(); // Add new column to right operation
-  // await MP.saveContent(); // Save table content
-  await MP.searchValue(); // Search particular keyword
-  await MP.clearSearch(); // Clear search filed
-  await MP.deleteCol(); // Delete column operation
-  await MP.deleteRow(); // Delete row operation
-  // await MP.enableTableHeader(); // Create new a header for table
-  await MP.saveContent(); // Save table content
-  // await entryPage.waitForTimeout(3000);
-  // await MP.sortAscending(); // Sort ascending operation
-  // await entryPage.waitForTimeout(3000);
-  // await MP.sortDescending(); // Sort descending operation
-  await MP.deleteTable(); // Delete table from entry
+test.describe('Table app operations', () => {
+  test('Basic table operations', async () => {
+    await MP.openEntry(appDetails.entryUID, stackKey, appDetails.contentTypeUID); // Navigate to entry page
+    await MP.createTable(); // Create a new table
+    await MP.addTableContent(); // Add content to the table
+    await MP.saveContent(); // Saves table content
+    await MP.checkTableContent(); // Check table is properly saved
+  });
+
+  test('row operations', async () => {
+    await MP.addRowAbove(0); // Add new row above operation
+    await MP.checkTableData([
+      'j', 'k', 'l',
+      'a', 'b', 'c',
+      'd', 'e', 'f',
+      'g', 'h', 'i']) // check table content after adding new row
+
+    // Add new row below operation
+    await MP.addRowBelow(0);
+    await MP.checkTableData([
+      'j', 'k', 'l',
+      'm', 'n', 'o',
+      'a', 'b', 'c',
+      'd', 'e', 'f',
+      'g', 'h', 'i',
+    ]); // check table content add adding new row
+  });
+
+  test('column operations', async () => {
+    await MP.addColumnToLeft(0, false); // Add new column to left operation
+    await MP.checkTableData([
+      'p', 'j', 'k', 'l',
+      'q', 'm', 'n', 'o',
+      'r', 'a', 'b', 'c',
+      's', 'd', 'e', 'f',
+      't', 'g', 'h', 'i']) // check table content after adding new column
+
+    // Add new column to right operation
+    await MP.addColumnToRight(1, false);
+    await MP.checkTableData([
+      'p', 'j', 'u', 'k', 'l',
+      'q', 'm', 'v', 'n', 'o',
+      'r', 'a', 'w', 'b', 'c',
+      's', 'd', 'x', 'e', 'f',
+      't', 'g', 'y', 'h', 'i']) // check table content after adding new column
+  });
+
+  test('table search operation', async () => {
+    await MP.searchValue(); // Search particular keyword
+    await MP.checkTableData(['s', 'd', 'x', 'e', 'f']); // check search results
+    await MP.clearSearch(); // Clear search filed
+    await MP.saveContent(); // Save table content
+  });
+
+  test.skip('row column delete operation', async () => {
+    await MP.deleteCol(0); // Delete column operation
+    await MP.deleteRow(0); // Delete row operation
+  });
+  // await entryPage.waitForTimeout(2000); // Wait for
+
+  test.skip('Add Table header operation', async () => {
+    await MP.enableTableHeader(0); // Create new a header for table
+  });
+
+  test.skip('ascending and descending operation', async () => {
+    await MP.sortAscending(); // Sort ascending operation
+    await MP.checkTableData([
+      'a', 'q', 'b', 'c',
+      'd', 's', 'e', 'f',
+      'g', 't', 'h', 'i',
+      'm', 'r', 'n', 'o',
+    ]);
+    await MP.sortDescending(); // Sort descending operation
+    await MP.checkTableData([
+      'm', 'r', 'n', 'o',
+      'g', 't', 'h', 'i',
+      'd', 's', 'e', 'f',
+      'a', 'q', 'b', 'c',
+    ]);
+  });
+
+  test('import export table operations', async () => {
+    await MP.checkTableExport(); // check table export functionality
+    await MP.checkTableImport(); // Check import operation
+    await MP.checkTableData([
+      'a', 'b', 'c',
+      'd', 'e', 'f',
+      'g', 'h', 'i']); // check table content after importing csv file
+  });
+
+  test('fullscreen operations', async () => {
+    await MP.checkFullscreen(); // Check fullscreen functionality
+    await MP.checkTableData([
+      'z', 'A', 'B',
+      'a', 'b', 'c',
+      'd', 'e', 'f',
+      'g', 'h', 'i']);// Check table after minimizing the table modal
+    await MP.saveContent(); // Save table content
+  });
+
+  test.skip('Delete table operations', async () => {
+    await MP.deleteTable(); // Delete table from entry
+  });
 });
 
 test.afterAll(async () => {

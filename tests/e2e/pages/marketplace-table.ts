@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { expect, Page } from '@playwright/test';
+import path from 'path';
 
 export class MarketplaceTable {
   readonly page: Page;
@@ -55,16 +56,16 @@ export class MarketplaceTable {
     }
   }
 
-  async addRowAbove() {
-    await this.cellDropdown(0);
+  async addRowAbove(cell: number) {
+    await this.cellDropdown(cell);
     await this.tableIframe
       .locator('.Dropdown__menu__list__item >> text="Insert Row Above"')
       .click();
     await this.addContent(3);
   }
 
-  async addRowBelow() {
-    await this.cellDropdown(3);
+  async addRowBelow(cell: number) {
+    await this.cellDropdown(cell);
     await this.tableIframe
       .locator('.Dropdown__menu__list__item >> text="Insert Row Below"')
       .click();
@@ -74,38 +75,43 @@ export class MarketplaceTable {
   // add table content in beginning
   async addTableContent() {
     this.tableLength = await this.tableIframe.locator('.data-input').count();
-    this.tableContent = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    this.tableContent = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789'.split('');
     for (let index = 0; index < this.tableLength; index++) {
       await this.tableIframe.locator('.data-input').nth(index).type(this.tableContent[index]);
     }
     this.tableIndex = JSON.parse(JSON.stringify(this.tableLength));
   }
 
-  async addColumnToLeft() {
-    await this.cellDropdown(0); // cell selection
+  async addColumnToLeft(cell: number) {
+    await this.cellDropdown(cell); // cell selection
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Insert Column Left"').click();
+    await this.tableIframe.locator('.data-input').nth(cell).click();
     await this.addContent(5);
+    await this.tableIframe.waitForTimeout(2000);
+
   }
 
-  async addColumnToRight() {
-    await this.cellDropdown(0); // cell selection
+  async addColumnToRight(cell: number) {
+    await this.cellDropdown(cell); // cell selection
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Insert Column Right"').click(); // select operation
+    await this.tableIframe.locator('.data-input').nth(cell).click();
     await this.addContent(5); // no of content to be added
+    await this.tableIframe.waitForTimeout(2000);
   }
 
-  async deleteRow() {
-    await this.cellDropdown(0); //cell selection
+  async deleteRow(cell: number) {
+    await this.cellDropdown(cell); //cell selection
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Delete Row"').click(); // select operation
   }
 
-  async deleteCol() {
-    await this.cellDropdown(0); //cell selection
+  async deleteCol(cell: number) {
+    await this.cellDropdown(cell); //cell selection
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Delete Column"').click();
   }
 
   // add table header
-  async enableTableHeader() {
-    await this.cellDropdown(0);
+  async enableTableHeader(cell: number) {
+    await this.cellDropdown(cell);
     await this.tableIframe
       .locator('.Dropdown__menu__list__item >> text="Insert Row Above"')
       .click();
@@ -124,7 +130,7 @@ export class MarketplaceTable {
     await this.tableIframe.locator('.Search__input').click();
     await this.tableIframe.locator('.Search__input').fill('e');
     await this.tableIframe.waitForTimeout(3000);
-    await this.checkTableData([ 's', 'x', 'd', 'e', 'f']);
+    await this.checkTableData(['s', 'd', 'x', 'e', 'f']);
   }
 
   async clearSearch() {
@@ -170,5 +176,46 @@ export class MarketplaceTable {
     expect(
       await tableHandle.$$eval('.data-input', (nodes) => nodes.map((n) => n.innerHTML)),
     ).toEqual(tableContent);
+  }
+
+  async checkTableExport() {
+    const [exportedFile] = await Promise.all([
+      // It is important to call waitForEvent before click to set up waiting.
+      this.page.waitForEvent('download'),
+      // Triggers the download.
+      this.tableIframe.locator('.tippy-wrapper').nth(1).click(),
+    ]);
+    const downloadPath = await exportedFile.path();
+    await expect(downloadPath).toBeTruthy()
+  }
+
+  async checkTableImport() {
+    await this.tableIframe.locator('.tippy-wrapper').nth(0).click();
+    await this.tableIframe.locator('.Radio-wrapper >> text="Replace Data"').click();
+    // path for csv file that need to be uploaded
+    const importFile = path.join(process.cwd() + '/tests/e2e/downloads/tableExport.csv')
+    // file uploading event listener
+    const [fileChooser] = await Promise.all([
+      // It is important to call waitForEvent before click to set up waiting.
+      this.page.waitForEvent('filechooser'),
+      // Opens the file chooser.
+      this.tableIframe.locator('[data-test-id="cs-button"] >> text="Import Table"').click(),
+    ]);
+    await fileChooser.setFiles(importFile);
+    await this.tableIframe.waitForTimeout(2000);
+    // check table content after importing file
+    await this.checkTableData(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']);
+  }
+
+  async compressTable() {
+    await this.tableIframe.locator('[name="Compress"]').click();
+  }
+
+  async checkFullscreen() {
+    await this.tableIframe.locator('.tippy-wrapper').nth(2).click();
+    await this.checkTableData(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']);
+    await this.addRowAbove(9);
+    await this.compressTable();
+    await this.checkTableData(['z', 'A', 'B', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']);
   }
 }
