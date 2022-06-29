@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { chromium, test } from '@playwright/test';
 import { MarketplaceTable } from '../pages/marketplace-table';
 import {
@@ -65,16 +66,45 @@ test.describe('Table app operations', () => {
 
   test('row operations', async () => {
     await MP.addRowAbove(0); // Add new row above operation
-    await MP.addRowBelow(0); // Add new row below operation
+    await MP.checkTableData([
+      'j', 'k', 'l',
+      'a', 'b', 'c',
+      'd', 'e', 'f',
+      'g', 'h', 'i']) // check table content after adding new row
+
+    // Add new row below operation
+    await MP.addRowBelow(0);
+    await MP.checkTableData([
+      'j', 'k', 'l',
+      'm', 'n', 'o',
+      'a', 'b', 'c',
+      'd', 'e', 'f',
+      'g', 'h', 'i',
+    ]); // check table content add adding new row
   });
 
   test('column operations', async () => {
     await MP.addColumnToLeft(0, false); // Add new column to left operation
-    await MP.addColumnToRight(1, false); // Add new column to right operation
+    await MP.checkTableData([
+      'p', 'j', 'k', 'l',
+      'q', 'm', 'n', 'o',
+      'r', 'a', 'b', 'c',
+      's', 'd', 'e', 'f',
+      't', 'g', 'h', 'i']) // check table content after adding new column
+
+    // Add new column to right operation
+    await MP.addColumnToRight(1, false);
+    await MP.checkTableData([
+      'p', 'j', 'u', 'k', 'l',
+      'q', 'm', 'v', 'n', 'o',
+      'r', 'a', 'w', 'b', 'c',
+      's', 'd', 'x', 'e', 'f',
+      't', 'g', 'y', 'h', 'i']) // check table content after adding new column
   });
 
   test('table search operation', async () => {
     await MP.searchValue(); // Search particular keyword
+    await MP.checkTableData(['s', 'd', 'x', 'e', 'f']); // check search results
     await MP.clearSearch(); // Clear search filed
     await MP.saveContent(); // Save table content
   });
@@ -91,16 +121,37 @@ test.describe('Table app operations', () => {
 
   test.skip('ascending and descending operation', async () => {
     await MP.sortAscending(); // Sort ascending operation
+    await MP.checkTableData([
+      'a', 'q', 'b', 'c',
+      'd', 's', 'e', 'f',
+      'g', 't', 'h', 'i',
+      'm', 'r', 'n', 'o',
+    ]);
     await MP.sortDescending(); // Sort descending operation
+    await MP.checkTableData([
+      'm', 'r', 'n', 'o',
+      'g', 't', 'h', 'i',
+      'd', 's', 'e', 'f',
+      'a', 'q', 'b', 'c',
+    ]);
   });
 
   test('import export table operations', async () => {
     await MP.checkTableExport(); // check table export functionality
     await MP.checkTableImport(); // Check import operation
+    await MP.checkTableData([
+      'a', 'b', 'c',
+      'd', 'e', 'f',
+      'g', 'h', 'i']); // check table content after importing csv file
   });
 
   test('fullscreen operations', async () => {
     await MP.checkFullscreen(); // Check fullscreen functionality
+    await MP.checkTableData([
+      'z', 'A', 'B',
+      'a', 'b', 'c',
+      'd', 'e', 'f',
+      'g', 'h', 'i']);// Check table after minimizing the table modal
     await MP.saveContent(); // Save table content
   });
 
