@@ -19,6 +19,9 @@ pipelines:
           approval:
             type: success
             allow_only_on_success: false
+          secure_variables:
+            REACT_APP_TRACKER_TOKEN: AES:0fOA64XJhj0QBX3cAUnncg==:tOoJbUVrdmGnnSYaDqCC5+aSvugRO3P+FRSDZyPNUYaLzehffalSDeJ8+zuMe2t5
+            REACT_APP_TRACKER_ENV: AES:pkcVyzi1Mrd2ljsF6E43MA==:5Sxi0bzRj4yei3gOpkejoxCKCCpZjbdGW4KrnFK9z0Y=
           jobs:
             lint-test-build:
               elastic_profile_id: k8s-cicd-publish-npm-package
