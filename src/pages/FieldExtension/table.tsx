@@ -42,14 +42,13 @@ const defaultColumn = {
 
 const RowContainer = styled.div`
   cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
+  position: relative;
 
   .tr {
     border: ${({ isDragging }) => isDragging && '1px solid #6c5ce7'};
   }
 
   .rowDragIcon {
-    left: ${({ isDragging }) => (isDragging ? '-18px !important' : '-7px')};
-
     path {
       fill: ${({ isDragging }) => isDragging && '#f5f5f5'};
       &:first-child {
@@ -337,8 +336,8 @@ export default function Table({
         className={clsx(
           'table cs-extension-table',
           isTableResizing() && 'noselect',
-          fullScreen && 'fs-table-min-width',
-          !fullScreen && 'table-min-width',
+          // fullScreen && 'fs-table-min-width',
+          // !fullScreen && 'table-min-width',
         )}
       >
         <div className="toolbar">
@@ -399,7 +398,10 @@ export default function Table({
                         ref={droppableProvided.innerRef}
                         className="tr"
                         width={
-                          (document.getElementsByClassName('td')[0] as HTMLElement)?.offsetWidth
+                          !fullScreen
+                            ? (document.getElementsByClassName('td')[0] as HTMLElement)?.offsetWidth
+                            : (document.querySelectorAll('.fullscreen .td')[0] as HTMLElement)
+                                ?.offsetWidth
                         }
                       >
                         {headerGroup.headers.map((column, index) => (
