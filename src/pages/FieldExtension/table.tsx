@@ -385,6 +385,12 @@ export default function Table({
                       setColumnOrder(colOrder);
                     }
                   }}
+                  onDragEnd={() => {
+                    dataDispatch({
+                      type: 'drag_column_update',
+                      payload: { columns: headerGroups[0].headers, data: rows, skipReset: false },
+                    });
+                  }}
                 >
                   <Droppable droppableId="droppable" direction="horizontal">
                     {(droppableProvided, droppableSnapshot) => (
@@ -411,7 +417,7 @@ export default function Table({
                                 <Tooltip
                                   content={headerTooltip(column)}
                                   position="top"
-                                  // disabled={true}
+                                  disabled={snapshot.isDragging ? true : false}
                                   showArrow={false}
                                 >
                                   <>
