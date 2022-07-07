@@ -1,5 +1,5 @@
 import utils from '../../common/utils';
-import { map, omit } from 'lodash';
+import { map, omit, pick } from 'lodash';
 import { atom } from 'jotai';
 import { useReducerAtom } from 'jotai/utils';
 
@@ -292,6 +292,19 @@ function reducer(tableState, action) {
       return {
         ...tableState,
         data: action.payload.data,
+      };
+    case 'drag_column_update':
+      let cols = map(action.payload.columns, (o) =>
+        pick(o, ['id', 'label', 'accessor', 'dataType']),
+      );
+
+      cols.map((o) => {
+        o.accessor = o.id;
+      });
+
+      return {
+        ...tableState,
+        columns: cols,
       };
     default:
       return tableState;

@@ -333,12 +333,7 @@ export default function Table({
     <>
       <div
         {...getTableProps()}
-        className={clsx(
-          'table cs-extension-table',
-          isTableResizing() && 'noselect',
-          // fullScreen && 'fs-table-min-width',
-          // !fullScreen && 'table-min-width',
-        )}
+        className={clsx('table cs-extension-table', isTableResizing() && 'noselect')}
       >
         <div className="toolbar">
           <GlobalFilter
@@ -365,7 +360,7 @@ export default function Table({
           </Tooltip>
           {!fullScreen && (
             <Tooltip content={strings.maximizerText} position="auto" showArrow={true}>
-              <MaximizeScreen className="importCSV" type="button" onClick={openModal} />
+              <MaximizeScreen className="fullscreenBtn" type="button" onClick={openModal} />
             </Tooltip>
           )}
         </div>
@@ -389,6 +384,12 @@ export default function Table({
                       colOrder.splice(dIndex, 0, dragUpdateObj.draggableId);
                       setColumnOrder(colOrder);
                     }
+                  }}
+                  onDragEnd={() => {
+                    dataDispatch({
+                      type: 'drag_column_update',
+                      payload: { columns: headerGroups[0].headers, data: rows, skipReset: false },
+                    });
                   }}
                 >
                   <Droppable droppableId="droppable" direction="horizontal">
@@ -416,7 +417,7 @@ export default function Table({
                                 <Tooltip
                                   content={headerTooltip(column)}
                                   position="top"
-                                  // disabled={true}
+                                  disabled={snapshot.isDragging ? true : false}
                                   showArrow={false}
                                 >
                                   <>
