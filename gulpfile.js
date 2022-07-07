@@ -1,17 +1,16 @@
-const gulp = require("gulp");
-const inlinesource = require("gulp-inline-source");
-const replace = require("gulp-replace");
+import { task, src, dest } from 'gulp';
+import inlinesource from 'gulp-inline-source';
+import replace from 'gulp-replace';
 
-gulp.task("default", () => {
-	return gulp
-		.src("./build/*.html")
-		.pipe(replace('.js"></script>', '.js" inline></script>'))
-		.pipe(replace('rel="stylesheet">', 'rel="stylesheet" inline>'))
-		.pipe(
-			inlinesource({
-				compress: false,
-				ignore: ["png", "svg", "jpg"],
-			})
-		)
-		.pipe(gulp.dest("./build"));
+task('default', () => {
+  return src('./build/*.html')
+    .pipe(replace('.js"></script>', '.js" inline></script>'))
+    .pipe(replace('rel="stylesheet">', 'rel="stylesheet" inline>'))
+    .pipe(
+      inlinesource({
+        compress: false,
+        ignore: ['png', 'svg', 'jpg'],
+      }),
+    )
+    .pipe(dest('./build'));
 });
