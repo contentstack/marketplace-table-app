@@ -360,7 +360,7 @@ export default function Table({
           </Tooltip>
           {!fullScreen && (
             <Tooltip content={strings.maximizerText} position="auto" showArrow={true}>
-              <MaximizeScreen className="importCSV" type="button" onClick={openModal} />
+              <MaximizeScreen className="fullscreenBtn" type="button" onClick={openModal} />
             </Tooltip>
           )}
         </div>

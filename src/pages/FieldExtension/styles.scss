@@ -228,22 +228,9 @@
         }
 
         .importCSV:hover,
-        .exportCSV:hover {
+        .exportCSV:hover,
+        .fullscreenBtn:hover {
           background-color: rgb(236, 235, 235);
-        }
-
-        .fullscreen-button {
-          margin-top: 5px;
-          align-self: center;
-          padding: 0rem;
-          width: 16px;
-        }
-
-        .fullscreen-button:hover {
-          .exportCSV:hover,
-          .fullscreenBtn:hover {
-            background-color: rgb(236, 235, 235);
-          }
         }
       }
     }
