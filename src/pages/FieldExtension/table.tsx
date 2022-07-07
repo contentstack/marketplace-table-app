@@ -31,6 +31,9 @@ import strings from 'common/locale/en-us';
 import FullScreenPage from './fullScreenPage';
 import { ReactComponent as MaximizeScreen } from '../../assets/maximize-button.svg';
 import { ReactComponent as DragIcon } from '../../assets/dragIcon.svg';
+import { useAnalytics, useMixPanelGroups } from 'hooks/useMixPanel';
+
+const { trackEvent } = useAnalytics();
 
 const defaultColumn = {
   minWidth: 50,
@@ -115,6 +118,8 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
             className="Search__input"
             value={value || ''}
             onChange={(e) => {
+              //mixpanel event for search
+              // trackEvent('Search Triggered');
               setValue(e.target.value);
               onChange(e.target.value);
             }}
@@ -241,6 +246,8 @@ export default function Table({
   }
 
   const ImportCSVClicked = () => {
+    //mixpanel event
+    trackEvent('Import CSV Clicked');
     ImportCSVModal({
       onCancel: () => {
         // do nothing.
@@ -261,7 +268,6 @@ export default function Table({
 
   const fileHandler = (e) => {
     let fileObj = e.target.files[0];
-
     //just pass the fileObj as parameter
     ExcelRenderer(fileObj, (err, resp) => {
       if (err) {
@@ -307,6 +313,8 @@ export default function Table({
   }
 
   function getExportFileBlob({ columns, data, fileType }) {
+    // mixpanel event export
+    trackEvent('Export CSV Clicked');
     if (fileType === 'csv') {
       let csvString;
       if (has(columns[0], 'label')) {
@@ -321,6 +329,8 @@ export default function Table({
   }
 
   const openModal = () => {
+    // mixpanel event
+    trackEvent('Clicked on FullScreenPage');
     cbModal({
       component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
       modalProps: {

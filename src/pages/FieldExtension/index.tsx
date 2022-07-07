@@ -12,12 +12,13 @@ import { ReactComponent as DeleteTable } from '../../assets/deleteTable.svg';
 import './styles.scss';
 import { useTableData } from './store';
 import useJsErrorTracker from 'hooks/useJsErrorTracker';
+import { useAnalytics, useMixPanelGroups } from 'hooks/useMixPanel';
 
 export type fullScreenProps = {
   fullScreen: boolean;
 };
 
-const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen }) => {
+const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   // error tracking hook
   const { addMetadata } = useJsErrorTracker();
   const [state, setState] = useState<{
@@ -32,6 +33,8 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen }) => {
   const [table, setTable] = useState<boolean>();
   const [headerRowChange, setHeaderRowChange] = useState<boolean>(false);
   const [tableState, dispatch] = useTableData();
+  const { trackEvent, setGlobalData, setUserId } = useAnalytics();
+  const { setGroups } = useMixPanelGroups();
 
   useEffect(() => {
     ContentstackAppSdk.init().then(async (appSdk) => {
@@ -58,6 +61,16 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen }) => {
         }
         dispatch({ type: 'initial_data', payload: initialData.tableState });
       }
+      setUserId(appSdk.currentUser?.uid);
+      // setting metadata for mixpanel
+      setGlobalData({
+        Stack: appSdk?.stack._data.api_key,
+        Organization: appSdk?.currentUser?.defaultOrganization,
+        'Application Type': 'Marketplace',
+        'Application Name': 'Table App',
+        Location: '/field-extension',
+      });
+      setGroups('Application', ['Table App']);
       // setting metadata for js error tracker
       addMetadata('stack', `${appSdk?.stack._data.name}`);
       addMetadata('organization', `${appSdk?.currentUser.defaultOrganization}`);
@@ -83,11 +96,15 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen }) => {
   }, [tableState]);
 
   const handleClick = () => {
+    // mixpanel event
+    trackEvent('Clicked on Add Table');
     setTable(true);
     dispatch({ type: 'initial_table', payload: utils.makeData(3) });
   };
 
   const handleHeaderRowChange = () => {
+    // mixpanel event
+    trackEvent('Toggled Header Row');
     if (!headerRowChange) {
       dispatch({ type: 'add_row_header' });
     } else {
@@ -98,6 +115,8 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen }) => {
   };
 
   const deleteTable = () => {
+    // mixpanel event
+    trackEvent('Clicked on Delete Table');
     setTable(false);
     dispatch({ type: 'delete_table' });
   };
