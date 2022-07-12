@@ -68,7 +68,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
         Organization: appSdk?.currentUser?.defaultOrganization,
         'Application Type': 'Marketplace',
         'Application Name': 'Table App',
-        Location: '/field-extension',
+        'App Location': 'CustomField',
       });
       setGroups('Application', ['Table App']);
       // setting metadata for js error tracker

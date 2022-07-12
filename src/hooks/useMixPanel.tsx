@@ -5,7 +5,6 @@ interface SuperProps {
   Organization: string;
   'Application Type': string;
   'Application Name': string;
-  Location: string;
   [key: string]: string;
 }
 
