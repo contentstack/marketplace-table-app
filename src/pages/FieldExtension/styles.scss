@@ -1,8 +1,10 @@
-//.app {
 .field-extension {
   width: 100%;
+  overflow: auto;
   .field-extension-wrapper {
+    position: relative;
     padding: 14px 10px;
+    height: inherit;
 
     .search-wrapper {
       border: 1px solid #f5f5f5;
@@ -44,8 +46,8 @@
     }
 
     .table-action-fullscreen-placement {
-      top: 165px;
-      left: 61px;
+      top: 58px;
+      left: 10px;
     }
 
     .table-actions {
@@ -141,9 +143,14 @@
     .table {
       border: 1px solid #f5f5f5;
       border-radius: 8px 8px 0px 0px;
-      min-width: 454px !important;
 
       .table-data {
+        overflow: scroll;
+        padding-top: 7px;
+        margin-top: -7px;
+        padding-left: 6px;
+        margin-left: -6px;
+
         &.highlight-table {
           border: 3px solid #ffeeeb;
 
@@ -174,13 +181,31 @@
           }
 
           .tippy-wrapper {
-            width: fill-available;
-            min-width: 150px;
+            box-sizing: border-box;
+            flex: 150 0 auto;
+            min-width: 50px;
 
-            .tooltip-wrapper {
-              width: inherit !important;
+            .dragIcon {
+              position: absolute;
+              top: -7px;
+              z-index: 9;
+              left: 50%;
+              -webkit-transform: translateX(-50%);
+              -ms-transform: translateX(-50%);
+              transform: translateX(-50%);
+              cursor: grabbing;
             }
           }
+        }
+
+        .rowDragIcon {
+          position: absolute;
+          z-index: 9;
+          left: -19px;
+          cursor: grabbing;
+          transform: rotate(90deg);
+          margin-top: 17px;
+          height: 12px;
         }
 
         .not-found {
@@ -194,7 +219,8 @@
         width: auto;
 
         .importCSV,
-        .exportCSV {
+        .exportCSV,
+        .fullscreenBtn {
           margin-top: 10px;
           align-self: center;
           padding: 0rem;
@@ -202,19 +228,8 @@
         }
 
         .importCSV:hover,
-        .exportCSV:hover {
-          background-color: rgb(236, 235, 235);
-        }
-
-        .fullscreen-button {
-          margin-top: 5px;
-          align-self: center;
-          padding: 0rem;
-          width: 16px;
-          //border-radius: 10px;
-        }
-
-        .fullscreen-button:hover {
+        .exportCSV:hover,
+        .fullscreenBtn:hover {
           background-color: rgb(236, 235, 235);
         }
       }
@@ -231,7 +246,10 @@
     }
   }
 }
-//}
+
+.app-height {
+  max-height: calc(100vh - 160px);
+}
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 html {
@@ -387,9 +405,7 @@ html {
   cursor: pointer;
   background: #f5f5f5;
   padding: 0 5px;
-
-  //To-do: handle width
-  width: fill-available !important;
+  width: 100% !important;
 }
 
 .th:hover {

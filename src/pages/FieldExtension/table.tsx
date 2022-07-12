@@ -8,8 +8,12 @@ import {
   useAsyncDebounce,
   useFilters,
   useGlobalFilter,
+  useAbsoluteLayout,
+  useColumnOrder,
 } from 'react-table';
+import styled from 'styled-components';
 import { has } from 'lodash';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useExportData } from 'react-table-plugins';
 import Papa from 'papaparse';
 import Cell from './cell';
@@ -26,6 +30,7 @@ import { ReactComponent as ExportCSV } from '../../assets/exportCSV.svg';
 import strings from 'common/locale/en-us';
 import FullScreenPage from './fullScreenPage';
 import { ReactComponent as MaximizeScreen } from '../../assets/maximize-button.svg';
+import { ReactComponent as DragIcon } from '../../assets/dragIcon.svg';
 
 const defaultColumn = {
   minWidth: 50,
@@ -34,6 +39,63 @@ const defaultColumn = {
   Header: Header,
   sortType: 'alphanumericFalsyLast',
 };
+
+const RowContainer = styled.div`
+  cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
+  position: relative;
+
+  .tr {
+    border: ${({ isDragging }) => isDragging && '1px solid #6c5ce7'};
+  }
+
+  .rowDragIcon {
+    path {
+      fill: ${({ isDragging }) => isDragging && '#f5f5f5'};
+      &:first-child {
+        fill: ${({ isDragging }) => isDragging && '#6c5ce7'};
+      }
+    }
+  }
+`;
+
+const HeaderContainer = styled.div`
+  border: ${({ isDragging }) => isDragging && '2px solid #6C5CE7'};
+  height: ${({ isDragging, height }) => isDragging && height + 'px !important'};
+  opacity: ${({ isDragging }) => isDragging && '0.5'};
+  svg {
+    path {
+      fill: ${({ isDragging }) => isDragging && '#f5f5f5'};
+      &:first-child {
+        fill: ${({ isDragging }) => isDragging && '#6c5ce7'};
+      }
+    }
+  }
+`;
+
+const Clone = styled(HeaderContainer)`
+  + div {
+    display: none !important;
+  }
+`;
+
+const Wrapper = styled.div`
+  .tippy-wrapper {
+    width: ${({ width }) => width + 'px'};
+  }
+`;
+
+const getItemStyle = ({ isDragging, isDropAnimating }, draggableStyle) => ({
+  ...draggableStyle,
+  // some basic styles to make the items look a bit nicer
+  userSelect: 'none',
+
+  ...(!isDragging && {
+    transform: 'translate(0,0)',
+  }),
+  ...(isDropAnimating && { transitionDuration: '0.001s' }),
+
+  // styles we need to apply on draggables
+});
 
 function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) {
   const count = preGlobalFilteredRows.length;
@@ -76,6 +138,8 @@ export default function Table({
   const [displaySortIcon, setDisplay] = useState('notdisplayed');
   const [appendData, setAppendData] = useState(true);
   const fileElement = useRef(null);
+  const currentColOrder = React.useRef<any>();
+
   const showButton = (e, columnId) => {
     e.preventDefault();
     setDisplay('sort-displayed');
@@ -111,14 +175,22 @@ export default function Table({
     [],
   );
 
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return { columns: columns, data: result, skipReset: false };
+  };
+
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     rows,
     prepareRow,
+    setColumnOrder,
     state,
-    visibleColumns,
     preGlobalFilteredRows,
     setGlobalFilter,
     exportData,
@@ -135,6 +207,8 @@ export default function Table({
       getExportFileBlob,
     },
     useFlexLayout,
+    useColumnOrder,
+    // useAbsoluteLayout,
     useResizeColumns,
     useFilters,
     useGlobalFilter,
@@ -245,6 +319,7 @@ export default function Table({
       return new Blob([csvString], { type: 'text/csv' });
     }
   }
+
   const openModal = () => {
     cbModal({
       component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
@@ -285,69 +360,177 @@ export default function Table({
           </Tooltip>
           {!fullScreen && (
             <Tooltip content={strings.maximizerText} position="auto" showArrow={true}>
-              <MaximizeScreen className="importCSV" type="button" onClick={openModal} />
+              <MaximizeScreen className="fullscreenBtn" type="button" onClick={openModal} />
             </Tooltip>
           )}
         </div>
-        <div className="table-data">
+
+        <div className="table-data" id="tableRef">
           <div>
             {headerRowChange &&
               headerGroups &&
               headerGroups.map((headerGroup) => (
-                <div {...headerGroup.getHeaderGroupProps()} className="tr">
-                  {/* {headerGroup.headers.map((column) => column.render('Header'))} */}
-                  {headerGroup.headers.map((column) => (
-                    <Tooltip content={headerTooltip(column)} position="top" showArrow={false}>
-                      <div
-                        className="tooltip-wrapper"
-                        {...column.getHeaderProps(
-                          column.getSortByToggleProps({ title: undefined }),
-                        )}
-                        onMouseEnter={(e) => showButton(e, column.id)}
-                        onMouseLeave={(e) => hideButton(e)}
+                <DragDropContext
+                  onDragStart={() => {
+                    currentColOrder.current = headerGroup.headers.map((o) => o.id);
+                  }}
+                  onDragUpdate={(dragUpdateObj, b) => {
+                    const colOrder = [...currentColOrder.current];
+                    const sIndex = dragUpdateObj.source.index;
+                    const dIndex = dragUpdateObj.destination && dragUpdateObj.destination.index;
+
+                    if (typeof sIndex === 'number' && typeof dIndex === 'number') {
+                      colOrder.splice(sIndex, 1);
+                      colOrder.splice(dIndex, 0, dragUpdateObj.draggableId);
+                      setColumnOrder(colOrder);
+                    }
+                  }}
+                  onDragEnd={() => {
+                    dataDispatch({
+                      type: 'drag_column_update',
+                      payload: { columns: headerGroups[0].headers, data: rows, skipReset: false },
+                    });
+                  }}
+                >
+                  <Droppable droppableId="droppable" direction="horizontal">
+                    {(droppableProvided, droppableSnapshot) => (
+                      <Wrapper
+                        {...headerGroup.getHeaderGroupProps()}
+                        ref={droppableProvided.innerRef}
+                        className="tr"
+                        width={
+                          !fullScreen
+                            ? (document.getElementsByClassName('td')[0] as HTMLElement)?.offsetWidth
+                            : (document.querySelectorAll('.fullscreen .td')[0] as HTMLElement)
+                                ?.offsetWidth
+                        }
                       >
-                        {column.render('Header')}
-                        <div className="sort-box">
-                          {column.isSorted ? (
-                            column.isSortedDesc ? (
-                              <SortedDescUpArrow />
-                            ) : (
-                              <SortedAscDownArrow />
-                            )
-                          ) : (
-                            <HoverSortIcon
-                              className={
-                                column.id == hoveredColumnId ? displaySortIcon : 'notdisplayed'
-                              }
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </Tooltip>
-                  ))}
-                </div>
+                        {headerGroup.headers.map((column, index) => (
+                          <Draggable
+                            key={column.id}
+                            draggableId={column.id}
+                            index={index}
+                            isDragDisabled={!column.accessor}
+                          >
+                            {(provided, snapshot) => {
+                              return (
+                                <Tooltip
+                                  content={headerTooltip(column)}
+                                  position="top"
+                                  disabled={snapshot.isDragging ? true : false}
+                                  showArrow={false}
+                                >
+                                  <>
+                                    <HeaderContainer
+                                      className="tooltip-wrapper"
+                                      {...column.getHeaderProps(
+                                        column.getSortByToggleProps({ title: undefined }),
+                                      )}
+                                      onMouseEnter={(e) => showButton(e, column.id)}
+                                      onMouseLeave={(e) => hideButton(e)}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      ref={provided.innerRef}
+                                      isDragging={snapshot.isDragging}
+                                      height={document.getElementById('tableRef')?.clientHeight}
+                                      style={{
+                                        ...getItemStyle(snapshot, provided.draggableProps.style),
+                                      }}
+                                    >
+                                      <DragIcon className="dragIcon" />
+                                      {column.render('Header')}
+                                      <div className="sort-box">
+                                        {column.isSorted ? (
+                                          column.isSortedDesc ? (
+                                            <SortedDescUpArrow />
+                                          ) : (
+                                            <SortedAscDownArrow />
+                                          )
+                                        ) : (
+                                          <HoverSortIcon
+                                            className={
+                                              column.id == hoveredColumnId
+                                                ? displaySortIcon
+                                                : 'notdisplayed'
+                                            }
+                                          />
+                                        )}
+                                      </div>
+                                    </HeaderContainer>
+                                    {snapshot.isDragging && (
+                                      <Clone>{column.render('Header')}</Clone>
+                                    )}
+                                  </>
+                                </Tooltip>
+                              );
+                            }}
+                          </Draggable>
+                        ))}
+                        {droppableProvided.placeholder}
+                      </Wrapper>
+                    )}
+                  </Droppable>
+                </DragDropContext>
               ))}
           </div>
-
           <div {...getTableBodyProps()}>
-            {rows.length > 0 ? (
-              rows.map((row, i) => {
-                prepareRow(row);
-                return (
-                  <div {...row.getRowProps()} className="tr">
-                    {row.cells.map((cell) => (
-                      <div {...cell.getCellProps()} className="td">
-                        {cell.render('Cell')}
+            <DragDropContext
+              onDragEnd={(result) => {
+                if (!result.destination) {
+                  return;
+                }
+
+                if (result.destination.index === result.source.index) {
+                  return;
+                }
+
+                const records = reorder(data, result.source.index, result.destination.index);
+
+                dataDispatch({ type: 'drag_rows_update', payload: records });
+              }}
+            >
+              <Droppable droppableId="table">
+                {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {rows.length > 0 ? (
+                      rows.map((row, i) => {
+                        prepareRow(row);
+                        return (
+                          <Draggable
+                            key={row.id.toString()}
+                            draggableId={row.id.toString()}
+                            index={i}
+                          >
+                            {(provided, snapshot) => (
+                              <RowContainer
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                isDragging={snapshot.isDragging}
+                              >
+                                <DragIcon className="rowDragIcon" />
+                                <div {...row.getRowProps()} className="tr">
+                                  {row.cells.map((cell) => (
+                                    <div {...cell.getCellProps()} className="td">
+                                      {cell.render('Cell')}
+                                    </div>
+                                  ))}
+                                </div>
+                              </RowContainer>
+                            )}
+                          </Draggable>
+                        );
+                      })
+                    ) : (
+                      <div className="not-found">
+                        <span>No records found</span>
                       </div>
-                    ))}
+                    )}
+                    {provided.placeholder}
                   </div>
-                );
-              })
-            ) : (
-              <div className="not-found">
-                <span>No records found</span>
-              </div>
-            )}
+                )}
+              </Droppable>
+            </DragDropContext>
           </div>
         </div>
       </div>

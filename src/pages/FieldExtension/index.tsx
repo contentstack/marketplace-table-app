@@ -62,10 +62,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen }) => {
       addMetadata('stack', `${appSdk?.stack._data.name}`);
       addMetadata('organization', `${appSdk?.currentUser.defaultOrganization}`);
       addMetadata('api_key', `${appSdk?.stack._data.api_key}`);
-      addMetadata('user_email', `${appSdk?.stack._data.collaborators[0].email}`);
-      addMetadata('application_type', 'marketplace');
-      addMetadata('application_name', 'Table App');
-
+      addMetadata('user_uid', `${appSdk?.stack._data.collaborators[0].uid}`);
       appSdk.location.CustomField?.frame.enableAutoResizing();
       setState({ config, appSdkInitialized: true, location: appSdk.location });
     });
@@ -106,7 +103,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen }) => {
   };
 
   return (
-    <div className="field-extension">
+    <div className={'field-extension' + (fullScreen ? ' app-height' : '')}>
       {state.appSdkInitialized && (
         <div className="field-extension-wrapper">
           {table ? (

@@ -15,6 +15,9 @@ TrackJS.install({
   console: { display: false },
 });
 
+TrackJS.addMetadata('application_type', 'marketplace');
+TrackJS.addMetadata('application_name', 'Table App');
+
 class ErrorBoundary extends React.Component<MyProps, MyState> {
   componentDidCatch(error: any) {
     // error tracker for error reporting service
