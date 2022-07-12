@@ -1,7 +1,6 @@
 .field-extension {
   width: 100%;
   overflow: auto;
-  //max-height: calc(100vh - 170px);
   .field-extension-wrapper {
     position: relative;
     padding: 14px 10px;
@@ -249,7 +248,7 @@
 }
 
 .app-height {
-  height: inherit;
+  max-height: calc(100vh - 160px);
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -648,7 +647,6 @@ input[type='file']::file-selector-button:hover {
 
 .fullscreen {
   display: flex;
-  max-height: 553px;
   .layout-container {
     width: 100%;
     display: flex;

@@ -122,7 +122,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   };
 
   return (
-    <div className={'field-extension' + (fullScreen || !table ? ' app-height' : ' table-height')}>
+    <div className={'field-extension' + (fullScreen ? ' app-height' : '')}>
       {state.appSdkInitialized && (
         <div className="field-extension-wrapper">
           {table ? (
