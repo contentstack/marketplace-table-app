@@ -118,8 +118,6 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
             className="Search__input"
             value={value || ''}
             onChange={(e) => {
-              //mixpanel event for search
-              // trackEvent('Search Triggered');
               setValue(e.target.value);
               onChange(e.target.value);
             }}
@@ -246,8 +244,6 @@ export default function Table({
   }
 
   const ImportCSVClicked = () => {
-    //mixpanel event
-    trackEvent('Import CSV Clicked');
     ImportCSVModal({
       onCancel: () => {
         // do nothing.
@@ -313,8 +309,6 @@ export default function Table({
   }
 
   function getExportFileBlob({ columns, data, fileType }) {
-    // mixpanel event export
-    trackEvent('Export CSV Clicked');
     if (fileType === 'csv') {
       let csvString;
       if (has(columns[0], 'label')) {
@@ -323,14 +317,15 @@ export default function Table({
       } else {
         csvString = Papa.unparse({ data });
       }
-
+      // mixpanel event export
+      trackEvent('Export CSV Completed');
       return new Blob([csvString], { type: 'text/csv' });
     }
   }
 
   const openModal = () => {
     // mixpanel event
-    trackEvent('Clicked on FullScreenPage');
+    trackEvent('Clicked on FullScreen Mode');
     cbModal({
       component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
       modalProps: {
@@ -400,6 +395,8 @@ export default function Table({
                       type: 'drag_column_update',
                       payload: { columns: headerGroups[0].headers, data: rows, skipReset: false },
                     });
+                    // mixpanel event
+                    trackEvent('Column Order Changed');
                   }}
                 >
                   <Droppable droppableId="droppable" direction="horizontal">
@@ -497,6 +494,8 @@ export default function Table({
                 const records = reorder(data, result.source.index, result.destination.index);
 
                 dataDispatch({ type: 'drag_rows_update', payload: records });
+                // mixpanel event
+                trackEvent('Row Order Changed');
               }}
             >
               <Droppable droppableId="table">

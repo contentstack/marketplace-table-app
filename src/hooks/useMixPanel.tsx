@@ -12,7 +12,7 @@ interface SuperProps {
 const { REACT_APP_MIXPANEL_TOKEN } = process.env;
 
 mixpanel.init(REACT_APP_MIXPANEL_TOKEN, {
-  debug: true,
+  debug: false,
   ignore_dnt: true,
 });
 

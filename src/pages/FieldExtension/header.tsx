@@ -10,7 +10,6 @@ import MultiIcon from '../../assets/Multi';
 import HashIcon from '../../assets/Hash';
 import { ReactComponent as PlusIcon } from '../../assets/plusIcon.svg';
 import utils from '../../common/utils/index';
-import { useAnalytics } from 'hooks/useMixPanel';
 
 export default function Header({
   column: { id, created, label, dataType, getResizerProps, getHeaderProps },
@@ -29,12 +28,9 @@ export default function Header({
   const [typeReferenceElement, setTypeReferenceElement] = useState<any>(null);
   const [typePopperElement, setTypePopperElement] = useState<any>(null);
   const [showType, setShowType] = useState(false);
-  const { trackEvent } = useAnalytics();
   const buttons = [
     {
       onClick: (e) => {
-        // mixpanel event
-        trackEvent('Sorting ascending');
         dataDispatch({ type: 'update_column_header', columnId: id, label: header });
         setSortBy([{ id: id, desc: false }]);
         setExpanded(false);
@@ -44,8 +40,6 @@ export default function Header({
     },
     {
       onClick: (e) => {
-        //mixpanel event
-        trackEvent('Sorting ascending');
         dataDispatch({ type: 'update_column_header', columnId: id, label: header });
         setSortBy([{ id: id, desc: true }]);
         setExpanded(false);
@@ -246,7 +240,6 @@ export default function Header({
               }}
             >
               {buttons.map((button) => (
-                // mixpanel event sorting
                 <button type="button" className="sort-button" onMouseDown={button.onClick}>
                   <span className="svg-icon svg-text icon-margin">{button.icon}</span>
                   {button.label}
