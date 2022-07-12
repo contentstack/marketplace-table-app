@@ -22,6 +22,7 @@ pipelines:
           secure_variables:
             REACT_APP_TRACKER_TOKEN: AES:0fOA64XJhj0QBX3cAUnncg==:tOoJbUVrdmGnnSYaDqCC5+aSvugRO3P+FRSDZyPNUYaLzehffalSDeJ8+zuMe2t5
             REACT_APP_TRACKER_ENV: AES:pkcVyzi1Mrd2ljsF6E43MA==:5Sxi0bzRj4yei3gOpkejoxCKCCpZjbdGW4KrnFK9z0Y=
+            REACT_APP_MIXPANEL_TOKEN: AES:wAYgcwxAIxuHB5UKDZbSTw==:uLrUaVh4ydn/U9m29dX2NVLdYt480MxlZIpY8aNNwFMxZlcXbBPqZK33Qok/2tME
           jobs:
             lint-test-build:
               elastic_profile_id: k8s-cicd-publish-npm-package
