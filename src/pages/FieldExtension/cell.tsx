@@ -7,6 +7,7 @@ import { ReactComponent as DeleteRow } from '../../assets/deleteRow.svg';
 import { ReactComponent as InsertColumnLeft } from '../../assets/insertColumnLeft.svg';
 import { ReactComponent as InsertColumnRight } from '../../assets/insertColumnRight.svg';
 import { ReactComponent as DeleteColumn } from '../../assets/deleteColumn.svg';
+import { useAnalytics } from 'hooks/useMixPanel';
 import CustomDelete from './customDelete';
 
 export default function Cell({
@@ -21,6 +22,7 @@ export default function Cell({
   };
   const [showAdd, setShowAdd] = useState(false);
   const [addSelectRef, setAddSelectRef] = useState<any>(null);
+  const { trackEvent } = useAnalytics();
 
   useEffect(() => {
     setValue({ value: initialValue, update: true });
@@ -38,26 +40,38 @@ export default function Cell({
 
   const insertRowAbove = () => {
     dataDispatch({ type: 'insert_row_above', rowIndex: index });
+    //mixpanel event
+    trackEvent('Insert row above');
   };
 
   const insertRowBelow = () => {
     dataDispatch({ type: 'insert_row_below', rowIndex: index });
+    //mixpanel event
+    trackEvent('Insert row below');
   };
 
   const deleteRow = () => {
     dataDispatch({ type: 'delete_row', rowIndex: index });
+    //mixpanel event
+    trackEvent('Delete row');
   };
 
   const insertColumnLeft = () => {
     dataDispatch({ type: 'insert_column_left', columnId: id });
+    //mixpanel event
+    trackEvent('Insert column left');
   };
 
   const insertColumnRight = () => {
     dataDispatch({ type: 'insert_column_right', columnId: id });
+    //mixpanel event
+    trackEvent('Insert column right');
   };
 
   const deleteColumn = () => {
     dataDispatch({ type: 'delete_column', columnId: id });
+    //mixpanel event
+    trackEvent('Delete column');
   };
 
   useEffect(() => {

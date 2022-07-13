@@ -4,12 +4,14 @@ import '@contentstack/venus-components/build/main.css';
 import './styles.scss';
 import { Icon } from '@contentstack/venus-components';
 import strings from 'common/locale/en-us';
+import { useAnalytics } from 'hooks/useMixPanel';
 
 export type fullScreenProps = {
   closeModal: () => void;
 };
 
 const FullScreenPage: React.FC<fullScreenProps> = ({ closeModal }) => {
+  const { trackEvent } = useAnalytics();
   return (
     <div
       style={{
@@ -28,6 +30,8 @@ const FullScreenPage: React.FC<fullScreenProps> = ({ closeModal }) => {
           hoverType="secondary"
           style={{ marginRight: '30px', marginLeft: 'auto', cursor: 'pointer' }}
           onClick={() => {
+            // mixpanel event
+            trackEvent('Closed Full Screen Mode');
             closeModal();
           }}
         />
