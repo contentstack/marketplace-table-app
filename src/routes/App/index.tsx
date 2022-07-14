@@ -11,9 +11,7 @@ const App: React.FC = () => {
       <ErrorBoundary>
         <HashRouter>
           <Switch>
-            <Route path="/field-extension">
-              <FieldExtension fullScreen={false} />
-            </Route>
+            <Route path="/field-extension" component={FieldExtension} />
           </Switch>
         </HashRouter>
       </ErrorBoundary>

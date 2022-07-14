@@ -9,6 +9,7 @@ import {
 } from '@contentstack/venus-components';
 import './styles.scss';
 import strings from 'common/locale/en-us';
+import { useAnalytics } from 'hooks/useMixPanel';
 import { ReactComponent as ImportTableIcon } from '../../assets/importTableIcon.svg';
 
 export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) => void }) => {
@@ -19,19 +20,28 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
   return cbModal({
     component: (modalProps) => {
       const [appendData, setAppendData] = useState(true);
+      const { trackEvent } = useAnalytics();
 
       const onCancel = () => {
         modalProps.closeModal();
         props.onCancel();
+        //mixpanel event
+        trackEvent('Import CSV Modal Closed');
       };
 
       const onSave = () => {
         modalProps.closeModal();
         props.onSave(appendData);
+        //mixpanel event
+        trackEvent('Import CSV Completed');
       };
 
       const handleToggleAppendData = (value) => {
         setAppendData(value);
+        //mixpanel event
+        trackEvent('Import CSV Radio Option Changed', {
+          'Selected Option': value === true ? 'Append Data' : 'Replace Data',
+        });
       };
 
       return (
