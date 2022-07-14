@@ -132,6 +132,7 @@ export default function Table({
   dispatch: dataDispatch,
   skipReset,
   headerRowChange,
+  headerColumnChange,
   fullScreen,
 }) {
   const [hoveredColumnId, setColumnId] = useState('');
@@ -405,19 +406,13 @@ export default function Table({
                                 ?.offsetWidth
                         }
                       >
-                        {headerGroup.headers.map((column, index) => (
-                          <Draggable
-                            key={column.id}
-                            draggableId={column.id}
-                            index={index}
-                            isDragDisabled={!column.accessor}
-                          >
-                            {(provided, snapshot) => {
-                              return (
+                        {headerGroup.headers.map((column, index) => {
+                          if (headerColumnChange && index === 0) {
+                            return (
+                              <div key={column.id}>
                                 <Tooltip
                                   content={headerTooltip(column)}
                                   position="top"
-                                  disabled={snapshot.isDragging ? true : false}
                                   showArrow={false}
                                 >
                                   <>
@@ -428,16 +423,9 @@ export default function Table({
                                       )}
                                       onMouseEnter={(e) => showButton(e, column.id)}
                                       onMouseLeave={(e) => hideButton(e)}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      ref={provided.innerRef}
-                                      isDragging={snapshot.isDragging}
                                       height={document.getElementById('tableRef')?.clientHeight}
-                                      style={{
-                                        ...getItemStyle(snapshot, provided.draggableProps.style),
-                                      }}
+                                      style={{ width: 'inherit' }}
                                     >
-                                      <DragIcon className="dragIcon" />
                                       {column.render('Header')}
                                       <div className="sort-box">
                                         {column.isSorted ? (
@@ -457,15 +445,74 @@ export default function Table({
                                         )}
                                       </div>
                                     </HeaderContainer>
-                                    {snapshot.isDragging && (
-                                      <Clone>{column.render('Header')}</Clone>
-                                    )}
                                   </>
                                 </Tooltip>
-                              );
-                            }}
-                          </Draggable>
-                        ))}
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <Draggable
+                              key={column.id}
+                              draggableId={column.id}
+                              index={index}
+                              isDragDisabled={!column.accessor}
+                            >
+                              {(provided, snapshot) => {
+                                return (
+                                  <Tooltip
+                                    content={headerTooltip(column)}
+                                    position="top"
+                                    disabled={snapshot.isDragging ? true : false}
+                                    showArrow={false}
+                                  >
+                                    <>
+                                      <HeaderContainer
+                                        className="tooltip-wrapper"
+                                        {...column.getHeaderProps(
+                                          column.getSortByToggleProps({ title: undefined }),
+                                        )}
+                                        onMouseEnter={(e) => showButton(e, column.id)}
+                                        onMouseLeave={(e) => hideButton(e)}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        ref={provided.innerRef}
+                                        isDragging={snapshot.isDragging}
+                                        height={document.getElementById('tableRef')?.clientHeight}
+                                        style={{
+                                          ...getItemStyle(snapshot, provided.draggableProps.style),
+                                        }}
+                                      >
+                                        <DragIcon className="dragIcon" />
+                                        {column.render('Header')}
+                                        <div className="sort-box">
+                                          {column.isSorted ? (
+                                            column.isSortedDesc ? (
+                                              <SortedDescUpArrow />
+                                            ) : (
+                                              <SortedAscDownArrow />
+                                            )
+                                          ) : (
+                                            <HoverSortIcon
+                                              className={
+                                                column.id == hoveredColumnId
+                                                  ? displaySortIcon
+                                                  : 'notdisplayed'
+                                              }
+                                            />
+                                          )}
+                                        </div>
+                                      </HeaderContainer>
+                                      {snapshot.isDragging && (
+                                        <Clone>{column.render('Header')}</Clone>
+                                      )}
+                                    </>
+                                  </Tooltip>
+                                );
+                              }}
+                            </Draggable>
+                          );
+                        })}
                         {droppableProvided.placeholder}
                       </Wrapper>
                     )}
@@ -510,11 +557,20 @@ export default function Table({
                               >
                                 <DragIcon className="rowDragIcon" />
                                 <div {...row.getRowProps()} className="tr">
-                                  {row.cells.map((cell) => (
-                                    <div {...cell.getCellProps()} className="td">
-                                      {cell.render('Cell')}
-                                    </div>
-                                  ))}
+                                  {row.cells.map((cell, j) => {
+                                    if (headerColumnChange && j === 0) {
+                                      return (
+                                        <div {...cell.getCellProps()} className={'td cell-header'}>
+                                          {cell.render('Cell', { headerColumnChange })}
+                                        </div>
+                                      );
+                                    }
+                                    return (
+                                      <div {...cell.getCellProps()} className={'td'}>
+                                        {cell.render('Cell')}
+                                      </div>
+                                    );
+                                  })}
                                 </div>
                               </RowContainer>
                             )}
