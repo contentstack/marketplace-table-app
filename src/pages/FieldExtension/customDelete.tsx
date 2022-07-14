@@ -65,7 +65,7 @@ const CustomDelete: React.FC<IconProps> = ({ text, Icon, type }) => {
       }}
     >
       {Icon}
-      <div className="label option">{text}</div>
+      <div className="label table-option">{text}</div>
     </div>
   );
 };

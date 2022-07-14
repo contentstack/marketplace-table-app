@@ -63,7 +63,6 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
         }
         if (initialData.tableState.headerColumnAdded) {
           setHeaderColumnChange(true);
-          initialData.tableState.headerColumnAdded = true;
         } else {
           setHeaderColumnChange(false);
           initialData.tableState.headerColumnAdded = false;
@@ -176,7 +175,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
                         label: (
                           <>
                             <HeaderRow />
-                            <div className="option">Header Row</div>
+                            <div className="table-option">Header Row</div>
                             <div className="toggle">
                               <ToggleSwitch
                                 name="headerRowChange"
@@ -194,7 +193,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
                         label: (
                           <>
                             <HeaderColumn />
-                            <div className="option">Header Column</div>
+                            <div className="table-option">Header Column</div>
                             <div className="toggle">
                               <ToggleSwitch
                                 name="headerColumnChange"
