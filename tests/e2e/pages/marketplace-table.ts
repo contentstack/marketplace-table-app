@@ -84,11 +84,12 @@ export class MarketplaceTable {
 
   async addColumnToLeft(cell: number) {
     await this.cellDropdown(cell); // cell selection
+    // await this.tableIframe.waitForTimeout(2000);
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Insert Column Left"').click();
+    // await this.tableIframe.waitForTimeout(2000);
     await this.tableIframe.locator('.data-input').nth(cell).click();
     await this.addContent(5);
     await this.tableIframe.waitForTimeout(2000);
-
   }
 
   async addColumnToRight(cell: number) {
@@ -130,7 +131,6 @@ export class MarketplaceTable {
     await this.tableIframe.locator('.Search__input').click();
     await this.tableIframe.locator('.Search__input').fill('e');
     await this.tableIframe.waitForTimeout(3000);
-    await this.checkTableData(['s', 'd', 'x', 'e', 'f']);
   }
 
   async clearSearch() {

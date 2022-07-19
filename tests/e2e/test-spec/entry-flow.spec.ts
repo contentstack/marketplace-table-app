@@ -84,27 +84,29 @@ test.describe('Table app operations', () => {
   });
 
   test('column operations', async () => {
-    await MP.addColumnToLeft(0, false); // Add new column to left operation
-    await MP.checkTableData([
-      'p', 'j', 'k', 'l',
-      'q', 'm', 'n', 'o',
-      'r', 'a', 'b', 'c',
-      's', 'd', 'e', 'f',
-      't', 'g', 'h', 'i']) // check table content after adding new column
 
     // Add new column to right operation
-    await MP.addColumnToRight(1, false);
+    await MP.addColumnToRight(0, false);
     await MP.checkTableData([
-      'p', 'j', 'u', 'k', 'l',
-      'q', 'm', 'v', 'n', 'o',
-      'r', 'a', 'w', 'b', 'c',
-      's', 'd', 'x', 'e', 'f',
-      't', 'g', 'y', 'h', 'i']) // check table content after adding new column
+      'j', 'p', 'k', 'l',
+      'm', 'q', 'n', 'o',
+      'a', 'r', 'b', 'c',
+      'd', 's', 'e', 'f',
+      'g', 't', 'h', 'i']) // check table content after adding new column
+    await MP.addColumnToLeft(1, false); // Add new column to left operation
+    await MP.checkTableData([
+      'j', 'u', 'p', 'k', 'l',
+      'm', 'v', 'q', 'n', 'o',
+      'a', 'w', 'r', 'b', 'c',
+      'd', 'x', 's', 'e', 'f',
+      'g', 'y', 't', 'h', 'i']) // check table content after adding new column
+
+      
   });
 
   test('table search operation', async () => {
     await MP.searchValue(); // Search particular keyword
-    await MP.checkTableData(['s', 'd', 'x', 'e', 'f']); // check search results
+    await MP.checkTableData(['d', 'x', 's', 'e', 'f']); // check search results
     await MP.clearSearch(); // Clear search filed
     await MP.saveContent(); // Save table content
   });
