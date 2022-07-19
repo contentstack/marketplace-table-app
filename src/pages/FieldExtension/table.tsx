@@ -83,7 +83,7 @@ const Clone = styled(HeaderContainer)`
 
 const Wrapper = styled.div`
   .tippy-wrapper {
-    width: ${({ width }) => width + 'px'};
+    width: ${({ width, isDraggingOver }) => (isDraggingOver ? width + 'px' : '150px')};
   }
 `;
 
@@ -151,7 +151,7 @@ export default function Table({
       : (document.querySelectorAll('.fullscreen .td')[0] as HTMLElement)?.offsetWidth;
 
     setWidth(widthState);
-  }, []);
+  });
 
   const showButton = (e, columnId) => {
     e.preventDefault();
@@ -384,8 +384,9 @@ export default function Table({
           <div>
             {headerRowChange &&
               headerGroups &&
-              headerGroups.map((headerGroup) => (
+              headerGroups.map((headerGroup, index) => (
                 <DragDropContext
+                  key={index}
                   onDragStart={() => {
                     currentColOrder.current = headerGroup.headers.map((o) => o.id);
                   }}
@@ -415,6 +416,7 @@ export default function Table({
                         {...headerGroup.getHeaderGroupProps()}
                         ref={droppableProvided.innerRef}
                         className="tr"
+                        isDraggingOver={droppableSnapshot.isDraggingOver}
                         width={width}
                       >
                         {headerGroup.headers.map((column, index) => {
