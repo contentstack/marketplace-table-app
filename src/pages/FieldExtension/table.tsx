@@ -422,45 +422,44 @@ export default function Table({
                         {headerGroup.headers.map((column, index) => {
                           if (headerColumnChange && index === 0) {
                             return (
-                              <div key={column.id}>
-                                <Tooltip
-                                  content={headerTooltip(column)}
-                                  position="top"
-                                  showArrow={false}
-                                >
-                                  <>
-                                    <HeaderContainer
-                                      className="tooltip-wrapper"
-                                      {...column.getHeaderProps(
-                                        column.getSortByToggleProps({ title: undefined }),
-                                      )}
-                                      onMouseEnter={(e) => showButton(e, column.id)}
-                                      onMouseLeave={(e) => hideButton(e)}
-                                      height={document.getElementById('tableRef')?.clientHeight}
-                                      style={{ width: 'inherit' }}
-                                    >
-                                      {column.render('Header')}
-                                      <div className="sort-box">
-                                        {column.isSorted ? (
-                                          column.isSortedDesc ? (
-                                            <SortedDescUpArrow />
-                                          ) : (
-                                            <SortedAscDownArrow />
-                                          )
+                              <Tooltip
+                                content={headerTooltip(column)}
+                                position="top"
+                                showArrow={false}
+                                key={column.id}
+                              >
+                                <>
+                                  <HeaderContainer
+                                    className="tooltip-wrapper"
+                                    {...column.getHeaderProps(
+                                      column.getSortByToggleProps({ title: undefined }),
+                                    )}
+                                    onMouseEnter={(e) => showButton(e, column.id)}
+                                    onMouseLeave={(e) => hideButton(e)}
+                                    height={document.getElementById('tableRef')?.clientHeight}
+                                    style={{ width: 'auto' }}
+                                  >
+                                    {column.render('Header')}
+                                    <div className="sort-box">
+                                      {column.isSorted ? (
+                                        column.isSortedDesc ? (
+                                          <SortedDescUpArrow />
                                         ) : (
-                                          <HoverSortIcon
-                                            className={
-                                              column.id == hoveredColumnId
-                                                ? displaySortIcon
-                                                : 'notdisplayed'
-                                            }
-                                          />
-                                        )}
-                                      </div>
-                                    </HeaderContainer>
-                                  </>
-                                </Tooltip>
-                              </div>
+                                          <SortedAscDownArrow />
+                                        )
+                                      ) : (
+                                        <HoverSortIcon
+                                          className={
+                                            column.id == hoveredColumnId
+                                              ? displaySortIcon
+                                              : 'notdisplayed'
+                                          }
+                                        />
+                                      )}
+                                    </div>
+                                  </HeaderContainer>
+                                </>
+                              </Tooltip>
                             );
                           }
 
