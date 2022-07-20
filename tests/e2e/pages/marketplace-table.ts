@@ -84,9 +84,7 @@ export class MarketplaceTable {
 
   async addColumnToLeft(cell: number) {
     await this.cellDropdown(cell); // cell selection
-    // await this.tableIframe.waitForTimeout(2000);
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Insert Column Left"').click();
-    // await this.tableIframe.waitForTimeout(2000);
     await this.tableIframe.locator('.data-input').nth(cell).click();
     await this.addContent(5);
     await this.tableIframe.waitForTimeout(2000);

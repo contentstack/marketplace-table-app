@@ -115,7 +115,6 @@ test.describe('Table app operations', () => {
     await MP.deleteCol(0); // Delete column operation
     await MP.deleteRow(0); // Delete row operation
   });
-  // await entryPage.waitForTimeout(2000); // Wait for
 
   test.skip('Add Table header operation', async () => {
     await MP.enableTableHeader(0); // Create new a header for table
