@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import {
   useTable,
@@ -83,7 +83,7 @@ const Clone = styled(HeaderContainer)`
 
 const Wrapper = styled.div`
   .tippy-wrapper {
-    width: ${({ width }) => width + 'px'};
+    width: ${({ width, isDraggingOver }) => (isDraggingOver ? width + 'px' : '150px')};
   }
 `;
 
@@ -143,6 +143,15 @@ export default function Table({
   const [appendData, setAppendData] = useState(true);
   const fileElement = useRef(null);
   const currentColOrder = React.useRef<any>();
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const widthState = !fullScreen
+      ? (document.querySelectorAll('.td')[0] as HTMLElement)?.offsetWidth
+      : (document.querySelectorAll('.fullscreen .td')[0] as HTMLElement)?.offsetWidth;
+
+    setWidth(widthState);
+  });
 
   const showButton = (e, columnId) => {
     e.preventDefault();
@@ -375,8 +384,9 @@ export default function Table({
           <div>
             {headerRowChange &&
               headerGroups &&
-              headerGroups.map((headerGroup) => (
+              headerGroups.map((headerGroup, index) => (
                 <DragDropContext
+                  key={index}
                   onDragStart={() => {
                     currentColOrder.current = headerGroup.headers.map((o) => o.id);
                   }}
@@ -406,12 +416,8 @@ export default function Table({
                         {...headerGroup.getHeaderGroupProps()}
                         ref={droppableProvided.innerRef}
                         className="tr"
-                        width={
-                          !fullScreen
-                            ? (document.getElementsByClassName('td')[0] as HTMLElement)?.offsetWidth
-                            : (document.querySelectorAll('.fullscreen .td')[0] as HTMLElement)
-                                ?.offsetWidth
-                        }
+                        isDraggingOver={droppableSnapshot.isDraggingOver}
+                        width={width}
                       >
                         {headerGroup.headers.map((column, index) => {
                           if (headerColumnChange && index === 0) {
