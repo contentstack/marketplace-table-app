@@ -11,9 +11,10 @@ import { ReactComponent as HeaderRow } from '../../assets/headerRow.svg';
 import { ReactComponent as HeaderColumn } from '../../assets/headerColumn.svg';
 import { ReactComponent as DeleteTable } from '../../assets/deleteTable.svg';
 import './styles.scss';
-import { useTableData } from './store';
+import { fullScreenAtom, useTableData } from './store';
 import useJsErrorTracker from 'hooks/useJsErrorTracker';
 import { useAnalytics, useMixPanelGroups } from 'hooks/useMixPanel';
+import { useAtom } from 'jotai';
 
 export type fullScreenProps = {
   fullScreen: boolean;
@@ -37,6 +38,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   const [tableState, dispatch] = useTableData();
   const { trackEvent, setGlobalData, setUserId } = useAnalytics();
   const { setGroups } = useMixPanelGroups();
+  const [fullScreenMode] = useAtom(fullScreenAtom);
 
   useEffect(() => {
     ContentstackAppSdk.init().then(async (appSdk) => {
@@ -144,6 +146,10 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
     setTable(false);
     dispatch({ type: 'delete_table' });
   };
+
+  if (fullScreenMode && !fullScreen) {
+    return null;
+  }
 
   return (
     <div className={'field-extension' + (fullScreen ? ' app-height' : '')}>
