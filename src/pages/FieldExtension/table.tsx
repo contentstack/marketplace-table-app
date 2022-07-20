@@ -32,6 +32,8 @@ import FullScreenPage from './fullScreenPage';
 import { ReactComponent as MaximizeScreen } from '../../assets/maximize-button.svg';
 import { ReactComponent as DragIcon } from '../../assets/dragIcon.svg';
 import { useAnalytics, useMixPanelGroups } from 'hooks/useMixPanel';
+import { useAtom } from 'jotai';
+import { fullScreenAtom } from './store';
 
 const { trackEvent } = useAnalytics();
 
@@ -144,6 +146,7 @@ export default function Table({
   const fileElement = useRef(null);
   const currentColOrder = React.useRef<any>();
   const [width, setWidth] = useState(0);
+  const [, setFullScreenMode] = useAtom(fullScreenAtom);
 
   useEffect(() => {
     const widthState = !fullScreen
@@ -339,6 +342,8 @@ export default function Table({
     cbModal({
       component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
       modalProps: {
+        onOpen: () => setFullScreenMode(true),
+        onClose: () => setFullScreenMode(false),
         size: 'customSize',
       },
     });

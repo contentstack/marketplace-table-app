@@ -322,6 +322,8 @@ function reducer(tableState, action) {
 
 export const tableStateAtom = atom(utils.makeData(3));
 
+export const fullScreenAtom = atom(false);
+
 export const useTableData = () => {
   return useReducerAtom(tableStateAtom, reducer);
 };
