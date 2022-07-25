@@ -15,6 +15,7 @@ export default function Cell({
   row: { index },
   column: { id, dataType, options },
   dataDispatch,
+  headerColumnChange,
 }) {
   const [value, setValue] = useState({ value: initialValue, update: true });
   const onChange = (e) => {
@@ -80,6 +81,62 @@ export default function Cell({
     }
   }, [addSelectRef, showAdd]);
 
+  let list = [
+    {
+      default: true,
+      action: insertRowAbove,
+      label: (
+        <>
+          <InsertRowAbove />
+          <div>Insert Row Above</div>
+        </>
+      ),
+    },
+    {
+      default: true,
+      action: insertRowBelow,
+      label: (
+        <>
+          <InsertRowBelow />
+          <div>Insert Row Below</div>
+        </>
+      ),
+    },
+    {
+      action: deleteRow,
+      label: <CustomDelete text={'Delete Row'} Icon={<DeleteRow />} type={'row'} />,
+    },
+    {
+      default: true,
+      action: insertColumnRight,
+      label: (
+        <>
+          <InsertColumnRight />
+          <div>Insert Column Right</div>
+        </>
+      ),
+    },
+  ];
+
+  if (!headerColumnChange) {
+    list.push(
+      {
+        default: true,
+        action: insertColumnLeft,
+        label: (
+          <>
+            <InsertColumnLeft />
+            <div>Insert Column Left</div>
+          </>
+        ),
+      },
+      {
+        action: deleteColumn,
+        label: <CustomDelete text={'Delete Column'} Icon={<DeleteColumn />} type={'column'} />,
+      },
+    );
+  }
+
   let element;
   switch (dataType) {
     case 'text':
@@ -112,58 +169,7 @@ export default function Cell({
               dropDownType="primary"
               highlightActive={false}
               isMultiCheck={false}
-              list={[
-                {
-                  default: true,
-                  action: insertRowAbove,
-                  label: (
-                    <>
-                      <InsertRowAbove />
-                      <div>Insert Row Above</div>
-                    </>
-                  ),
-                },
-                {
-                  default: true,
-                  action: insertRowBelow,
-                  label: (
-                    <>
-                      <InsertRowBelow />
-                      <div>Insert Row Below</div>
-                    </>
-                  ),
-                },
-                {
-                  action: deleteRow,
-                  label: <CustomDelete text={'Delete Row'} Icon={<DeleteRow />} type={'row'} />,
-                },
-                {
-                  default: true,
-                  action: insertColumnLeft,
-                  label: (
-                    <>
-                      <InsertColumnLeft />
-                      <div>Insert Column Left</div>
-                    </>
-                  ),
-                },
-                {
-                  default: true,
-                  action: insertColumnRight,
-                  label: (
-                    <>
-                      <InsertColumnRight />
-                      <div>Insert Column Right</div>
-                    </>
-                  ),
-                },
-                {
-                  action: deleteColumn,
-                  label: (
-                    <CustomDelete text={'Delete Column'} Icon={<DeleteColumn />} type={'column'} />
-                  ),
-                },
-              ]}
+              list={list}
               testId="cs-dropdown"
               type="click"
               viewAs="label"

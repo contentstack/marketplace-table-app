@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import {
   useTable,
@@ -32,6 +32,8 @@ import FullScreenPage from './fullScreenPage';
 import { ReactComponent as MaximizeScreen } from '../../assets/maximize-button.svg';
 import { ReactComponent as DragIcon } from '../../assets/dragIcon.svg';
 import { useAnalytics, useMixPanelGroups } from 'hooks/useMixPanel';
+import { useAtom } from 'jotai';
+import { fullScreenAtom } from './store';
 
 const { trackEvent } = useAnalytics();
 
@@ -83,7 +85,7 @@ const Clone = styled(HeaderContainer)`
 
 const Wrapper = styled.div`
   .tippy-wrapper {
-    width: ${({ width }) => width + 'px'};
+    width: ${({ width, isDraggingOver }) => (isDraggingOver ? width + 'px' : '150px')};
   }
 `;
 
@@ -135,6 +137,7 @@ export default function Table({
   dispatch: dataDispatch,
   skipReset,
   headerRowChange,
+  headerColumnChange,
   fullScreen,
 }) {
   const [hoveredColumnId, setColumnId] = useState('');
@@ -142,6 +145,16 @@ export default function Table({
   const [appendData, setAppendData] = useState(true);
   const fileElement = useRef(null);
   const currentColOrder = React.useRef<any>();
+  const [width, setWidth] = useState(0);
+  const [, setFullScreenMode] = useAtom(fullScreenAtom);
+
+  useEffect(() => {
+    const widthState = !fullScreen
+      ? (document.querySelectorAll('.td')[0] as HTMLElement)?.offsetWidth
+      : (document.querySelectorAll('.fullscreen .td')[0] as HTMLElement)?.offsetWidth;
+
+    setWidth(widthState);
+  });
 
   const showButton = (e, columnId) => {
     e.preventDefault();
@@ -329,6 +342,8 @@ export default function Table({
     cbModal({
       component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
       modalProps: {
+        onOpen: () => setFullScreenMode(true),
+        onClose: () => setFullScreenMode(false),
         size: 'customSize',
       },
     });
@@ -374,8 +389,9 @@ export default function Table({
           <div>
             {headerRowChange &&
               headerGroups &&
-              headerGroups.map((headerGroup) => (
+              headerGroups.map((headerGroup, index) => (
                 <DragDropContext
+                  key={index}
                   onDragStart={() => {
                     currentColOrder.current = headerGroup.headers.map((o) => o.id);
                   }}
@@ -405,74 +421,115 @@ export default function Table({
                         {...headerGroup.getHeaderGroupProps()}
                         ref={droppableProvided.innerRef}
                         className="tr"
-                        width={
-                          !fullScreen
-                            ? (document.getElementsByClassName('td')[0] as HTMLElement)?.offsetWidth
-                            : (document.querySelectorAll('.fullscreen .td')[0] as HTMLElement)
-                                ?.offsetWidth
-                        }
+                        isDraggingOver={droppableSnapshot.isDraggingOver}
+                        width={width}
                       >
-                        {headerGroup.headers.map((column, index) => (
-                          <Draggable
-                            key={column.id}
-                            draggableId={column.id}
-                            index={index}
-                            isDragDisabled={!column.accessor}
-                          >
-                            {(provided, snapshot) => {
-                              return (
-                                <Tooltip
-                                  content={headerTooltip(column)}
-                                  position="top"
-                                  disabled={snapshot.isDragging ? true : false}
-                                  showArrow={false}
-                                >
-                                  <>
-                                    <HeaderContainer
-                                      className="tooltip-wrapper"
-                                      {...column.getHeaderProps(
-                                        column.getSortByToggleProps({ title: undefined }),
-                                      )}
-                                      onMouseEnter={(e) => showButton(e, column.id)}
-                                      onMouseLeave={(e) => hideButton(e)}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      ref={provided.innerRef}
-                                      isDragging={snapshot.isDragging}
-                                      height={document.getElementById('tableRef')?.clientHeight}
-                                      style={{
-                                        ...getItemStyle(snapshot, provided.draggableProps.style),
-                                      }}
-                                    >
-                                      <DragIcon className="dragIcon" />
-                                      {column.render('Header')}
-                                      <div className="sort-box">
-                                        {column.isSorted ? (
-                                          column.isSortedDesc ? (
-                                            <SortedDescUpArrow />
-                                          ) : (
-                                            <SortedAscDownArrow />
-                                          )
-                                        ) : (
-                                          <HoverSortIcon
-                                            className={
-                                              column.id == hoveredColumnId
-                                                ? displaySortIcon
-                                                : 'notdisplayed'
-                                            }
-                                          />
-                                        )}
-                                      </div>
-                                    </HeaderContainer>
-                                    {snapshot.isDragging && (
-                                      <Clone>{column.render('Header')}</Clone>
+                        {headerGroup.headers.map((column, index) => {
+                          if (headerColumnChange && index === 0) {
+                            return (
+                              <Tooltip
+                                content={headerTooltip(column)}
+                                position="top"
+                                showArrow={false}
+                                key={column.id}
+                              >
+                                <>
+                                  <HeaderContainer
+                                    className="tooltip-wrapper"
+                                    {...column.getHeaderProps(
+                                      column.getSortByToggleProps({ title: undefined }),
                                     )}
-                                  </>
-                                </Tooltip>
-                              );
-                            }}
-                          </Draggable>
-                        ))}
+                                    onMouseEnter={(e) => showButton(e, column.id)}
+                                    onMouseLeave={(e) => hideButton(e)}
+                                    height={document.getElementById('tableRef')?.clientHeight}
+                                    style={{ width: 'auto' }}
+                                  >
+                                    {column.render('Header')}
+                                    <div className="sort-box">
+                                      {column.isSorted ? (
+                                        column.isSortedDesc ? (
+                                          <SortedDescUpArrow />
+                                        ) : (
+                                          <SortedAscDownArrow />
+                                        )
+                                      ) : (
+                                        <HoverSortIcon
+                                          className={
+                                            column.id == hoveredColumnId
+                                              ? displaySortIcon
+                                              : 'notdisplayed'
+                                          }
+                                        />
+                                      )}
+                                    </div>
+                                  </HeaderContainer>
+                                </>
+                              </Tooltip>
+                            );
+                          }
+
+                          return (
+                            <Draggable
+                              key={column.id}
+                              draggableId={column.id}
+                              index={index}
+                              isDragDisabled={!column.accessor}
+                            >
+                              {(provided, snapshot) => {
+                                return (
+                                  <Tooltip
+                                    content={headerTooltip(column)}
+                                    position="top"
+                                    disabled={snapshot.isDragging ? true : false}
+                                    showArrow={false}
+                                  >
+                                    <>
+                                      <HeaderContainer
+                                        className="tooltip-wrapper"
+                                        {...column.getHeaderProps(
+                                          column.getSortByToggleProps({ title: undefined }),
+                                        )}
+                                        onMouseEnter={(e) => showButton(e, column.id)}
+                                        onMouseLeave={(e) => hideButton(e)}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        ref={provided.innerRef}
+                                        isDragging={snapshot.isDragging}
+                                        height={document.getElementById('tableRef')?.clientHeight}
+                                        style={{
+                                          ...getItemStyle(snapshot, provided.draggableProps.style),
+                                        }}
+                                      >
+                                        <DragIcon className="dragIcon" />
+                                        {column.render('Header')}
+                                        <div className="sort-box">
+                                          {column.isSorted ? (
+                                            column.isSortedDesc ? (
+                                              <SortedDescUpArrow />
+                                            ) : (
+                                              <SortedAscDownArrow />
+                                            )
+                                          ) : (
+                                            <HoverSortIcon
+                                              className={
+                                                column.id == hoveredColumnId
+                                                  ? displaySortIcon
+                                                  : 'notdisplayed'
+                                              }
+                                            />
+                                          )}
+                                        </div>
+                                      </HeaderContainer>
+                                      {snapshot.isDragging && (
+                                        <Clone>{column.render('Header')}</Clone>
+                                      )}
+                                    </>
+                                  </Tooltip>
+                                );
+                              }}
+                            </Draggable>
+                          );
+                        })}
                         {droppableProvided.placeholder}
                       </Wrapper>
                     )}
@@ -519,11 +576,20 @@ export default function Table({
                               >
                                 <DragIcon className="rowDragIcon" />
                                 <div {...row.getRowProps()} className="tr">
-                                  {row.cells.map((cell) => (
-                                    <div {...cell.getCellProps()} className="td">
-                                      {cell.render('Cell')}
-                                    </div>
-                                  ))}
+                                  {row.cells.map((cell, j) => {
+                                    if (headerColumnChange && j === 0) {
+                                      return (
+                                        <div {...cell.getCellProps()} className={'td cell-header'}>
+                                          {cell.render('Cell', { headerColumnChange })}
+                                        </div>
+                                      );
+                                    }
+                                    return (
+                                      <div {...cell.getCellProps()} className={'td'}>
+                                        {cell.render('Cell')}
+                                      </div>
+                                    );
+                                  })}
                                 </div>
                               </RowContainer>
                             )}

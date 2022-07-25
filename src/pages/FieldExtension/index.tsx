@@ -8,11 +8,13 @@ import Table from './table';
 import CustomDelete from './customDelete';
 import { ReactComponent as TableActions } from '../../assets/tableActions.svg';
 import { ReactComponent as HeaderRow } from '../../assets/headerRow.svg';
+import { ReactComponent as HeaderColumn } from '../../assets/headerColumn.svg';
 import { ReactComponent as DeleteTable } from '../../assets/deleteTable.svg';
 import './styles.scss';
-import { useTableData } from './store';
+import { fullScreenAtom, useTableData } from './store';
 import useJsErrorTracker from 'hooks/useJsErrorTracker';
 import { useAnalytics, useMixPanelGroups } from 'hooks/useMixPanel';
+import { useAtom } from 'jotai';
 
 export type fullScreenProps = {
   fullScreen: boolean;
@@ -32,9 +34,11 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   });
   const [table, setTable] = useState<boolean>();
   const [headerRowChange, setHeaderRowChange] = useState<boolean>(false);
+  const [headerColumnChange, setHeaderColumnChange] = useState<boolean>(false);
   const [tableState, dispatch] = useTableData();
   const { trackEvent, setGlobalData, setUserId } = useAnalytics();
   const { setGroups } = useMixPanelGroups();
+  const [fullScreenMode] = useAtom(fullScreenAtom);
 
   useEffect(() => {
     ContentstackAppSdk.init().then(async (appSdk) => {
@@ -45,7 +49,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
       // @ts-ignore
       window.postRobot = appSdk.postRobot;
       const config = await appSdk.getConfig();
-      const initialData = appSdk.location.CustomField?.field.getData();
+      let initialData = appSdk.location.CustomField?.field.getData();
 
       if (
         !isEmpty(initialData) &&
@@ -59,6 +63,13 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
         } else {
           initialData.tableState.headerRowAdded = false;
         }
+        if (initialData.tableState.headerColumnAdded) {
+          setHeaderColumnChange(true);
+        } else {
+          setHeaderColumnChange(false);
+          initialData.tableState.headerColumnAdded = false;
+        }
+
         dispatch({ type: 'initial_data', payload: initialData.tableState });
       }
       setUserId(appSdk.currentUser?.uid);
@@ -91,6 +102,11 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   }, [tableState.headerRowAdded]);
 
   useEffect(() => {
+    if (tableState.headerColumnAdded) setHeaderColumnChange(true);
+    else setHeaderColumnChange(false);
+  }, [tableState.headerColumnAdded]);
+
+  useEffect(() => {
     const { location } = state;
     location.CustomField?.field.setData({ tableState: tableState });
   }, [tableState]);
@@ -114,12 +130,26 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
     setHeaderRowChange(!headerRowChange);
   };
 
+  const handleHeaderColumnChange = () => {
+    if (!headerColumnChange) {
+      dispatch({ type: 'add_col_header' });
+    } else {
+      dispatch({ type: 'remove_col_header' });
+    }
+
+    setHeaderColumnChange(!headerColumnChange);
+  };
+
   const deleteTable = () => {
     // mixpanel event
     trackEvent('Clicked on Delete Table');
     setTable(false);
     dispatch({ type: 'delete_table' });
   };
+
+  if (fullScreenMode && !fullScreen) {
+    return null;
+  }
 
   return (
     <div className={'field-extension' + (fullScreen ? ' app-height' : '')}>
@@ -151,13 +181,31 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
                         label: (
                           <>
                             <HeaderRow />
-                            <div>Header Row</div>
+                            <div className="table-option">Header Row</div>
                             <div className="toggle">
                               <ToggleSwitch
                                 name="headerRowChange"
                                 id="headerRowChange"
                                 onChange={handleHeaderRowChange}
                                 checked={headerRowChange}
+                                testId="cs-toggle-switch"
+                              />
+                            </div>
+                          </>
+                        ),
+                      },
+                      {
+                        default: true,
+                        label: (
+                          <>
+                            <HeaderColumn />
+                            <div className="table-option">Header Column</div>
+                            <div className="toggle">
+                              <ToggleSwitch
+                                name="headerColumnChange"
+                                id="headerColumnChange"
+                                onChange={handleHeaderColumnChange}
+                                checked={headerColumnChange}
                                 testId="cs-toggle-switch"
                               />
                             </div>
@@ -189,6 +237,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
                 dispatch={dispatch}
                 skipReset={tableState.skipReset}
                 headerRowChange={headerRowChange}
+                headerColumnChange={headerColumnChange}
                 fullScreen={fullScreen}
               />
             </>

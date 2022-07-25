@@ -246,14 +246,23 @@ function reducer(tableState, action) {
         columns: [...columns],
         data: [row, ...tableState.data],
       };
+    case 'add_col_header':
+      tableState.headerColumnAdded = true;
+
+      return { ...tableState };
+    case 'remove_col_header':
+      tableState.headerColumnAdded = false;
+
+      return { ...tableState };
     case 'delete_table':
       return { ...tableState, columns: [], data: [] };
     case 'initial_data':
       return {
         ...tableState,
-        skipReset: true,
-        columns: [...action.payload.columns],
-        data: [...action.payload.data],
+        ...action.payload,
+        // skipReset: true,
+        // columns: [...action.payload.columns],
+        // data: [...action.payload.data],
       };
     case 'initial_table':
       return {
@@ -312,6 +321,8 @@ function reducer(tableState, action) {
 }
 
 export const tableStateAtom = atom(utils.makeData(3));
+
+export const fullScreenAtom = atom(false);
 
 export const useTableData = () => {
   return useReducerAtom(tableStateAtom, reducer);
