@@ -212,7 +212,7 @@ export class MarketplaceTable {
   async checkFullscreen() {
     await this.tableIframe.locator('.tippy-wrapper').nth(2).click();
     await this.checkTableData(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']);
-    await this.addRowAbove(9);
+    await this.addRowAbove(0);
     await this.compressTable();
     await this.checkTableData(['z', 'A', 'B', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']);
   }
