@@ -20,7 +20,11 @@ pipelines:
             type: manual
             roles:
               - devops
-            allow_only_on_success: true 
+            allow_only_on_success: true
+          secure_variables:
+            REACT_APP_TRACKER_TOKEN: AES:BbhblE188VzWdo/uw1lxoA==:HRbvYwiOm6KqDPerkU+UPv8ckXc/Hyi7z8ZJJx4b6qng2vESeM3povP32Y8D4lAf
+            REACT_APP_TRACKER_ENV: AES:bWcAg9Bvo/gR6DAErS3qGQ==:nP9hsoxcxJ6ofMt5bPGrlHRzIpPKJMeY4Yr72kEc9pE=
+            REACT_APP_MIXPANEL_TOKEN: AES:zTroDzGouDM2UsTBtW+aiw==:vk3bQOuZSKmAoghqfTqfwlPNPiHEwtBT42FNI2iTQbpzqQjK37fcb3F+JtG1yVsg
           jobs:
             lint-test-build:
               elastic_profile_id: k8s-cicd-publish-npm-package
