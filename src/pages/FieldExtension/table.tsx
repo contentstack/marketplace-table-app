@@ -580,13 +580,16 @@ export default function Table({
                                     if (headerColumnChange && j === 0) {
                                       return (
                                         <div {...cell.getCellProps()} className={'td cell-header'}>
-                                          {cell.render('Cell', { headerColumnChange })}
+                                          {cell.render('Cell', {
+                                            headerColumnChange,
+                                            setColumnOrder,
+                                          })}
                                         </div>
                                       );
                                     }
                                     return (
                                       <div {...cell.getCellProps()} className={'td'}>
-                                        {cell.render('Cell')}
+                                        {cell.render('Cell', { setColumnOrder })}
                                       </div>
                                     );
                                   })}

@@ -160,43 +160,13 @@ function reducer(tableState, action) {
         default:
           return tableState;
       }
-    case 'insert_column_left':
-      const leftIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
-      let leftId = utils.shortId();
-      return {
-        ...tableState,
-        skipReset: true,
-        columns: [
-          ...tableState.columns.slice(0, leftIndex),
-          {
-            id: leftId,
-            label: '',
-            accessor: leftId,
-            dataType: 'text',
-            created: action.focus && true,
-            options: [],
-          },
-          ...tableState.columns.slice(leftIndex, tableState.columns.length),
-        ],
-      };
+
     case 'insert_column_right':
-      const rightIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
-      const rightId = utils.shortId();
+    case 'insert_column_left':
       return {
         ...tableState,
         skipReset: true,
-        columns: [
-          ...tableState.columns.slice(0, rightIndex + 1),
-          {
-            id: rightId,
-            label: '',
-            accessor: rightId,
-            dataType: 'text',
-            created: action.focus && true,
-            options: [],
-          },
-          ...tableState.columns.slice(rightIndex + 1, tableState.columns.length),
-        ],
+        columns: action.columns,
       };
     case 'delete_column':
       const deleteIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
