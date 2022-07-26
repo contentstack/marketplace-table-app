@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ContentEditable from 'react-contenteditable';
 import { Dropdown, Icon } from '@contentstack/venus-components';
 import { ReactComponent as InsertRowAbove } from '../../assets/insertRowAbove.svg';
@@ -9,6 +9,39 @@ import { ReactComponent as InsertColumnRight } from '../../assets/insertColumnRi
 import { ReactComponent as DeleteColumn } from '../../assets/deleteColumn.svg';
 import { useAnalytics } from 'hooks/useMixPanel';
 import CustomDelete from './customDelete';
+import { useTableData } from './store';
+import utils from '../../common/utils';
+import { map } from 'lodash';
+
+const useColumns = () => {
+  const [tableState, dispatch] = useTableData();
+  return {
+    addColumn: useCallback(
+      (direction: string, columnId: string): string[] => {
+        const index = tableState.columns.findIndex((column) => column.id === columnId);
+        const newId: string = utils.shortId();
+        const flag = direction === 'right' ? 1 : 0;
+
+        // create the new columns array
+        const columns = [
+          ...tableState.columns.slice(0, index + flag),
+          {
+            id: newId,
+            label: '',
+            accessor: newId,
+            dataType: 'text',
+            created: false,
+            options: [],
+          },
+          ...tableState.columns.slice(index + flag, tableState.columns.length),
+        ];
+        dispatch({ type: `insert_column_${direction}`, columns });
+        return map(columns, 'id');
+      },
+      [tableState],
+    ),
+  };
+};
 
 export default function Cell({
   value: initialValue,
@@ -16,7 +49,9 @@ export default function Cell({
   column: { id, dataType, options },
   dataDispatch,
   headerColumnChange,
+  setColumnOrder,
 }) {
+  const { addColumn } = useColumns();
   const [value, setValue] = useState({ value: initialValue, update: true });
   const onChange = (e) => {
     setValue({ value: e.target.value, update: true });
@@ -58,13 +93,15 @@ export default function Cell({
   };
 
   const insertColumnLeft = () => {
-    dataDispatch({ type: 'insert_column_left', columnId: id });
+    const newColumns = addColumn('left', id);
+    setColumnOrder(newColumns);
     //mixpanel event
     trackEvent('Insert column left');
   };
 
   const insertColumnRight = () => {
-    dataDispatch({ type: 'insert_column_right', columnId: id });
+    const newColumns = addColumn('right', id);
+    setColumnOrder(newColumns);
     //mixpanel event
     trackEvent('Insert column right');
   };
