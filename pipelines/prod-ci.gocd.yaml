@@ -35,14 +35,14 @@ pipelines:
               tasks:
                 - exec:
                     arguments:
-                      - -c 
+                      - -c
                       - echo //npm.pkg.github.com/:_authToken=$GITHUB_PERSONAL_ACCESS_TOKEN > .npmrc
                     command: sh
                 - exec:
                     arguments:
-                      - -c 
+                      - -c
                       - echo "@contentstack:registry=https://npm.pkg.github.com/contentstack" >> .npmrc
-                    command: sh               
+                    command: sh
                 - exec:
                     arguments:
                       - install
@@ -50,5 +50,5 @@ pipelines:
                 - exec:
                     arguments:
                       - -c
-                      - "export CI='' && npm run build"
+                      - "export CI='' && export SKIP_PREFLIGHT_CHECK=true && npm run build"
                     command: sh
