@@ -93,20 +93,20 @@ test.describe('Table app operations', () => {
       'a', 'r', 'b', 'c',
       'd', 's', 'e', 'f',
       'g', 't', 'h', 'i']) // check table content after adding new column
-    await MP.addColumnToLeft(1, false); // Add new column to left operation
+    await MP.addColumnToLeft(2, false); // Add new column to left operation
     await MP.checkTableData([
-      'j', 'u', 'p', 'k', 'l',
-      'm', 'v', 'q', 'n', 'o',
-      'a', 'w', 'r', 'b', 'c',
-      'd', 'x', 's', 'e', 'f',
-      'g', 'y', 't', 'h', 'i']) // check table content after adding new column
+      'j', 'p', 'u', 'k', 'l',
+      'm', 'q', 'v', 'n', 'o',
+      'a', 'r', 'w', 'b', 'c',
+      'd', 's', 'x', 'e', 'f',
+      'g', 't', 'y', 'h', 'i']) // check table content after adding new column
 
-      
+
   });
 
   test('table search operation', async () => {
     await MP.searchValue(); // Search particular keyword
-    await MP.checkTableData(['d', 'x', 's', 'e', 'f']); // check search results
+    await MP.checkTableData(['d', 's', 'x', 'e', 'f']); // check search results
     await MP.clearSearch(); // Clear search filed
     await MP.saveContent(); // Save table content
   });
