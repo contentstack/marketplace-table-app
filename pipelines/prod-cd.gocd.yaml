@@ -106,3 +106,15 @@ pipelines:
                       - -c
                       - npm run test:chrome
                     command: sh
+                - exec:
+                    working_directory: e2e-tests
+                    arguments:
+                      - -c
+                      - npm run test:firefox
+                    command: sh
+                - exec:
+                    working_directory: e2e-tests
+                    arguments:
+                      - -c
+                      - npm run test:safari
+                    command: sh
