@@ -54,7 +54,7 @@ pipelines:
           secure_variables:
             # Installation Environment
             APP_HOST_URL=AES:nIPHpdvZzlyw228heKe3zQ==:TU+c83iYEgCbeU/Fft1YruGTPZk6OSAxDevdUaBBaOU=
-            # Add login credentials 
+            # Add login credentials
             CONTENTSTACK_LOGIN= AES:2SpdZbKlrqbvhS9ZV78Jmg==:ol94W33nKEtl1PkBsMUFWSGdyJ9gLK2msgnNafeLbI8=
             CONTENTSTACK_PASSWORD=AES:V+l0rxeyCvEpqRmktik6Zw==:NaebSOXZu+Tqs9NlsB5Hl1TgSrRo7pFGdVX09QHuTrQ=
             # Organization ID
