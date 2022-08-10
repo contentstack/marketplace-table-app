@@ -53,19 +53,19 @@ pipelines:
             allow_only_on_success: false
           secure_variables:
             # Installation Environment
-            APP_HOST_URL=AES:nIPHpdvZzlyw228heKe3zQ==:TU+c83iYEgCbeU/Fft1YruGTPZk6OSAxDevdUaBBaOU=
+            APP_HOST_URL: AES:nIPHpdvZzlyw228heKe3zQ==:TU+c83iYEgCbeU/Fft1YruGTPZk6OSAxDevdUaBBaOU=
             # Add login credentials
-            CONTENTSTACK_LOGIN= AES:2SpdZbKlrqbvhS9ZV78Jmg==:ol94W33nKEtl1PkBsMUFWSGdyJ9gLK2msgnNafeLbI8=
-            CONTENTSTACK_PASSWORD=AES:V+l0rxeyCvEpqRmktik6Zw==:NaebSOXZu+Tqs9NlsB5Hl1TgSrRo7pFGdVX09QHuTrQ=
+            CONTENTSTACK_LOGIN: AES:2SpdZbKlrqbvhS9ZV78Jmg==:ol94W33nKEtl1PkBsMUFWSGdyJ9gLK2msgnNafeLbI8=
+            CONTENTSTACK_PASSWORD: AES:V+l0rxeyCvEpqRmktik6Zw==:NaebSOXZu+Tqs9NlsB5Hl1TgSrRo7pFGdVX09QHuTrQ=
             # Organization ID
-            CONTENTSTACK_ORGANIZATION_UID=AES:wPATGsD9LLhkDShgnSNXcA==:MIRQ5R/4V88pxz+EQ9Ww2G6fGt+PzNkZGLLplnHpKwU=
+            CONTENTSTACK_ORGANIZATION_UID: AES:wPATGsD9LLhkDShgnSNXcA==:MIRQ5R/4V88pxz+EQ9Ww2G6fGt+PzNkZGLLplnHpKwU=
             # Add test stack api key
-            STACK_API_KEY=AES:/V4QBXfUl3eUp243VU5fwg==:Fk1hyJ+wdvDxDeE0kQdxTgOwa+P8lqh0B7yfB+oOEVE=
+            STACK_API_KEY: AES:/V4QBXfUl3eUp243VU5fwg==:Fk1hyJ+wdvDxDeE0kQdxTgOwa+P8lqh0B7yfB+oOEVE=
             # Add the app baseurl for the app you want to test based on specific environment
-            APP_BASE_URL = AES:sFFqiFFHKstoxn0oBbyw4Q==:Zhjsq21f0Q4KHdVI4VbLwSEwRBkxG9JWIaDxMeNMZBC+Gi7P+u7dTZhef+WVh3kk
+            APP_BASE_URL: AES:sFFqiFFHKstoxn0oBbyw4Q==:Zhjsq21f0Q4KHdVI4VbLwSEwRBkxG9JWIaDxMeNMZBC+Gi7P+u7dTZhef+WVh3kk
             # Based on the env make sure to add proper credentials for the below variables
-            DEVELOPER_HUB_API=AES:Cz1ciDB+MS6XoknNSESF+A==:vxkVDmHOguL86C4ITn7pXyoBhlOf7P/dQHStYQ1pcIn4VKrWOk3gsrS1in1txQSx
-            BASE_API_URL=AES:Rt2qzXLt3dkcxT5tz7OxeQ==:qPKSYja4Y3CQdQk3YP3YeCMIuvu6z3Thm5ifQmYE+Rc=
+            DEVELOPER_HUB_API: AES:Cz1ciDB+MS6XoknNSESF+A==:vxkVDmHOguL86C4ITn7pXyoBhlOf7P/dQHStYQ1pcIn4VKrWOk3gsrS1in1txQSx
+            BASE_API_URL: AES:Rt2qzXLt3dkcxT5tz7OxeQ==:qPKSYja4Y3CQdQk3YP3YeCMIuvu6z3Thm5ifQmYE+Rc=
           jobs:
             sanity:
               elastic_profile_id: k8s-cicd-playwright
