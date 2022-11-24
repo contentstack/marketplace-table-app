@@ -6,11 +6,10 @@ import { datadogRum } from '@datadog/browser-rum';
 datadogRum.init({
   applicationId: `${process.env.REACT_APP_DATADOG_RUM_APPLICATION_ID}`,
   clientToken: `${process.env.REACT_APP_DATADOG_RUM_CLIENT_TOKEN}`,
-  site: 'datadoghq.com',
-  // service: 'my-web-application',
-  service: 'marketplace-table-app',
+  site: `${process.env.REACT_APP_DATADOG_RUM_SITE}`,
+  service: `${process.env.REACT_APP_DATADOG_RUM_SERVICE}`,
   // Specify a version number to identify the deployed version of your application in Datadog
-  //version: "1",
+  //version: `${process.env.REACT_APP_VERSION}`,
   sampleRate: 100,
   sessionReplaySampleRate: 20,
   trackInteractions: true,
@@ -20,7 +19,7 @@ datadogRum.init({
   useCrossSiteSessionCookie: true,
 });
 //captures and visually replay users' web browsing experience for review
-datadogRum.startSessionReplayRecording();
+//datadogRum.startSessionReplayRecording();
 
 interface MyProps {
   children: React.ReactElement;
