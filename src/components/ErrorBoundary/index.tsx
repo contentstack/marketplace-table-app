@@ -8,8 +8,6 @@ datadogRum.init({
   clientToken: `${process.env.REACT_APP_DATADOG_RUM_CLIENT_TOKEN}`,
   site: `${process.env.REACT_APP_DATADOG_RUM_SITE}`,
   service: `${process.env.REACT_APP_DATADOG_RUM_SERVICE}`,
-  // Specify a version number to identify the deployed version of your application in Datadog
-  //version: `${process.env.REACT_APP_VERSION}`,
   sampleRate: 100,
   sessionReplaySampleRate: 20,
   trackInteractions: true,
