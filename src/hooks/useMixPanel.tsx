@@ -1,5 +1,5 @@
 import mixpanel from 'mixpanel-browser';
-
+import { datadogRum } from '@datadog/browser-rum';
 interface SuperProps {
   Stack: string;
   Organization: string;
@@ -24,6 +24,7 @@ const useAnalytics = () => {
   };
 
   const setGlobalData = (properties: SuperProps) => {
+    datadogRum.setGlobalContextProperty('App Metadata', { properties });
     return REACT_APP_MIXPANEL_TOKEN ? mixpanel.register(properties) : undefined;
   };
 

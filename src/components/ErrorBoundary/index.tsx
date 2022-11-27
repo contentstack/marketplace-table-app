@@ -32,11 +32,7 @@ TrackJS.install({
   application: process.env.REACT_APP_TRACKER_ENV,
   console: { display: process.env.NODE_ENV === 'development' },
 });
-//adding metadata to datadogRUM
-datadogRum.addAction('App Metadata', {
-  application_type: 'marketplace',
-  application_name: 'Table App',
-});
+
 TrackJS.addMetadata('application_type', 'marketplace');
 TrackJS.addMetadata('application_name', 'Table App');
 
