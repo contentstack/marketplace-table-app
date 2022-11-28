@@ -18,7 +18,6 @@ datadogRum.init({
 });
 //captures and visually replay users' web browsing experience for review
 //datadogRum.startSessionReplayRecording();
-
 interface MyProps {
   children: React.ReactElement;
 }
@@ -33,6 +32,8 @@ TrackJS.install({
   console: { display: process.env.NODE_ENV === 'development' },
 });
 
+datadogRum.setGlobalContextProperty('Application Type', 'Marketplace');
+datadogRum.setGlobalContextProperty('Applicaion Name', 'Table App');
 TrackJS.addMetadata('application_type', 'marketplace');
 TrackJS.addMetadata('application_name', 'Table App');
 
