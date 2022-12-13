@@ -1,0 +1,78 @@
+format_version: 4
+pipelines:
+  prod-table-app-sanity:
+    group: ecosystem
+    label_template: ${git[:7]}
+    lock_behavior: none
+    display_order: 116
+    materials:
+      git: git@github.com:contentstack/marketplace-table-app.git
+      shallow_clone: false
+      auto_update: true
+      branch: main
+    timer:
+      spec: "0 30 4 ? * MON *"
+    stages:
+      - sanity:
+          fetch_materials: true
+          keep_artifacts: false
+          clean_workspace: false
+          approval:
+            type: success
+            allow_only_on_success: false
+          secure_variables:
+            # Installation Environment
+            APP_HOST_URL: AES:nIPHpdvZzlyw228heKe3zQ==:TU+c83iYEgCbeU/Fft1YruGTPZk6OSAxDevdUaBBaOU=
+            # Add login credentials
+            CONTENTSTACK_LOGIN: AES:2SpdZbKlrqbvhS9ZV78Jmg==:ol94W33nKEtl1PkBsMUFWSGdyJ9gLK2msgnNafeLbI8=
+            CONTENTSTACK_PASSWORD: AES:V+l0rxeyCvEpqRmktik6Zw==:NaebSOXZu+Tqs9NlsB5Hl1TgSrRo7pFGdVX09QHuTrQ=
+            # Organization ID
+            CONTENTSTACK_ORGANIZATION_UID: AES:wPATGsD9LLhkDShgnSNXcA==:MIRQ5R/4V88pxz+EQ9Ww2G6fGt+PzNkZGLLplnHpKwU=
+            # Add test stack api key
+            STACK_API_KEY: AES:/V4QBXfUl3eUp243VU5fwg==:Fk1hyJ+wdvDxDeE0kQdxTgOwa+P8lqh0B7yfB+oOEVE=
+            # Add the app baseurl for the app you want to test based on specific environment
+            APP_BASE_URL: AES:sFFqiFFHKstoxn0oBbyw4Q==:Zhjsq21f0Q4KHdVI4VbLwSEwRBkxG9JWIaDxMeNMZBC+Gi7P+u7dTZhef+WVh3kk
+            # Based on the env make sure to add proper credentials for the below variables
+            DEVELOPER_HUB_API: AES:Cz1ciDB+MS6XoknNSESF+A==:vxkVDmHOguL86C4ITn7pXyoBhlOf7P/dQHStYQ1pcIn4VKrWOk3gsrS1in1txQSx
+            BASE_API_URL: AES:Rt2qzXLt3dkcxT5tz7OxeQ==:qPKSYja4Y3CQdQk3YP3YeCMIuvu6z3Thm5ifQmYE+Rc=
+          jobs:
+            sanity:
+              elastic_profile_id: k8s-cicd-playwright
+              timeout: 0
+              artifacts:
+                - test:
+                    source: playwright-report
+                    destination: playwright-report
+              tabs:
+                Report: playwright-report/playwright-report/index.html
+              tasks:
+                - exec:
+                    arguments:
+                      - -c
+                      - echo //npm.pkg.github.com/:_authToken=$GITHUB_PERSONAL_ACCESS_TOKEN > .npmrc
+                    command: sh
+                - exec:
+                    arguments:
+                      - -c
+                      - echo "@contentstack:registry=https://npm.pkg.github.com/contentstack" >> .npmrc
+                    command: sh
+                - exec:
+                    arguments:
+                      - -c
+                      - npm install
+                    command: sh
+                - exec:
+                    arguments:
+                      - -c
+                      - npm run test:chrome
+                    command: sh
+                - exec:
+                    arguments:
+                      - -c
+                      - npm run test:firefox
+                    command: sh
+                - exec:
+                    arguments:
+                      - -c
+                      - npm run test:safari
+                    command: sh
