@@ -19,7 +19,11 @@ const CustomDelete: React.FC<IconProps> = ({ text, Icon, type }) => {
     <div
       style={{ display: 'flex' }}
       onMouseEnter={(e) => {
-        let el = e.relatedTarget;
+        let el = e?.relatedTarget;
+
+        if (!el) {
+          return;
+        }
 
         if (type === 'row') {
           let rowEl = (el as Element)?.closest('.tr');
@@ -42,7 +46,12 @@ const CustomDelete: React.FC<IconProps> = ({ text, Icon, type }) => {
         }
       }}
       onMouseLeave={(e) => {
-        let el = e.relatedTarget;
+        let el = e?.relatedTarget;
+
+        if (!el) {
+          return;
+        }
+
         if (type === 'row') {
           let rowEl = (el as Element)?.closest('.tr');
 
