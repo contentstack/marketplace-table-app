@@ -6,10 +6,11 @@ pipelines:
     lock_behavior: none
     display_order: 116
     materials:
-      git: git@github.com:contentstack/marketplace-table-app.git
-      shallow_clone: false
-      auto_update: true
-      branch: main
+      git:
+        git: git@github.com:contentstack/marketplace-table-app.git
+        shallow_clone: false
+        auto_update: true
+        branch: main
     timer:
       spec: "0 30 4 ? * MON *"
     stages:
