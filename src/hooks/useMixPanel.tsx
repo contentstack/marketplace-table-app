@@ -1,5 +1,4 @@
 import mixpanel from 'mixpanel-browser';
-import { datadogRum } from '@datadog/browser-rum';
 interface SuperProps {
   Stack: string;
   Organization: string;
