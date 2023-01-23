@@ -1,5 +1,4 @@
 import mixpanel from 'mixpanel-browser';
-
 interface SuperProps {
   Stack: string;
   Organization: string;
