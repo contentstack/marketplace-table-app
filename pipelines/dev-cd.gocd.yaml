@@ -99,7 +99,7 @@ pipelines:
                     working_directory: e2e-tests
                     arguments:
                       - -c
-                      - npm install
+                      - npm install --legacy-peer-deps
                     command: sh
                 - exec:
                     working_directory: e2e-tests
