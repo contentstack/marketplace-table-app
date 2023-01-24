@@ -3,7 +3,7 @@ import { datadogRum } from '@datadog/browser-rum';
 
 const useJsErrorTracker = () => {
   const addMetadata = (key: string, value: string) => {
-    datadogRum.setGlobalContextProperty(value, key);
+    datadogRum.setGlobalContextProperty(key, value);
     TrackJS.addMetadata(key, value);
   };
   const trackError = (error: any) => {

@@ -16,8 +16,6 @@ datadogRum.init({
   defaultPrivacyLevel: 'mask-user-input',
   useCrossSiteSessionCookie: true,
 });
-//captures and visually replay users' web browsing experience for review
-//datadogRum.startSessionReplayRecording();
 interface MyProps {
   children: React.ReactElement;
 }
