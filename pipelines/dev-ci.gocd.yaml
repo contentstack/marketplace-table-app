@@ -47,7 +47,7 @@ pipelines:
                     command: sh               
                 - exec:
                     arguments:
-                      - install
+                      - install --legacy-peer-deps
                     command: npm
                 - exec:
                     arguments:
