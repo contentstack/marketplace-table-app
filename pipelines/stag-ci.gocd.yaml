@@ -23,6 +23,10 @@ pipelines:
             REACT_APP_TRACKER_TOKEN: AES:0fOA64XJhj0QBX3cAUnncg==:tOoJbUVrdmGnnSYaDqCC5+aSvugRO3P+FRSDZyPNUYaLzehffalSDeJ8+zuMe2t5
             REACT_APP_TRACKER_ENV: AES:pkcVyzi1Mrd2ljsF6E43MA==:5Sxi0bzRj4yei3gOpkejoxCKCCpZjbdGW4KrnFK9z0Y=
             REACT_APP_MIXPANEL_TOKEN: AES:+dfIf2Zgn6OitYWX7WIx1A==:RC8otKqBDZ2+2TEDV+VLKx8lLB6NButMAm2badOgWpwg3w4PSSYe2XxRaLjtMN3o
+            REACT_APP_DATADOG_RUM_APPLICATION_ID: AES:GIbHq62CokZNej3JKeURtQ==:Nk1gfQImIBLr4dcolZNTn5EbubjgAqanA+K3ehEKUS3vSCljGix8qZL7X4Go8kJs
+            REACT_APP_DATADOG_RUM_CLIENT_TOKEN: AES:sSTOMwA73rmV9YKlTrGAIg==:Ufr8mJeEbaICaq++q97gZ8B48QyxoHvBsYO3cuXZp8K+e7SPJhzmor4IXAT/pNSU
+            REACT_APP_DATADOG_RUM_SITE: AES:DeBZmLeSK5HVcR1r1s8KTQ==:++nAMpMB+1Xxo2/RIQU/jw==
+            REACT_APP_DATADOG_RUM_SERVICE: AES:amOQEjonhdlOGefQg27SPQ==:w2LfSDFgheKZGsJmGyWc3lgmKOYERaCWJMzzfojZ2ac=
           jobs:
             lint-test-build:
               elastic_profile_id: k8s-cicd-publish-npm-package
