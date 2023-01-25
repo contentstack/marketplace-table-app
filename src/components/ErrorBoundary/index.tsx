@@ -31,7 +31,7 @@ TrackJS.install({
 });
 
 datadogRum.setGlobalContextProperty('Application Type', 'Marketplace');
-datadogRum.setGlobalContextProperty('Applicaion Name', 'Table App');
+datadogRum.setGlobalContextProperty('Application Name', 'Table App');
 TrackJS.addMetadata('application_type', 'marketplace');
 TrackJS.addMetadata('application_name', 'Table App');
 
