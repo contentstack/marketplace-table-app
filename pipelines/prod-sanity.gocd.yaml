@@ -38,7 +38,7 @@ pipelines:
             BASE_API_URL: AES:Rt2qzXLt3dkcxT5tz7OxeQ==:qPKSYja4Y3CQdQk3YP3YeCMIuvu6z3Thm5ifQmYE+Rc=
           jobs:
             sanity:
-              elastic_profile_id: k8s-cicd-playwright
+              elastic_profile_id: k8s-cicd-playwright-1-25-0
               timeout: 0
               artifacts:
                 - test:
