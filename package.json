@@ -45,7 +45,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && npx gulp",
+    "build": "react-scripts --max_old_space_size=4096 build && npx gulp",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.{ts,tsx} --quiet --fix",
@@ -77,7 +77,7 @@
     ]
   },
   "devDependencies": {
-    "@playwright/test": "1.19.1",
+    "@playwright/test": "1.25.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
