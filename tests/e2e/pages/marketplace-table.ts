@@ -15,7 +15,9 @@ export class MarketplaceTable {
 
   // opens newly created entry
   async openEntry(entryUID: string, apiKey: string | undefined, contentTypeUID: string) {
-    await this.page.goto(`/#!/stack/${apiKey}/content-type/${contentTypeUID}/en-us/entry/${entryUID}/edit`);
+    await this.page.goto(
+      `/#!/stack/${apiKey}/content-type/${contentTypeUID}/en-us/entry/${entryUID}/edit`,
+    );
     await this.page.waitForLoadState();
   }
 
@@ -24,23 +26,24 @@ export class MarketplaceTable {
     await this.page.waitForSelector('.app-extension-component');
     const elementHandle = await this.page.$('.app-extension-component');
     this.tableIframe = await elementHandle?.contentFrame();
-    expect(await this.tableIframe.locator('.no-asset').innerText()).toContain('Table has not been added');
+    expect(await this.tableIframe.locator('.no-asset').innerText()).toContain(
+      'Table has not been added',
+    );
     await this.tableIframe.locator('.Button__icon').click();
   }
 
   async deleteTable() {
     await this.tableIframe.locator('.Dropdown__header').nth(0).click();
     await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Delete Table"').click();
-    expect(await this.tableIframe.locator('.no-asset').innerText()).toContain('Table has not been added');
+    expect(await this.tableIframe.locator('.no-asset').innerText()).toContain(
+      'Table has not been added',
+    );
   }
 
   // selects a cell and open it dropdown
   async cellDropdown(cellIndex: number) {
     await this.tableIframe.locator('.data-input').nth(cellIndex).click();
-    await this.tableIframe
-      .locator('.cell-dropdown')
-      .nth(cellIndex)
-      .click();
+    await this.tableIframe.locator('.cell-dropdown').nth(cellIndex).click();
   }
 
   // add content to the table after adding new rows and columns
@@ -84,7 +87,9 @@ export class MarketplaceTable {
 
   async addColumnToLeft(cell: number) {
     await this.cellDropdown(cell); // cell selection
-    await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Insert Column Left"').click();
+    await this.tableIframe
+      .locator('.Dropdown__menu__list__item >> text="Insert Column Left"')
+      .click();
     await this.tableIframe.locator('.data-input').nth(cell).click();
     await this.addContent(5);
     await this.tableIframe.waitForTimeout(2000);
@@ -92,7 +97,9 @@ export class MarketplaceTable {
 
   async addColumnToRight(cell: number) {
     await this.cellDropdown(cell); // cell selection
-    await this.tableIframe.locator('.Dropdown__menu__list__item >> text="Insert Column Right"').click(); // select operation
+    await this.tableIframe
+      .locator('.Dropdown__menu__list__item >> text="Insert Column Right"')
+      .click(); // select operation
     await this.tableIframe.locator('.data-input').nth(cell).click();
     await this.addContent(5); // no of content to be added
     await this.tableIframe.waitForTimeout(2000);
@@ -121,7 +128,9 @@ export class MarketplaceTable {
       }
     }
     await this.tableIframe.locator('#table-actions').click();
-    await this.tableIframe.locator('.Dropdown__menu__list__item >> [data-test-id="cs-toggle-switch"]').click();
+    await this.tableIframe
+      .locator('.Dropdown__menu__list__item >> [data-test-id="cs-toggle-switch"]')
+      .click();
     await this.tableIframe.locator('#table-actions').click();
   }
 
@@ -139,20 +148,44 @@ export class MarketplaceTable {
   async sortAscending() {
     await this.tableIframe.locator('.th-content').nth(0).click();
     await this.checkTableData([
-      'a', 'q', 'b', 'c',
-      'd', 's', 'e', 'f',
-      'g', 't', 'h', 'i',
-      'm', 'r', 'n', 'o',
+      'a',
+      'q',
+      'b',
+      'c',
+      'd',
+      's',
+      'e',
+      'f',
+      'g',
+      't',
+      'h',
+      'i',
+      'm',
+      'r',
+      'n',
+      'o',
     ]);
   }
 
   async sortDescending() {
     await this.tableIframe.locator('.th-content').nth(0).click();
     await this.checkTableData([
-      'm', 'r', 'n', 'o',
-      'g', 't', 'h', 'i',
-      'd', 's', 'e', 'f',
-      'a', 'q', 'b', 'c',
+      'm',
+      'r',
+      'n',
+      'o',
+      'g',
+      't',
+      'h',
+      'i',
+      'd',
+      's',
+      'e',
+      'f',
+      'a',
+      'q',
+      'b',
+      'c',
     ]);
   }
 
@@ -184,14 +217,14 @@ export class MarketplaceTable {
       this.tableIframe.locator('.tippy-wrapper').nth(1).click(),
     ]);
     const downloadPath = await exportedFile.path();
-    await expect(downloadPath).toBeTruthy()
+    await expect(downloadPath).toBeTruthy();
   }
 
   async checkTableImport() {
     await this.tableIframe.locator('.tippy-wrapper').nth(0).click();
     await this.tableIframe.locator('.Radio-wrapper >> text="Replace Data"').click();
     // path for csv file that need to be uploaded
-    const importFile = path.join(process.cwd() + '/tests/e2e/downloads/tableExport.csv')
+    const importFile = path.join(process.cwd() + '/tests/e2e/downloads/tableExport.csv');
     // file uploading event listener
     const [fileChooser] = await Promise.all([
       // It is important to call waitForEvent before click to set up waiting.
@@ -211,6 +244,7 @@ export class MarketplaceTable {
 
   async checkFullscreen() {
     await this.tableIframe.locator('.tippy-wrapper').nth(2).click();
+    await this.tableIframe.waitForTimeout(3000);
     await this.checkTableData(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']);
     await this.addRowAbove(0);
     await this.compressTable();
