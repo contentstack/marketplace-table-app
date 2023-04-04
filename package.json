@@ -1,6 +1,6 @@
 {
   "name": "table-app",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": true,
   "dependencies": {
     "@contentstack/app-sdk": "1.1.0",

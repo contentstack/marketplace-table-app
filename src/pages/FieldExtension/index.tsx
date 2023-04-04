@@ -13,7 +13,7 @@ import { ReactComponent as DeleteTable } from '../../assets/deleteTable.svg';
 import './styles.scss';
 import { fullScreenAtom, useTableData } from './store';
 import useJsErrorTracker from 'hooks/useJsErrorTracker';
-import { useAnalytics, useMixPanelGroups } from 'hooks/useMixPanel';
+import  useAnalytics  from 'hooks/useAnalytics';
 import { useAtom } from 'jotai';
 
 export type fullScreenProps = {
@@ -36,8 +36,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   const [headerRowChange, setHeaderRowChange] = useState<boolean>(false);
   const [headerColumnChange, setHeaderColumnChange] = useState<boolean>(false);
   const [tableState, dispatch] = useTableData();
-  const { trackEvent, setGlobalData, setUserId } = useAnalytics();
-  const { setGroups } = useMixPanelGroups();
+  const { trackEvent} = useAnalytics();
   const [fullScreenMode] = useAtom(fullScreenAtom);
 
   useEffect(() => {
@@ -112,14 +111,14 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   }, [tableState]);
 
   const handleClick = () => {
-    // mixpanel event
+    // Heap event ** event text would be updated **
     trackEvent('Clicked on Add Table');
     setTable(true);
     dispatch({ type: 'initial_table', payload: utils.makeData(3) });
   };
 
   const handleHeaderRowChange = () => {
-    // mixpanel event
+    // Heap event ** event text would be updated **
     trackEvent('Toggled Header Row');
     if (!headerRowChange) {
       dispatch({ type: 'add_row_header' });
@@ -141,7 +140,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   };
 
   const deleteTable = () => {
-    // mixpanel event
+    // Heap event ** event text would be updated **
     trackEvent('Clicked on Delete Table');
     setTable(false);
     dispatch({ type: 'delete_table' });

@@ -31,7 +31,7 @@ import strings from 'common/locale/en-us';
 import FullScreenPage from './fullScreenPage';
 import { ReactComponent as MaximizeScreen } from '../../assets/maximize-button.svg';
 import { ReactComponent as DragIcon } from '../../assets/dragIcon.svg';
-import { useAnalytics, useMixPanelGroups } from 'hooks/useMixPanel';
+import useAnalytics from 'hooks/useAnalytics';
 import { useAtom } from 'jotai';
 import { fullScreenAtom } from './store';
 
@@ -330,14 +330,14 @@ export default function Table({
       } else {
         csvString = Papa.unparse({ data });
       }
-      // mixpanel event export
+      // Heap event ** event text would be updated **
       trackEvent('Export CSV Completed');
       return new Blob([csvString], { type: 'text/csv' });
     }
   }
 
   const openModal = () => {
-    // mixpanel event
+    // Heap event ** event text would be updated **
     trackEvent('Clicked on FullScreen Mode');
     cbModal({
       component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
@@ -411,7 +411,7 @@ export default function Table({
                       type: 'drag_column_update',
                       payload: { columns: headerGroups[0].headers, data: rows, skipReset: false },
                     });
-                    // mixpanel event
+                    // Heap event ** event text would be updated **
                     trackEvent('Column Order Changed');
                   }}
                 >
@@ -551,7 +551,7 @@ export default function Table({
                 const records = reorder(data, result.source.index, result.destination.index);
 
                 dataDispatch({ type: 'drag_rows_update', payload: records });
-                // mixpanel event
+                // Heap event ** event text would be updated **
                 trackEvent('Row Order Changed');
               }}
             >
