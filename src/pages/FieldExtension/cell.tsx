@@ -7,7 +7,6 @@ import { ReactComponent as DeleteRow } from '../../assets/deleteRow.svg';
 import { ReactComponent as InsertColumnLeft } from '../../assets/insertColumnLeft.svg';
 import { ReactComponent as InsertColumnRight } from '../../assets/insertColumnRight.svg';
 import { ReactComponent as DeleteColumn } from '../../assets/deleteColumn.svg';
-import  useAnalytics  from 'hooks/useAnalytics';
 import CustomDelete from './customDelete';
 import { useTableData } from './store';
 import utils from '../../common/utils';
@@ -58,7 +57,6 @@ export default function Cell({
   };
   const [showAdd, setShowAdd] = useState(false);
   const [addSelectRef, setAddSelectRef] = useState<any>(null);
-  const { trackEvent } = useAnalytics();
 
   useEffect(() => {
     setValue({ value: initialValue, update: true });
@@ -76,40 +74,28 @@ export default function Cell({
 
   const insertRowAbove = () => {
     dataDispatch({ type: 'insert_row_above', rowIndex: index });
-    // Heap event ** event text would be updated **
-    trackEvent('Insert row above');
   };
 
   const insertRowBelow = () => {
     dataDispatch({ type: 'insert_row_below', rowIndex: index });
-    // Heap event ** event text would be updated **
-    trackEvent('Insert row below');
   };
 
   const deleteRow = () => {
     dataDispatch({ type: 'delete_row', rowIndex: index });
-    // Heap event ** event text would be updated **
-    trackEvent('Delete row');
   };
 
   const insertColumnLeft = () => {
     const newColumns = addColumn('left', id);
     setColumnOrder(newColumns);
-    // Heap event ** event text would be updated **
-    trackEvent('Insert column left');
   };
 
   const insertColumnRight = () => {
     const newColumns = addColumn('right', id);
     setColumnOrder(newColumns);
-    // Heap event ** event text would be updated **
-    trackEvent('Insert column right');
   };
 
   const deleteColumn = () => {
     dataDispatch({ type: 'delete_column', columnId: id });
-    // Heap event ** event text would be updated **
-    trackEvent('Delete column');
   };
 
   useEffect(() => {

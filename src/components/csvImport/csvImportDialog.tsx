@@ -9,7 +9,7 @@ import {
 } from '@contentstack/venus-components';
 import './styles.scss';
 import strings from 'common/locale/en-us';
-import  useAnalytics  from 'hooks/useAnalytics';
+import useAnalytics from 'hooks/useAnalytics';
 import { ReactComponent as ImportTableIcon } from '../../assets/importTableIcon.svg';
 
 export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) => void }) => {
@@ -25,15 +25,13 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
       const onCancel = () => {
         modalProps.closeModal();
         props.onCancel();
-        // Heap event ** event text would be updated **
-        trackEvent('Import CSV Modal Closed');
       };
 
       const onSave = () => {
         modalProps.closeModal();
         props.onSave(appendData);
         // Heap event ** event text would be updated **
-        trackEvent('Import CSV Completed');
+        trackEvent('Used Import CSV');
       };
 
       const handleToggleAppendData = (value) => {

@@ -10,12 +10,16 @@ import MultiIcon from '../../assets/Multi';
 import HashIcon from '../../assets/Hash';
 import { ReactComponent as PlusIcon } from '../../assets/plusIcon.svg';
 import utils from '../../common/utils/index';
+import useAnalytics from 'hooks/useAnalytics';
+import { useAppSdk } from 'hooks/useAppSdk';
 
 export default function Header({
   column: { id, created, label, dataType, getResizerProps, getHeaderProps },
   setSortBy,
   dataDispatch,
 }) {
+  const { trackEvent } = useAnalytics();
+  const [appSdk] = useAppSdk();
   const [expanded, setExpanded] = useState(created || false);
   const [referenceElement, setReferenceElement] = useState<any>(null);
   const [popperElement, setPopperElement] = useState<any>(null);

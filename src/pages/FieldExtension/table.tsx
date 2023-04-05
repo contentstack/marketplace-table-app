@@ -35,8 +35,6 @@ import useAnalytics from 'hooks/useAnalytics';
 import { useAtom } from 'jotai';
 import { fullScreenAtom } from './store';
 
-const { trackEvent } = useAnalytics();
-
 const defaultColumn = {
   minWidth: 50,
   maxWidth: 400,
@@ -105,6 +103,7 @@ const getItemStyle = ({ isDragging, isDropAnimating }, draggableStyle) => ({
 function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) {
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = React.useState(globalFilter);
+  const { trackEvent } = useAnalytics();
   const onChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
   }, 200);
@@ -122,6 +121,8 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
             onChange={(e) => {
               setValue(e.target.value);
               onChange(e.target.value);
+              // Heap event ** event text would be updated **
+              trackEvent('Searching records');
             }}
             placeholder={`Search`}
           />
@@ -140,6 +141,7 @@ export default function Table({
   headerColumnChange,
   fullScreen,
 }) {
+  const { trackEvent } = useAnalytics();
   const [hoveredColumnId, setColumnId] = useState('');
   const [displaySortIcon, setDisplay] = useState('notdisplayed');
   const [appendData, setAppendData] = useState(true);
@@ -331,14 +333,14 @@ export default function Table({
         csvString = Papa.unparse({ data });
       }
       // Heap event ** event text would be updated **
-      trackEvent('Export CSV Completed');
+      trackEvent('Used Export CSV');
       return new Blob([csvString], { type: 'text/csv' });
     }
   }
 
   const openModal = () => {
     // Heap event ** event text would be updated **
-    trackEvent('Clicked on FullScreen Mode');
+    trackEvent('FullScreen Enabled');
     cbModal({
       component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
       modalProps: {
@@ -411,8 +413,6 @@ export default function Table({
                       type: 'drag_column_update',
                       payload: { columns: headerGroups[0].headers, data: rows, skipReset: false },
                     });
-                    // Heap event ** event text would be updated **
-                    trackEvent('Column Order Changed');
                   }}
                 >
                   <Droppable droppableId="droppable" direction="horizontal">
@@ -551,8 +551,6 @@ export default function Table({
                 const records = reorder(data, result.source.index, result.destination.index);
 
                 dataDispatch({ type: 'drag_rows_update', payload: records });
-                // Heap event ** event text would be updated **
-                trackEvent('Row Order Changed');
               }}
             >
               <Droppable droppableId="table">

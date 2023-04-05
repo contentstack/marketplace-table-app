@@ -13,7 +13,8 @@ import { ReactComponent as DeleteTable } from '../../assets/deleteTable.svg';
 import './styles.scss';
 import { fullScreenAtom, useTableData } from './store';
 import useJsErrorTracker from 'hooks/useJsErrorTracker';
-import  useAnalytics  from 'hooks/useAnalytics';
+import useAnalytics from 'hooks/useAnalytics';
+import { useAppSdk } from 'hooks/useAppSdk';
 import { useAtom } from 'jotai';
 
 export type fullScreenProps = {
@@ -22,6 +23,7 @@ export type fullScreenProps = {
 
 const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   // error tracking hook
+  const [appSdk, setAppSdk] = useAppSdk();
   const { addMetadata } = useJsErrorTracker();
   const [state, setState] = useState<{
     config: any;
@@ -36,59 +38,76 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   const [headerRowChange, setHeaderRowChange] = useState<boolean>(false);
   const [headerColumnChange, setHeaderColumnChange] = useState<boolean>(false);
   const [tableState, dispatch] = useTableData();
-  const { trackEvent} = useAnalytics();
+  const { trackEvent } = useAnalytics();
   const [fullScreenMode] = useAtom(fullScreenAtom);
 
   useEffect(() => {
-    ContentstackAppSdk.init().then(async (appSdk) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      window.iframeRef = document.getElementById('root');
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      window.postRobot = appSdk.postRobot;
-      const config = await appSdk.getConfig();
-      let initialData = appSdk.location.CustomField?.field.getData();
+    try {
+      ContentstackAppSdk.init().then(async (appSdk) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        window.iframeRef = document.getElementById('root');
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        window.postRobot = appSdk.postRobot;
+        const config = await appSdk.getConfig();
+        let initialData = appSdk.location.CustomField?.field.getData();
 
-      if (
-        !isEmpty(initialData) &&
-        !isEmpty(initialData.tableState.columns) &&
-        !isEmpty(initialData.tableState.data)
-      ) {
-        setTable(true);
-        if (has(initialData.tableState, 'columns[0].label')) {
-          setHeaderRowChange(true);
-          initialData.tableState.headerRowAdded = true;
-        } else {
-          initialData.tableState.headerRowAdded = false;
-        }
-        if (initialData.tableState.headerColumnAdded) {
-          setHeaderColumnChange(true);
-        } else {
-          setHeaderColumnChange(false);
-          initialData.tableState.headerColumnAdded = false;
-        }
+        // app Sdk atom for pulse method being utilized in hooks.
+        setAppSdk(appSdk);
 
-        dispatch({ type: 'initial_data', payload: initialData.tableState });
-      }
-      setUserId(appSdk.currentUser?.uid);
-      // setting metadata for mixpanel
-      setGlobalData({
-        Stack: appSdk?.stack._data.api_key,
-        Organization: appSdk?.currentUser?.defaultOrganization,
-        'Application Type': 'Marketplace',
-        'Application Name': 'Table App',
-        'App Location': 'CustomField',
+        // Heap analytic
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        appSdk['pulse'] = console.log;
+
+        /**
+         * Heap analytic ts ignore would be removed later
+         * Event name would be updated.
+         */
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        appSdk?.pulse('App Loaded Successfully');
+
+        if (
+          !isEmpty(initialData) &&
+          !isEmpty(initialData.tableState.columns) &&
+          !isEmpty(initialData.tableState.data)
+        ) {
+          setTable(true);
+          if (has(initialData.tableState, 'columns[0].label')) {
+            setHeaderRowChange(true);
+            initialData.tableState.headerRowAdded = true;
+          } else {
+            initialData.tableState.headerRowAdded = false;
+          }
+          if (initialData.tableState.headerColumnAdded) {
+            setHeaderColumnChange(true);
+          } else {
+            setHeaderColumnChange(false);
+            initialData.tableState.headerColumnAdded = false;
+          }
+
+          dispatch({ type: 'initial_data', payload: initialData.tableState });
+        }
+        // setting metadata for js error tracker
+        addMetadata('stack', `${appSdk?.stack._data.name}`);
+        addMetadata('organization', `${appSdk?.currentUser.defaultOrganization}`);
+        addMetadata('api_key', `${appSdk?.stack._data.api_key}`);
+        addMetadata('user_uid', `${appSdk?.stack._data.collaborators[0].uid}`);
+        appSdk.location.CustomField?.frame.enableAutoResizing();
+        setState({ config, appSdkInitialized: true, location: appSdk.location });
       });
-      setGroups('Application', ['Table App']);
-      // setting metadata for js error tracker
-      addMetadata('stack', `${appSdk?.stack._data.name}`);
-      addMetadata('organization', `${appSdk?.currentUser.defaultOrganization}`);
-      addMetadata('api_key', `${appSdk?.stack._data.api_key}`);
-      addMetadata('user_uid', `${appSdk?.stack._data.collaborators[0].uid}`);
-      appSdk.location.CustomField?.frame.enableAutoResizing();
-      setState({ config, appSdkInitialized: true, location: appSdk.location });
-    });
+    } catch (error) {
+      console.error(error);
+      /**
+       * Heap analytic ts ignore would be removed later.
+       * Event name would be updated.
+       */
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      appSdk?.pulse('App Load Failure');
+    }
   }, []);
 
   useEffect(() => {
@@ -112,14 +131,12 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
 
   const handleClick = () => {
     // Heap event ** event text would be updated **
-    trackEvent('Clicked on Add Table');
+    trackEvent('Add Table');
     setTable(true);
     dispatch({ type: 'initial_table', payload: utils.makeData(3) });
   };
 
   const handleHeaderRowChange = () => {
-    // Heap event ** event text would be updated **
-    trackEvent('Toggled Header Row');
     if (!headerRowChange) {
       dispatch({ type: 'add_row_header' });
     } else {
@@ -141,7 +158,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
 
   const deleteTable = () => {
     // Heap event ** event text would be updated **
-    trackEvent('Clicked on Delete Table');
+    trackEvent('Delete Table');
     setTable(false);
     dispatch({ type: 'delete_table' });
   };
