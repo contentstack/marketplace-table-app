@@ -5,6 +5,7 @@ import { Button, Dropdown, ToggleSwitch } from '@contentstack/venus-components';
 import strings from 'common/locale/en-us';
 import utils from '../../common/utils';
 import Table from './table';
+import { eventNames } from '../../common/utils/index';
 import CustomDelete from './customDelete';
 import { ReactComponent as TableActions } from '../../assets/tableActions.svg';
 import { ReactComponent as HeaderRow } from '../../assets/headerRow.svg';
@@ -25,6 +26,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   // error tracking hook
   const [appSdk, setAppSdk] = useAppSdk();
   const { addMetadata } = useJsErrorTracker();
+  const { DELETE_TABLE, ADD_TABLE } = eventNames;
   const [state, setState] = useState<{
     config: any;
     location: Partial<{ customField: { [key: string]: any }; [key: string]: any }>;
@@ -40,6 +42,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   const [tableState, dispatch] = useTableData();
   const { trackEvent } = useAnalytics();
   const [fullScreenMode] = useAtom(fullScreenAtom);
+  const { APP_INITIALIZE, APP_INITIALIZE_FAILURE } = eventNames;
 
   useEffect(() => {
     try {
@@ -67,7 +70,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
          */
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        appSdk?.pulse('App Loaded Successfully');
+        appSdk?.pulse(APP_INITIALIZE);
 
         if (
           !isEmpty(initialData) &&
@@ -106,7 +109,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
        */
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-      appSdk?.pulse('App Load Failure');
+      appSdk?.pulse(APP_INITIALIZE_FAILURE);
     }
   }, []);
 
@@ -131,7 +134,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
 
   const handleClick = () => {
     // Heap event ** event text would be updated **
-    trackEvent('Add Table');
+    trackEvent(ADD_TABLE);
     setTable(true);
     dispatch({ type: 'initial_table', payload: utils.makeData(3) });
   };
@@ -158,7 +161,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
 
   const deleteTable = () => {
     // Heap event ** event text would be updated **
-    trackEvent('Delete Table');
+    trackEvent(DELETE_TABLE);
     setTable(false);
     dispatch({ type: 'delete_table' });
   };

@@ -32,6 +32,7 @@ import FullScreenPage from './fullScreenPage';
 import { ReactComponent as MaximizeScreen } from '../../assets/maximize-button.svg';
 import { ReactComponent as DragIcon } from '../../assets/dragIcon.svg';
 import useAnalytics from 'hooks/useAnalytics';
+import { eventNames } from '../../common/utils/index';
 import { useAtom } from 'jotai';
 import { fullScreenAtom } from './store';
 
@@ -104,6 +105,7 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = React.useState(globalFilter);
   const { trackEvent } = useAnalytics();
+  const { FULLSCREEN_MODE, SEARCH_RECORDS, EXPORT_OPTION } = eventNames;
   const onChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
   }, 200);
@@ -122,7 +124,7 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
               setValue(e.target.value);
               onChange(e.target.value);
               // Heap event ** event text would be updated **
-              trackEvent('Searching records');
+              trackEvent(SEARCH_RECORDS);
             }}
             placeholder={`Search`}
           />
@@ -148,6 +150,7 @@ export default function Table({
   const fileElement = useRef(null);
   const currentColOrder = React.useRef<any>();
   const [width, setWidth] = useState(0);
+  const { EXPORT_OPTION, FULLSCREEN_MODE } = eventNames;
   const [, setFullScreenMode] = useAtom(fullScreenAtom);
 
   useEffect(() => {
@@ -333,14 +336,14 @@ export default function Table({
         csvString = Papa.unparse({ data });
       }
       // Heap event ** event text would be updated **
-      trackEvent('Used Export CSV');
+      trackEvent(EXPORT_OPTION);
       return new Blob([csvString], { type: 'text/csv' });
     }
   }
 
   const openModal = () => {
     // Heap event ** event text would be updated **
-    trackEvent('FullScreen Enabled');
+    trackEvent(FULLSCREEN_MODE);
     cbModal({
       component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
       modalProps: {

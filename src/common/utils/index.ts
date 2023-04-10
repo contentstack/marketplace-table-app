@@ -46,4 +46,16 @@ const utils = {
   randomColor,
 };
 
+export const eventNames: { [key: string]: string } = {
+  USED_IMPORT_CSV: 'Used import CSV',
+  IMPORT_RADIO_OPTIONS: 'Import CSV Radio Option Changed',
+  EXPORT_OPTION: 'Used Export CSV',
+  ADD_TABLE: 'Add Table',
+  DELETE_TABLE: 'Delete Table',
+  SEARCH_RECORDS: 'Searching records',
+  FULLSCREEN_MODE: 'FullScreen Enabled',
+  APP_INITIALIZE: 'App Loaded Successfully',
+  APP_INITIALIZE_FAILURE: 'App Load Failure',
+};
+
 export default utils;

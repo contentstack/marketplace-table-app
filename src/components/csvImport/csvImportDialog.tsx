@@ -10,6 +10,7 @@ import {
 import './styles.scss';
 import strings from 'common/locale/en-us';
 import useAnalytics from 'hooks/useAnalytics';
+import { eventNames } from '../../common/utils/index';
 import { ReactComponent as ImportTableIcon } from '../../assets/importTableIcon.svg';
 
 export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) => void }) => {
@@ -21,6 +22,7 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
     component: (modalProps) => {
       const [appendData, setAppendData] = useState(true);
       const { trackEvent } = useAnalytics();
+      const { USED_IMPORT_CSV, IMPORT_RADIO_OPTIONS } = eventNames;
 
       const onCancel = () => {
         modalProps.closeModal();
@@ -31,13 +33,13 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
         modalProps.closeModal();
         props.onSave(appendData);
         // Heap event ** event text would be updated **
-        trackEvent('Used Import CSV');
+        trackEvent(USED_IMPORT_CSV);
       };
 
       const handleToggleAppendData = (value) => {
         setAppendData(value);
         // Heap event ** event text would be updated **
-        trackEvent('Import CSV Radio Option Changed', {
+        trackEvent(IMPORT_RADIO_OPTIONS, {
           'Selected Option': value === true ? 'Append Data' : 'Replace Data',
         });
       };
