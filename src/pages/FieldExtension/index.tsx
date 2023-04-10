@@ -42,7 +42,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   const [tableState, dispatch] = useTableData();
   const { trackEvent } = useAnalytics();
   const [fullScreenMode] = useAtom(fullScreenAtom);
-  const { APP_INITIALIZE, APP_INITIALIZE_FAILURE } = eventNames;
+  const { APP_INITIALIZE_SUCCESS, APP_INITIALIZE_FAILURE } = eventNames;
 
   useEffect(() => {
     try {
@@ -70,7 +70,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
          */
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        appSdk?.pulse(APP_INITIALIZE);
+        appSdk?.pulse(APP_INITIALIZE_SUCCESS);
 
         if (
           !isEmpty(initialData) &&

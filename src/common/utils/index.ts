@@ -54,7 +54,7 @@ export const eventNames: { [key: string]: string } = {
   DELETE_TABLE: 'Delete Table',
   SEARCH_RECORDS: 'Searching records',
   FULLSCREEN_MODE: 'FullScreen Enabled',
-  APP_INITIALIZE: 'App Loaded Successfully',
+  APP_INITIALIZE_SUCCESS: 'App Loaded Successfully',
   APP_INITIALIZE_FAILURE: 'App Load Failure',
 };
 
