@@ -3,7 +3,7 @@
   "version": "0.0.7",
   "private": true,
   "dependencies": {
-    "@contentstack/app-sdk": "1.1.0",
+    "@contentstack/app-sdk": "^1.4.0",
     "@contentstack/venus-components": "1.0.73",
     "@datadog/browser-rum": "^4.25.0",
     "@types/react": "^17.0.47",

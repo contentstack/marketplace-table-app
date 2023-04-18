@@ -105,7 +105,7 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = React.useState(globalFilter);
   const { trackEvent } = useAnalytics();
-  const { FULLSCREEN_MODE, SEARCH_RECORDS, EXPORT_OPTION } = eventNames;
+  const { SEARCH_RECORDS } = eventNames;
   const onChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
   }, 200);
@@ -124,7 +124,7 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
               setValue(e.target.value);
               onChange(e.target.value);
               // Heap event ** event text would be updated **
-              trackEvent(SEARCH_RECORDS);
+              trackEvent(SEARCH_RECORDS, { property: 'Searching records' });
             }}
             placeholder={`Search`}
           />
@@ -336,14 +336,14 @@ export default function Table({
         csvString = Papa.unparse({ data });
       }
       // Heap event ** event text would be updated **
-      trackEvent(EXPORT_OPTION);
+      trackEvent(EXPORT_OPTION, { property: ' Used Export CSV' });
       return new Blob([csvString], { type: 'text/csv' });
     }
   }
 
   const openModal = () => {
     // Heap event ** event text would be updated **
-    trackEvent(FULLSCREEN_MODE);
+    trackEvent(FULLSCREEN_MODE, { property: 'FullScreen Enabled' });
     cbModal({
       component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
       modalProps: {

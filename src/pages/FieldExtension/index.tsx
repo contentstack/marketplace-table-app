@@ -59,11 +59,6 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
         // app Sdk atom for pulse method being utilized in hooks.
         setAppSdk(appSdk);
 
-        // Heap analytic
-
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        appSdk['pulse'] = console.log;
-
         /**
          * Heap analytic ts ignore would be removed later
          * Event name would be updated.
@@ -97,7 +92,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
         addMetadata('stack', `${appSdk?.stack._data.name}`);
         addMetadata('organization', `${appSdk?.currentUser.defaultOrganization}`);
         addMetadata('api_key', `${appSdk?.stack._data.api_key}`);
-        addMetadata('user_uid', `${appSdk?.stack._data.collaborators[0].uid}`);
+        // addMetadata('user_uid', `${appSdk?.stack._data.collaborators[0].uid}`);
         appSdk.location.CustomField?.frame.enableAutoResizing();
         setState({ config, appSdkInitialized: true, location: appSdk.location });
       });
@@ -134,7 +129,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
 
   const handleClick = () => {
     // Heap event ** event text would be updated **
-    trackEvent(ADD_TABLE);
+    trackEvent(ADD_TABLE, { property: 'Add Table' });
     setTable(true);
     dispatch({ type: 'initial_table', payload: utils.makeData(3) });
   };
@@ -161,7 +156,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
 
   const deleteTable = () => {
     // Heap event ** event text would be updated **
-    trackEvent(DELETE_TABLE);
+    trackEvent(DELETE_TABLE, { property: 'Delete Table' });
     setTable(false);
     dispatch({ type: 'delete_table' });
   };

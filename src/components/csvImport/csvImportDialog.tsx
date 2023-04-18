@@ -33,14 +33,15 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
         modalProps.closeModal();
         props.onSave(appendData);
         // Heap event ** event text would be updated **
-        trackEvent(USED_IMPORT_CSV);
+        trackEvent(USED_IMPORT_CSV, { property: 'Used import CSV' });
       };
 
       const handleToggleAppendData = (value) => {
         setAppendData(value);
         // Heap event ** event text would be updated **
         trackEvent(IMPORT_RADIO_OPTIONS, {
-          'Selected Option': value === true ? 'Append Data' : 'Replace Data',
+          property: 'Import CSV Radio Option Changed',
+          'Clicked Option': value === true ? 'Append Data' : 'Replace Data',
         });
       };
 

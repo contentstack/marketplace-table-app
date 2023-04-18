@@ -46,16 +46,16 @@ const utils = {
   randomColor,
 };
 
-export const eventNames: { [key: string]: string } = {
-  USED_IMPORT_CSV: 'Used import CSV',
-  IMPORT_RADIO_OPTIONS: 'Import CSV Radio Option Changed',
-  EXPORT_OPTION: 'Used Export CSV',
-  ADD_TABLE: 'Add Table',
-  DELETE_TABLE: 'Delete Table',
-  SEARCH_RECORDS: 'Searching records',
-  FULLSCREEN_MODE: 'FullScreen Enabled',
+export const eventNames = Object.freeze({
+  USED_IMPORT_CSV: 'Clicked',
+  IMPORT_RADIO_OPTIONS: 'Clicked',
+  EXPORT_OPTION: 'Clicked',
+  ADD_TABLE: 'Clicked',
+  DELETE_TABLE: 'Clicked',
+  SEARCH_RECORDS: 'Viewed',
+  FULLSCREEN_MODE: 'Viewed',
   APP_INITIALIZE_SUCCESS: 'App Loaded Successfully',
   APP_INITIALIZE_FAILURE: 'App Load Failure',
-};
+});
 
 export default utils;
