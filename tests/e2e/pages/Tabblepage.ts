@@ -14,7 +14,7 @@ export class TableApp {
   }
   async Importcsv(){
     await this.page
-    .goto('#!/stack/blt8a1457fb5811b7f0/content-type/test_table_app/en-us/entry/create');
+    .goto('#!/stack/${STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
     await this.page
     .frameLocator('[data-testid="app-extension-frame"]')
     .locator('button:has-text("Import Table")')
@@ -42,7 +42,7 @@ export class TableApp {
   }
   async Enterfullscreen(){
     await this.page
-      .goto('#!/stack/blt8a1457fb5811b7f0/content-type/test_table_app/en-us/entry/create');
+      .goto('#!/stack/${STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('.fullscreenBtn')
@@ -82,7 +82,7 @@ export class TableApp {
   }
   async MoveColumns(){
     await this.page
-      .goto('#!/stack/blt8a1457fb5811b7f0/content-type/test_table_app/en-us/entry/create');
+      .goto('#!/stack/${STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('path:nth-child(6)')
@@ -107,7 +107,7 @@ export class TableApp {
   }
   async MoveRows(){
     await this.page
-      .goto('#!/stack/blt8a1457fb5811b7f0/content-type/test_table_app/en-us/entry/create');
+      .goto('#!/stack/${STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('text=11223312311111111111222222223333333111222333111112222233333111122223333')
@@ -119,7 +119,7 @@ export class TableApp {
   }
   async SortTable(){ //this only will sort ascend or descent
     await this.page
-      .goto('#!/stack/blt8a1457fb5811b7f0/content-type/test_table_app/en-us/entry/create');
+      .goto('#!/stack/${STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('.sc-guDLRT')
