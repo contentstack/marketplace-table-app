@@ -6,6 +6,69 @@ export class TableApp {
   constructor(page: Page) {
     this.page = page;
   }
+
+  async InstallTableApp(){
+    
+    await this.page
+      .goto('/#!/stacks');
+    
+    await this.page
+      .locator('.MarketPlaceIcon > svg > path:nth-child(3)')
+      .click();
+
+    await expect(this.page)
+      .toHaveURL('/#!/marketplace');
+  
+    await this.page
+      .locator('[placeholder="Search for apps\\, starters etc\\."]')
+      .click();
+    
+    await this.page
+      .locator('[placeholder="Search for apps\\, starters etc\\."]')
+      .fill('table');
+
+    await expect(this.page)
+      .toHaveURL('/#!/marketplace?search=table');
+  
+    await this.page
+      .locator('h2:has-text("Table")')
+      .click();
+  
+    await this.page
+      .locator('[data-test-id="app-details-modal-header"] path')
+      .nth(3)
+      .click();
+  
+    await this.page
+      .locator('[data-test-id="apps-table-install-app"]')
+      .click();
+
+    await expect(this.page)
+      .toHaveURL('/#!/apps/625e651a4c5f8f0018356f01/install');
+  
+    await this.page
+      .locator('.Portal__indicator')
+      .click();
+  
+    await this.page
+      .locator('#react-select-2-option-9')
+      .click();
+  
+    await this.page
+      .locator('input[type="checkbox"]')
+      .check();
+
+    await this.page
+      .locator('[data-testid="modal-form-install-authorize"]')
+      .click();
+
+    await expect(this.page)
+    .toHaveURL('/#!/marketplace/installed-apps');
+
+
+  }
+
+
   async createTableApp() {
     await this.page
     .frameLocator('[data-testid="app-extension-frame"]')
@@ -137,4 +200,82 @@ export class TableApp {
       .locator('li:has-text("Delete Table")')
       .click();
   }
+
+  async UninstallTableApp(){
+
+    await this.page
+      .goto('/#!/stacks');
+  
+    await this.page
+      .locator('.MarketPlaceIcon > svg > path') 
+      .first()
+      .click();
+
+    await expect(this.page)
+      .toHaveURL('/#!/marketplace');
+  
+    await this.page
+      .locator('[data-test-id="manage-tab"]')
+      .click();
+
+    await expect(this.page)
+      .toHaveURL('/#!/marketplace/installed-apps?sort=name&order=asc');
+  
+    await this.page
+      .locator('[data-test-id="settings-installed-apps"]')
+      .click();
+  
+    await this.page
+      .locator('[placeholder="Search for apps"]')
+      .click();
+  
+    await this.page
+      .locator('[placeholder="Search for apps"]')
+      .fill('table');
+
+    await expect(this.page)
+      .toHaveURL('/#!/marketplace/installed-apps?order=asc&search=table&sort=name');
+
+    await this.page
+      .locator('[data-test-id="installed-apps-table"]')
+      .click();
+  
+    await this.page
+      .locator('text=E2E TableApp testsEcosystem DevApr 19, 2023 07:57 AM >> [data-test-id="cs-Icon"]')
+      .click();
+
+    await this.page
+      .locator('[data-testid="app-name-to-uninstall"]')
+      .press('CapsLock');
+ 
+    await this.page
+      .locator('[data-testid="app-name-to-uninstall"]')
+      .fill('Table');
+
+    await this.page
+      .locator('[data-testid="modal-form-uninstall"]')
+      .click();
+
+  }
 }
+
+/* 
+
+  INSERT ROWS
+
+  //here need to verify the locator to avoid any error.
+  async InsertRowAbove(){
+    
+    await page
+    .goto('/#!/stack/${STACK_API_KEY}/content-type/tabletest/en-us/entry/create');
+  
+    await page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator('div[role="button"]:has-text("1122Insert Row AboveInsert Row BelowDelete RowInsert Column RightInsert Column L")')
+      .click();
+
+  }
+
+  
+
+*/

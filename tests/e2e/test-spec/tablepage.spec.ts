@@ -3,6 +3,11 @@ import { TableApp } from "../pages/Tabblepage";
 
 test.describe.serial(" Table App at entry", () => {
     let tableapp: TableApp;
+
+    test("Should install the app on a stack", async () => {
+        await tableapp.InstallTableApp();
+    });
+
     test("Should create a new Table on entry", async () => {
         await tableapp.createTableApp();
     });
@@ -29,5 +34,9 @@ test.describe.serial(" Table App at entry", () => {
     });
     test("Should delete the table", async () => {
         await tableapp.DeleteTable();
+    });
+
+    test("Should uninstall the app on a stack", async () => {
+        await tableapp.UninstallTableApp();
     });
 });
