@@ -241,7 +241,7 @@ export class TableApp {
       .click();
   
     await this.page
-      .locator('text=E2E TableApp testsEcosystem DevApr 19, 2023 07:57 AM >> [data-test-id="cs-Icon"]')
+      .locator("body > div.ReactModalPortal > div > div > div.App_Details_Body > div > div.Tab__Info > div > div > div > div.Table > div > div > div:nth-child(1) > div.Table__body > div > div:nth-child(1) > div > div.Table__body__column.Installation__Actions--col > div > div > span > div > div")
       .click();
 
     await this.page
