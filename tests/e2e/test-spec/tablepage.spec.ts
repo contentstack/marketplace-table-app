@@ -5,7 +5,7 @@ test.describe.serial(" Table App at entry", () => {
     let tableapp: TableApp;
 
     test("Should install the app on a stack", async () => {
-        await tableapp.InstallTableApp();
+        await tableapp.installTableApp();
     });
 
     test("Should create a new Table on entry", async () => {
@@ -37,6 +37,6 @@ test.describe.serial(" Table App at entry", () => {
     });
 
     test("Should uninstall the app on a stack", async () => {
-        await tableapp.UninstallTableApp();
+        await tableapp.uninstallTableApp();
     });
 });

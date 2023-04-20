@@ -7,7 +7,7 @@ export class TableApp {
     this.page = page;
   }
 
-  async InstallTableApp(){
+  async installTableApp(){
     
     await this.page
       .goto('/#!/stacks');
@@ -44,7 +44,7 @@ export class TableApp {
       .click();
 
     await expect(this.page)
-      .toHaveURL('/#!/apps/625e651a4c5f8f0018356f01/install');
+      .toHaveURL('/#!/apps/${STACK_URL}/install');
   
     await this.page
       .locator('.Portal__indicator')
@@ -77,7 +77,7 @@ export class TableApp {
   }
   async Importcsv(){
     await this.page
-    .goto('#!/stack/${STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
+    .goto('#!/stack/${process.env.STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
     await this.page
     .frameLocator('[data-testid="app-extension-frame"]')
     .locator('button:has-text("Import Table")')
@@ -201,7 +201,7 @@ export class TableApp {
       .click();
   }
 
-  async UninstallTableApp(){
+  async uninstallTableApp(){
 
     await this.page
       .goto('/#!/stacks');
