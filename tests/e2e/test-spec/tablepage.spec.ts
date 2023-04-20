@@ -32,6 +32,25 @@ test.describe.serial(" Table App at entry", () => {
     test("Should sort the table rows order ascedent or descendent", async () => {
         await tableapp.SortTable();
     });
+
+    test("Should add a row above the current row", async () => {
+        await tableapp.insertRowAbove();
+    });
+    test("Should add a row below the current row", async () => {
+        await tableapp.insertRowBelow();
+    });
+    test("Should delete the whole row", async () => {
+        await tableapp.deleteRow();
+    });
+    test("Should add a column on the rightside of the current column", async () => {
+        await tableapp.insertColumnRight();
+    });
+    test("Should add a column on the leftside of the current column", async () => {
+        await tableapp.insertColumnLeft();
+    });
+    test("Should delete the whole column", async () => {
+        await tableapp.deleteColumn();
+    });
     test("Should delete the table", async () => {
         await tableapp.DeleteTable();
     });

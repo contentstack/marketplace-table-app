@@ -170,7 +170,7 @@ export class TableApp {
   }
   async MoveRows(){
     await this.page
-      .goto('#!/stack/${STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
+      .goto('#!/stack/${process.env.STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('text=11223312311111111111222222223333333111222333111112222233333111122223333')
@@ -182,7 +182,7 @@ export class TableApp {
   }
   async SortTable(){ //this only will sort ascend or descent
     await this.page
-      .goto('#!/stack/${STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
+      .goto('#!/stack/${process.env.STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('.sc-guDLRT')
@@ -257,25 +257,58 @@ export class TableApp {
       .click();
 
   }
-}
 
-/* 
 
-  INSERT ROWS
+  async insertRowAbove(){
 
-  //here need to verify the locator to avoid any error.
-  async InsertRowAbove(){
-    
-    await page
-    .goto('/#!/stack/${STACK_API_KEY}/content-type/tabletest/en-us/entry/create');
-  
-    await page
+    await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('div[role="button"]:has-text("1122Insert Row AboveInsert Row BelowDelete RowInsert Column RightInsert Column L")')
+      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(1)")
       .click();
 
   }
 
+  async insertRowBelow(){
+    
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(2)")
+      .click();
+
+  }
+
+  async deleteRow(){
+  
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(3)")
+      .click();
+  }
+
+  async insertColumnRight(){
+  
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(4)")
+      .click();
+  }
+
+  async insertColumnLeft(){
+  
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(5)")
+      .click();
+  }
+
+  async deleteColumn(){
+
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(6)")
+      .click();
+  }
+
+}
   
 
-*/
