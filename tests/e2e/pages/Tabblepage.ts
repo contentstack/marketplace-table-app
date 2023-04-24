@@ -1,5 +1,8 @@
-import { test, expect, Locator, Page, Frame } from '@playwright/test';
+import { expect, Locator, Page, Frame } from '@playwright/test';
+import { elements } from '../elements/Tabbleapppage.elements';
 
+let apiKey = process.env.STACK_API_KEY
+let stackURL = process.env.STACK_URL
 
 export class TableApp {
   readonly page: Page;
@@ -44,7 +47,7 @@ export class TableApp {
       .click();
 
     await expect(this.page)
-      .toHaveURL('/#!/apps/${STACK_URL}/install');
+      .toHaveURL(`/#!/apps/${stackURL}/install`);
   
     await this.page
       .locator('.Portal__indicator')
@@ -77,7 +80,7 @@ export class TableApp {
   }
   async Importcsv(){
     await this.page
-    .goto('#!/stack/${process.env.STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
+    .goto(`#!/stack/${apiKey}/content-type/test_table_app/en-us/entry/create`);
     await this.page
     .frameLocator('[data-testid="app-extension-frame"]')
     .locator('button:has-text("Import Table")')
@@ -85,7 +88,7 @@ export class TableApp {
     await this.page
     .frameLocator('[data-testid="app-extension-frame"]')
     .locator('body:has-text("Press space bar to start a drag. When dragging you can use the arrow keys to mov")')
-    .setInputFiles('Untitled spreadsheet - Sheet1.csv');
+    .setInputFiles('demo_spreadsheet_table_app.csv');
   }
   async Exportcsv(){
     const [download] = await Promise.all([
@@ -105,7 +108,7 @@ export class TableApp {
   }
   async Enterfullscreen(){
     await this.page
-      .goto('#!/stack/${STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
+      .goto(`#!/stack/${apiKey}/content-type/test_table_app/en-us/entry/create`);
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('.fullscreenBtn')
@@ -145,7 +148,7 @@ export class TableApp {
   }
   async MoveColumns(){
     await this.page
-      .goto('#!/stack/${STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
+      .goto(`#!/stack/${apiKey}/content-type/test_table_app/en-us/entry/create`);
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('path:nth-child(6)')
@@ -169,20 +172,27 @@ export class TableApp {
       .click();
   }
   async MoveRows(){
-    await this.page
-      .goto('#!/stack/${process.env.STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
-    await this.page
-      .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('text=11223312311111111111222222223333333111222333111112222233333111122223333')
-      .click();
-    await this.page
-      .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('text=11111111111222222223333333112233123111222333111112222233333111122223333')
-      .click();
+    
+      const locatorToDrag = this.page.locator("");
+      const locatorDragTarget = this.page.locator("");
+      const toDragBox = await locatorToDrag.boundingBox();
+      const dragTargetBox = await locatorDragTarget.boundingBox();
+
+      await this.page.mouse.move(
+          toDragBox!.x + toDragBox!.width / 2,
+          toDragBox!.y + toDragBox!.height / 2
+      );
+      await this.page.mouse.down();
+      await this.page.mouse.move(
+          dragTargetBox!.x + dragTargetBox!.width / 2,
+          dragTargetBox!.y + dragTargetBox!.height / 2
+      );
+      await this.page.mouse.up();
+
   }
   async SortTable(){ //this only will sort ascend or descent
     await this.page
-      .goto('#!/stack/${process.env.STACK_API_KEY}/content-type/test_table_app/en-us/entry/create');
+      .goto(`#!/stack/${apiKey}/content-type/test_table_app/en-us/entry/create`);
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('.sc-guDLRT')
@@ -241,7 +251,7 @@ export class TableApp {
       .click();
   
     await this.page
-      .locator("body > div.ReactModalPortal > div > div > div.App_Details_Body > div > div.Tab__Info > div > div > div > div.Table > div > div > div:nth-child(1) > div.Table__body > div > div:nth-child(1) > div > div.Table__body__column.Installation__Actions--col > div > div > span > div > div")
+      .locator(elements.uninstalltableLocator)
       .click();
 
     await this.page
@@ -263,7 +273,7 @@ export class TableApp {
 
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(1)")
+      .locator(elements.insertRowAboveLocator)
       .click();
 
   }
@@ -272,7 +282,7 @@ export class TableApp {
     
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(2)")
+      .locator(elements.insertRowBelowLocator)
       .click();
 
   }
@@ -281,7 +291,7 @@ export class TableApp {
   
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(3)")
+      .locator(elements.deleteRowLocator)
       .click();
   }
 
@@ -289,7 +299,7 @@ export class TableApp {
   
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(4)")
+      .locator(elements.insertColumnRightLocator)
       .click();
   }
 
@@ -297,7 +307,7 @@ export class TableApp {
   
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(5)")
+      .locator(elements.insertColumnLeftLocator)
       .click();
   }
 
@@ -305,7 +315,7 @@ export class TableApp {
 
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator("#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(6)")
+      .locator(elements.deleteColumnLocator)
       .click();
   }
 
