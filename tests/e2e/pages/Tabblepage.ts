@@ -171,10 +171,12 @@ export class TableApp {
       .locator('.search-wrapper')
       .click();
   }
+
+  /* 
   async MoveRows(){
     
-      const locatorToDrag = this.page.locator("");
-      const locatorDragTarget = this.page.locator("");
+      const locatorToDrag = this.page.locator(elements.oroginDragnDrop);
+      const locatorDragTarget = this.page.locator(elements.destinyDragnDrop);
       const toDragBox = await locatorToDrag.boundingBox();
       const dragTargetBox = await locatorDragTarget.boundingBox();
 
@@ -190,6 +192,8 @@ export class TableApp {
       await this.page.mouse.up();
 
   }
+*/
+
   async SortTable(){ //this only will sort ascend or descent
     await this.page
       .goto(`#!/stack/${apiKey}/content-type/test_table_app/en-us/entry/create`);

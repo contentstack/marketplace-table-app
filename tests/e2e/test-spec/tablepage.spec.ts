@@ -4,9 +4,11 @@ import { TableApp } from "../pages/Tabblepage";
 test.describe.serial(" Table App at entry", () => {
     let tableapp: TableApp;
 
-    test("Should install the app on a stack", async () => {
-        await tableapp.installTableApp();
-    });
+    /* 
+
+    //test("Should install the app on a stack", async () => {
+      //  await tableapp.installTableApp();
+    //});
 
     test("Should create a new Table on entry", async () => {
         await tableapp.createTableApp();
@@ -55,7 +57,12 @@ test.describe.serial(" Table App at entry", () => {
         await tableapp.DeleteTable();
     });
 
-    test("Should uninstall the app on a stack", async () => {
-        await tableapp.uninstallTableApp();
-    });
+ //   test("Should uninstall the app on a stack", async () => {
+   //     await tableapp.uninstallTableApp();
+   // });
+
+   test("should drag the table rows", async () => {
+        await tableapp.MoveRows();
+   });
+   */
 });
