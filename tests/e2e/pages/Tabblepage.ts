@@ -78,6 +78,7 @@ export class TableApp {
     .locator('[data-test-id="cs-button"]')
     .click();
   }
+
   async Importcsv(){
     await this.page
     .goto(`#!/stack/${apiKey}/content-type/test_table_app/en-us/entry/create`);
@@ -172,7 +173,7 @@ export class TableApp {
       .click();
   }
 
-  /* 
+   
   async MoveRows(){
     
       const locatorToDrag = this.page.locator(elements.oroginDragnDrop);
@@ -192,7 +193,7 @@ export class TableApp {
       await this.page.mouse.up();
 
   }
-*/
+
 
   async SortTable(){ //this only will sort ascend or descent
     await this.page

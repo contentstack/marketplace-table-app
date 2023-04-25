@@ -1,18 +1,25 @@
 import { expect, test } from "@playwright/test";
 import { TableApp } from "../pages/Tabblepage";
 
+
 test.describe.serial(" Table App at entry", () => {
-    let tableapp: TableApp;
+    
+    let tableapp;
 
-    /* 
+    test.use({ storageState: "storageState.json" });
 
-    //test("Should install the app on a stack", async () => {
-      //  await tableapp.installTableApp();
-    //});
+    test.beforeEach( async ({page}) => {
+        tableapp = new TableApp(page);
+    });
 
-    test("Should create a new Table on entry", async () => {
+    test.only("Should install the app on a stack", async () => {
+        await tableapp.installTableApp();
+      });
+
+    test.only("Should create a new Table on entry", async ({page}) => {
         await tableapp.createTableApp();
     });
+
     test("Should import a csv file", async () => {
         await tableapp.Importcsv();
     });
@@ -57,12 +64,12 @@ test.describe.serial(" Table App at entry", () => {
         await tableapp.DeleteTable();
     });
 
- //   test("Should uninstall the app on a stack", async () => {
-   //     await tableapp.uninstallTableApp();
-   // });
+   test("Should uninstall the app on a stack", async () => {
+        await tableapp.uninstallTableApp();
+    });
 
    test("should drag the table rows", async () => {
         await tableapp.MoveRows();
    });
-   */
+   
 });
