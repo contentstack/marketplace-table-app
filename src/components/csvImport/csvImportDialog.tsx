@@ -9,7 +9,8 @@ import {
 } from '@contentstack/venus-components';
 import './styles.scss';
 import strings from 'common/locale/en-us';
-import { useAnalytics } from 'hooks/useMixPanel';
+import useAnalytics from 'hooks/useAnalytics';
+import { eventNames } from '../../common/utils/index';
 import { ReactComponent as ImportTableIcon } from '../../assets/importTableIcon.svg';
 
 export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) => void }) => {
@@ -21,26 +22,26 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
     component: (modalProps) => {
       const [appendData, setAppendData] = useState(true);
       const { trackEvent } = useAnalytics();
+      const { USED_IMPORT_CSV, IMPORT_RADIO_OPTIONS } = eventNames;
 
       const onCancel = () => {
         modalProps.closeModal();
         props.onCancel();
-        //mixpanel event
-        trackEvent('Import CSV Modal Closed');
       };
 
       const onSave = () => {
         modalProps.closeModal();
         props.onSave(appendData);
-        //mixpanel event
-        trackEvent('Import CSV Completed');
+        // Heap event ** event text would be updated **
+        trackEvent(USED_IMPORT_CSV, { property: 'Used import CSV' });
       };
 
       const handleToggleAppendData = (value) => {
         setAppendData(value);
-        //mixpanel event
-        trackEvent('Import CSV Radio Option Changed', {
-          'Selected Option': value === true ? 'Append Data' : 'Replace Data',
+        // Heap event ** event text would be updated **
+        trackEvent(IMPORT_RADIO_OPTIONS, {
+          property: 'Import CSV Radio Option Changed',
+          'Clicked Option': value === true ? 'Append Data' : 'Replace Data',
         });
       };
 
