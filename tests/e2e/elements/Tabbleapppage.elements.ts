@@ -8,4 +8,12 @@ export const elements = {
     insertColumnLeftLocator: "#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(5)",
     insertColumnRightLocator: "#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(4)",
     deleteColumnLocator: "#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(6)",
+    searchExample: "1",
+    cellHeaderLocator: "#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.data-input",
+    headerDropdownbutton: "#table-actions > div > div > svg > path:nth-child(2)",
+    setHeaderRowLocator: "#table-actions > div > div.Dropdown__menu--primary > ul > li:nth-child(1) > div.toggle > div > label > span",
+    setHeaderColumnLocator: "#table-actions > div > div.Dropdown__menu--primary > ul > li:nth-child(2) > div.toggle > div > label > span",
+    sortHeaderCell: "#tableRef > div:nth-child(1) > div > div:nth-child(2) > div > div.th.noselect > div.th-content",
+    cellArrowDropdown: "#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(1) > div > div.cell-dropdown > div > div.Dropdown__header > svg",
+    deleteTableLocator: "#table-actions > div > div.Dropdown__menu--primary > ul > li.Dropdown__menu__list__item.delete-option"
 };

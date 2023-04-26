@@ -1,7 +1,6 @@
-import { expect, Locator, Page, Frame } from '@playwright/test';
+import { expect, Locator, Page, Frame, FileChooser } from '@playwright/test';
 import { elements } from '../elements/Tabbleapppage.elements';
 
-let apiKey = process.env.STACK_API_KEY
 let stackURL = process.env.STACK_URL
 
 export class TableApp {
@@ -13,7 +12,7 @@ export class TableApp {
   async installTableApp(){
     
     await this.page
-      .goto('/#!/stacks');
+      .goto(`/#!/stacks`);
     
     await this.page
       .locator('.MarketPlaceIcon > svg > path:nth-child(3)')
@@ -73,24 +72,36 @@ export class TableApp {
 
 
   async createTableApp() {
+
+    await this.page
+      .goto(`/#!/stack/${stackURL}/content-type/tabletest/en-us/entry/create`);
+
     await this.page
     .frameLocator('[data-testid="app-extension-frame"]')
     .locator('[data-test-id="cs-button"]')
     .click();
+
   }
 
   async Importcsv(){
     await this.page
-    .goto(`#!/stack/${apiKey}/content-type/test_table_app/en-us/entry/create`);
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator('.importCSV')
+      .click();
     await this.page
-    .frameLocator('[data-testid="app-extension-frame"]')
-    .locator('button:has-text("Import Table")')
-    .click();
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator('label:has-text("Replace Data")')
+      .click();
     await this.page
-    .frameLocator('[data-testid="app-extension-frame"]')
-    .locator('body:has-text("Press space bar to start a drag. When dragging you can use the arrow keys to mov")')
-    .setInputFiles('demo_spreadsheet_table_app.csv');
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator('button:has-text("Import Table")')
+      .click()
+    await this.page
+      .on("filechooser", (fileChooser: FileChooser) => {
+        fileChooser.setFiles(["tests/e2e/downloads/demo_spreadsheet_table_app.csv"]);
+      })
   }
+
   async Exportcsv(){
     const [download] = await Promise.all([
       this.page.waitForEvent('download'),
@@ -105,11 +116,9 @@ export class TableApp {
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('[placeholder="Search"]')
-      .fill('1');
+      .fill(`${elements.searchExample}`);
   }
   async Enterfullscreen(){
-    await this.page
-      .goto(`#!/stack/${apiKey}/content-type/test_table_app/en-us/entry/create`);
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('.fullscreenBtn')
@@ -122,34 +131,37 @@ export class TableApp {
   async makeHeaderRow(){
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('[data-test-id="cs-button"]')
+      .locator(elements.cellHeaderLocator)
       .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('path:nth-child(2)')
-      .first()
+      .locator(elements.headerDropdownbutton)
       .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('span')
+      .locator(elements.setHeaderRowLocator)
       .first()
       .click();
   }
+
   async makeHeaderColumn(){
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('path:nth-child(3)')
-      .first()
+      .locator(elements.cellHeaderLocator)
       .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('span')
-      .nth(1)
+      .locator(elements.headerDropdownbutton)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.setHeaderColumnLocator)
+      .first()
       .click();
   }
+
+
   async MoveColumns(){
-    await this.page
-      .goto(`#!/stack/${apiKey}/content-type/test_table_app/en-us/entry/create`);
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('path:nth-child(6)')
@@ -175,7 +187,6 @@ export class TableApp {
 
    
   async MoveRows(){
-    
       const locatorToDrag = this.page.locator(elements.oroginDragnDrop);
       const locatorDragTarget = this.page.locator(elements.destinyDragnDrop);
       const toDragBox = await locatorToDrag.boundingBox();
@@ -197,29 +208,50 @@ export class TableApp {
 
   async SortTable(){ //this only will sort ascend or descent
     await this.page
-      .goto(`#!/stack/${apiKey}/content-type/test_table_app/en-us/entry/create`);
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellHeaderLocator)
+      .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('.sc-guDLRT')
+      .locator(elements.headerDropdownbutton)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.setHeaderRowLocator)
       .first()
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.headerDropdownbutton)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.sortHeaderCell)
+      .click();
+      await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.sortHeaderCell)
       .click();
   }
   async DeleteTable(){
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('path:nth-child(3)')
-      .first()
+      .locator(elements.cellHeaderLocator)
       .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('li:has-text("Delete Table")')
+      .locator(elements.headerDropdownbutton)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.deleteTableLocator)
       .click();
   }
 
   async uninstallTableApp(){
 
-    await this.page
-      .goto('/#!/stacks');
+    //await this.page
+    //  .goto('/#!/stacks');
   
     await this.page
       .locator('.MarketPlaceIcon > svg > path') 
@@ -275,7 +307,10 @@ export class TableApp {
 
 
   async insertRowAbove(){
-
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdown)
+      .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.insertRowAboveLocator)
@@ -284,7 +319,10 @@ export class TableApp {
   }
 
   async insertRowBelow(){
-    
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdown)
+      .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.insertRowBelowLocator)
@@ -293,7 +331,10 @@ export class TableApp {
   }
 
   async deleteRow(){
-  
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdown)
+      .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.deleteRowLocator)
@@ -301,7 +342,10 @@ export class TableApp {
   }
 
   async insertColumnRight(){
-  
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdown)
+      .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.insertColumnRightLocator)
@@ -309,7 +353,10 @@ export class TableApp {
   }
 
   async insertColumnLeft(){
-  
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdown)
+      .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.insertColumnLeftLocator)
@@ -317,7 +364,10 @@ export class TableApp {
   }
 
   async deleteColumn(){
-
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdown)
+      .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.deleteColumnLocator)
