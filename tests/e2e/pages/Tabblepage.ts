@@ -93,13 +93,13 @@ export class TableApp {
       .locator('label:has-text("Replace Data")')
       .click();
     await this.page
-      .frameLocator('[data-testid="app-extension-frame"]')
-      .locator('button:has-text("Import Table")')
-      .click()
-    await this.page
       .on("filechooser", (fileChooser: FileChooser) => {
         fileChooser.setFiles(["tests/e2e/downloads/demo_spreadsheet_table_app.csv"]);
       })
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator('button:has-text("Import Table")')
+      .click()
       
   }
 
