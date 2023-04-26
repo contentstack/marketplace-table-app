@@ -146,14 +146,6 @@ export class TableApp {
   }
 
   async makeHeaderColumn(){
-   // await this.page
-     // .frameLocator('[data-testid="app-extension-frame"]')
-     // .locator(elements.cellHeaderLocator)
-     // .click();
-   // await this.page
-     // .frameLocator('[data-testid="app-extension-frame"]')
-     // .locator(elements.headerDropdownbutton)
-     // .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.setHeaderColumnLocator)
@@ -208,23 +200,6 @@ export class TableApp {
 
 
   async SortTable(){ //this only will sort ascend or descent
-   /* await this.page
-      .frameLocator('[data-testid="app-extension-frame"]')
-      .locator(elements.cellHeaderLocator)
-      .click();
-    await this.page
-      .frameLocator('[data-testid="app-extension-frame"]')
-      .locator(elements.headerDropdownbutton)
-      .click();
-    await this.page
-      .frameLocator('[data-testid="app-extension-frame"]')
-      .locator(elements.setHeaderRowLocator)
-      .first()
-      .click();
-    await this.page
-      .frameLocator('[data-testid="app-extension-frame"]')
-      .locator(elements.headerDropdownbutton)
-      .click();*/
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.sortHeaderCell)
@@ -251,8 +226,8 @@ export class TableApp {
 
   async uninstallTableApp(){
 
-    //await this.page
-    //  .goto('/#!/stacks');
+    await this.page
+      .goto('/#!/stacks');
   
     await this.page
       .locator('.MarketPlaceIcon > svg > path') 

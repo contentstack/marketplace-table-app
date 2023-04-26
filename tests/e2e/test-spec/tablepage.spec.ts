@@ -16,12 +16,23 @@ test.describe.serial(" Table App at entry", () => {
     test("Should import a csv file", async ({page}) => {
         await tableapp.Importcsv();
     });
+    
     test("Should allow to search data inside the table", async ({page}) => {
         await tableapp.SearchonTable();
     });
     test("Should start the full screen mode", async ({page}) => {
         await tableapp.Enterfullscreen();
     });
+
+    test("Should make all the actions possible in the rows and columns", async ({page}) => {
+        await tableapp.insertRowAbove();
+        await tableapp.insertRowBelow();
+        await tableapp.deleteRow();
+        await tableapp.insertColumnRight();
+        await tableapp.insertColumnLeft();
+        await tableapp.deleteColumn();
+    });
+    
     test("Should export the table into a csv file", async ({page}) => {
         await tableapp.Exportcsv();
     });
@@ -35,19 +46,6 @@ test.describe.serial(" Table App at entry", () => {
         await tableapp.SortTable();
     });
 
-    test.skip("should drag the table rows", async ({page}) => {
-        await tableapp.MoveRows();
-   });
-
-    test.only("Should make all the actions possible in the rows and columns", async ({page}) => {
-        await tableapp.insertRowAbove();
-        await tableapp.insertRowBelow();
-        await tableapp.deleteRow();
-        await tableapp.insertColumnRight();
-        await tableapp.insertColumnLeft();
-        await tableapp.deleteColumn();
-    });
-    
     test("Should delete the table", async ({page}) => {
         await tableapp.DeleteTable();
     });
