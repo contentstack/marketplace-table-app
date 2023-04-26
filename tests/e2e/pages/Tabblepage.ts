@@ -100,6 +100,7 @@ export class TableApp {
       .on("filechooser", (fileChooser: FileChooser) => {
         fileChooser.setFiles(["tests/e2e/downloads/demo_spreadsheet_table_app.csv"]);
       })
+      
   }
 
   async Exportcsv(){
@@ -145,14 +146,14 @@ export class TableApp {
   }
 
   async makeHeaderColumn(){
-    await this.page
-      .frameLocator('[data-testid="app-extension-frame"]')
-      .locator(elements.cellHeaderLocator)
-      .click();
-    await this.page
-      .frameLocator('[data-testid="app-extension-frame"]')
-      .locator(elements.headerDropdownbutton)
-      .click();
+   // await this.page
+     // .frameLocator('[data-testid="app-extension-frame"]')
+     // .locator(elements.cellHeaderLocator)
+     // .click();
+   // await this.page
+     // .frameLocator('[data-testid="app-extension-frame"]')
+     // .locator(elements.headerDropdownbutton)
+     // .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.setHeaderColumnLocator)
@@ -207,7 +208,7 @@ export class TableApp {
 
 
   async SortTable(){ //this only will sort ascend or descent
-    await this.page
+   /* await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.cellHeaderLocator)
       .click();
@@ -223,7 +224,7 @@ export class TableApp {
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.headerDropdownbutton)
-      .click();
+      .click();*/
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.sortHeaderCell)
@@ -309,16 +310,31 @@ export class TableApp {
   async insertRowAbove(){
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.selectCellLocator)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.cellArrowDropdown)
       .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.insertRowAboveLocator)
       .click();
-
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdown)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.selectCellLocator)
+      .click();
   }
 
   async insertRowBelow(){
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.selectCellLocator)
+      .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.cellArrowDropdown)
@@ -327,10 +343,22 @@ export class TableApp {
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.insertRowBelowLocator)
       .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdown)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.selectCellLocator)
+      .click();
 
   }
 
   async deleteRow(){
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.selectCellLocator)
+      .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.cellArrowDropdown)
@@ -339,34 +367,70 @@ export class TableApp {
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.deleteRowLocator)
       .click();
-  }
-
-  async insertColumnRight(){
-    await this.page
+      await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.cellArrowDropdown)
       .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.selectCellLocator)
+      .click();
+  }
+
+  async insertColumnRight(){
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.selectLocatorColumnCell)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdownColumn)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.insertColumnRightLocator)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdownColumn)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.selectLocatorColumnCell)
       .click();
   }
 
   async insertColumnLeft(){
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator(elements.cellArrowDropdown)
+      .locator(elements.selectLocatorColumnCell)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdownColumn)
       .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.insertColumnLeftLocator)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdownColumntwo)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.selectLocatorColumnCelltwo)
       .click();
   }
 
   async deleteColumn(){
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
-      .locator(elements.cellArrowDropdown)
+      .locator(elements.selectLocatorColumnCelltwo)
+      .click();
+    await this.page
+      .frameLocator('[data-testid="app-extension-frame"]')
+      .locator(elements.cellArrowDropdownColumntwo)
       .click();
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
