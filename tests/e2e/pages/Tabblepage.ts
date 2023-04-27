@@ -1,8 +1,6 @@
 import { expect, Locator, Page, Frame, FileChooser } from '@playwright/test';
 import { elements } from '../elements/Tabbleapppage.elements';
 
-let stackURL = process.env.STACK_URL
-
 export class TableApp {
   readonly page: Page;
   constructor(page: Page) {
@@ -10,71 +8,77 @@ export class TableApp {
   }
 
   async installTableApp(){
+
+  await this.page
+  .goto('/#!/marketplace');
     
-    await this.page
-      .goto(`/#!/stacks`);
-    
-    await this.page
-      .locator('.MarketPlaceIcon > svg > path:nth-child(3)')
-      .click();
-
-    await expect(this.page)
-      .toHaveURL('/#!/marketplace');
+  await this.page.locator('#incubation-microapps svg').nth(1).click();
+  await expect(this.page).toHaveURL('/#!/marketplace');
   
-    await this.page
-      .locator('[placeholder="Search for apps\\, starters etc\\."]')
-      .click();
-    
-    await this.page
-      .locator('[placeholder="Search for apps\\, starters etc\\."]')
-      .fill('table');
-
-    await expect(this.page)
-      .toHaveURL('/#!/marketplace?search=table');
+  await this.page.locator('[data-test-id="cs-search-input-field"]').click();
   
-    await this.page
-      .locator('h2:has-text("Table")')
-      .click();
+  await this.page.locator('[data-test-id="cs-search-input-field"]').press('CapsLock');
   
-    await this.page
-      .locator('[data-test-id="app-details-modal-header"] path')
-      .nth(3)
-      .click();
+  await this.page.locator('[data-test-id="cs-search-input-field"]').fill('Table');
+  await expect(this.page).toHaveURL('/#!/marketplace?search=Table');
   
-    await this.page
-      .locator('[data-test-id="apps-table-install-app"]')
-      .click();
-
-    await expect(this.page)
-      .toHaveURL(`/#!/apps/${stackURL}/install`);
+  await this.page.locator('[data-test-id="apps-table-install-app"]').click();
+  await expect(this.page).toHaveURL(`/#!/apps/625e651a4c5f8f0018356f01/install`); //thats the link of the Tableapp
   
-    await this.page
-      .locator('.Portal__indicator')
-      .click();
+  await this.page.locator('[data-test-id="cs-select"] div:has-text("Select Option")').nth(2).click();
   
-    await this.page
-      .locator('#react-select-2-option-9')
-      .click();
+  await this.page.locator('text=Table App E2E Development').click();
   
-    await this.page
-      .locator('input[type="checkbox"]')
-      .check();
+  await this.page.locator('input[type="checkbox"]').check();
+  
+  await this.page.locator('[data-testid="modal-form-install-authorize"]').click();
+  await expect(this.page).toHaveURL('/#!/marketplace/installed-apps');
+  
+  await this.page.locator('#microapps-links [aria-label="Stacks"]').click();
+  await expect(this.page).toHaveURL('/#!/stacks');
+  
+  await this.page.locator('[data-test-id="cs-page-layout"] >> text=Table App E2E Development').click();
+  await expect(this.page).toHaveURL(`/#!/stack/${process.env.STACK_API_KEY}/dashboard`);
 
-    await this.page
-      .locator('[data-testid="modal-form-install-authorize"]')
-      .click();
-
-    await expect(this.page)
-    .toHaveURL('/#!/marketplace/installed-apps');
-
-
+  await this.page.locator('[aria-label="Content-models"] svg').click();
+  await expect(this.page).toHaveURL(`/#!/stack/${process.env.STACK_API_KEY}/content-types`);
+  
+  await this.page.locator('[data-test-id="cs-cb-empty-new-ct"]').click();
+  
+  await this.page.locator('[placeholder="Enter content type name"]').press('CapsLock');
+  
+  await this.page.locator('[placeholder="Enter content type name"]').fill('Table');
+  
+  await this.page.locator('[placeholder="Enter content type name"]').press('CapsLock');
+  
+  await this.page.locator('[placeholder="Enter content type name"]').fill('TableApp');
+  
+  await this.page.locator('[data-test-id="cs-cb-edit-ct-details"]').click();
+  await expect(this.page).toHaveURL(`/#!/stack/${process.env.STACK_API_KEY}/content-type/tableapp/content-type-builder`);
+  
+  await this.page.locator('[data-test-id="cs-field-type-selector"] path').click();
+  
+  await this.page.locator('#InfoModalWrapper div:has-text("Custom")').nth(3).click();
+  
+  await this.page.locator('[data-test-id="empty-state"] svg').click();
+  
+  await this.page.locator('div[role="cell"]:has-text("Table")').first().click();
+  
+  await this.page.locator('[data-test-id="cs-new-entry-single-proceed"]').click();
+  
+  await this.page.locator('[data-test-id="cs-ct-save-close"]').click();
+  await expect(this.page).toHaveURL(`/#!/stack/${process.env.STACK_API_KEY}/content-types`);
+  
+  await this.page.locator('[aria-label="Entries"] svg').click();
+  await expect(this.page).toHaveURL(`/#!/stack/${process.env.STACK_API_KEY}/entries`);
+  
   }
 
 
   async createTableApp() {
 
     await this.page
-      .goto(`/#!/stack/${stackURL}/content-type/tabletest/en-us/entry/create`);
+      .goto(`/#!/stack/${process.env.STACK_API_KEY}/content-type/tableapp/en-us/entry/create`);
 
     await this.page
     .frameLocator('[data-testid="app-extension-frame"]')
@@ -83,7 +87,7 @@ export class TableApp {
 
   }
 
-  async Importcsv(){
+  async importCsv(){
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('.importCSV')
@@ -103,13 +107,13 @@ export class TableApp {
       
   }
 
-  async Exportcsv(){
+  async exportCsv(){
     const [download] = await Promise.all([
       this.page.waitForEvent('download'),
       this.page.frameLocator('[data-testid="app-extension-frame"]').locator('.exportCSV').click()
     ]);
   }
-  async SearchonTable(){
+  async searchonTable(){
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('[placeholder="Search"]')
@@ -119,7 +123,7 @@ export class TableApp {
       .locator('[placeholder="Search"]')
       .fill(`${elements.searchExample}`);
   }
-  async Enterfullscreen(){
+  async enterFullscreen(){
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('.fullscreenBtn')
@@ -154,7 +158,7 @@ export class TableApp {
   }
 
 
-  async MoveColumns(){
+  async moveColumns(){
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('path:nth-child(6)')
@@ -178,28 +182,8 @@ export class TableApp {
       .click();
   }
 
-   
-  async MoveRows(){
-      const locatorToDrag = this.page.locator(elements.oroginDragnDrop);
-      const locatorDragTarget = this.page.locator(elements.destinyDragnDrop);
-      const toDragBox = await locatorToDrag.boundingBox();
-      const dragTargetBox = await locatorDragTarget.boundingBox();
 
-      await this.page.mouse.move(
-          toDragBox!.x + toDragBox!.width / 2,
-          toDragBox!.y + toDragBox!.height / 2
-      );
-      await this.page.mouse.down();
-      await this.page.mouse.move(
-          dragTargetBox!.x + dragTargetBox!.width / 2,
-          dragTargetBox!.y + dragTargetBox!.height / 2
-      );
-      await this.page.mouse.up();
-
-  }
-
-
-  async SortTable(){ //this only will sort ascend or descent
+  async sortTable(){ //this only will sort ascend or descent
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.sortHeaderCell)
@@ -209,7 +193,7 @@ export class TableApp {
       .locator(elements.sortHeaderCell)
       .click();
   }
-  async DeleteTable(){
+  async deleteTable(){
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.cellHeaderLocator)
@@ -222,20 +206,25 @@ export class TableApp {
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator(elements.deleteTableLocator)
       .click();
+    await this.page
+      .locator('text=StackTable App E2E Development edSearch Entries(⌘K)EntriesEnter keywords, or hit >> [aria-label="Stacks"] svg')
+      .click();
+      
+    await this.page
+      .locator('[data-test-id="cs-dont-save-entry"]')
+      .click();
+    await expect(this.page)
+    .toHaveURL('/#!/stacks');
+    
+    
+
+
   }
 
   async uninstallTableApp(){
 
     await this.page
-      .goto('/#!/stacks');
-  
-    await this.page
-      .locator('.MarketPlaceIcon > svg > path') 
-      .first()
-      .click();
-
-    await expect(this.page)
-      .toHaveURL('/#!/marketplace');
+      .goto('/#!/marketplace');
   
     await this.page
       .locator('[data-test-id="manage-tab"]')

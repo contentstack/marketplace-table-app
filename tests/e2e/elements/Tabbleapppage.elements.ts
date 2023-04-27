@@ -1,7 +1,7 @@
 export const elements = {
     oroginDragnDrop: "#tableRef > div:nth-child(2) > div > div:nth-child(1) > svg > path:nth-child(1)",
     destinyDragnDrop: "#tableRef > div:nth-child(2) > div > div:nth-child(4) > svg > path:nth-child(1)",
-    uninstalltableLocator: "body > div.ReactModalPortal > div > div > div.App_Details_Body > div > div.Tab__Info > div > div > div > div.Table > div > div > div:nth-child(1) > div.Table__body > div > div:nth-child(1) > div > div.Table__body__column.Installation__Actions--col > div > div > span > div > div",
+    uninstalltableLocator: "body > div.ReactModalPortal > div > div > div.App_Details_Body > div > div.Tab__Info > div > div > div > div.Table > div > div > div:nth-child(1) > div.Table__body > div > div:nth-child(2) > div > div.Table__body__column.Installation__Actions--col > div > div > span",
     insertRowAboveLocator: "#tableRef > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(1) > div",
     insertRowBelowLocator: "#tableRef > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(2)",
     deleteRowLocator: "#tableRef > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__menu--primary > ul > li:nth-child(3)",
@@ -20,6 +20,7 @@ export const elements = {
     selectLocatorColumnCell: "#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(1) > div > div.data-input",
     cellArrowDropdownColumn: "#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(1) > div > div.cell-dropdown > div > div.Dropdown__header > svg > path",
     selectLocatorColumnCelltwo: "#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.data-input",
-    cellArrowDropdownColumntwo: "#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__header > svg > path"
+    cellArrowDropdownColumntwo: "#tableRef > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(2) > div > div.cell-dropdown > div > div.Dropdown__header > svg > path",
+    saveDeleteTableLocator: "#root > div > div.PageLayout.PageLayout--secondary.edit-entry.PageLayout--content-fullpage.PageLayout--secondary-edit.PageLayout--secondary-edit--v2 > div.PageLayout__right-footer > div > div > div:nth-child(2) > button"
 };
 
