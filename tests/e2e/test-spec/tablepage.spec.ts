@@ -8,46 +8,26 @@ test.describe.serial(" Table App at entry", () => {
 
     test.use({ storageState: "storageState.json" });
 
-    test.beforeEach( async ({page}) => {
+    test("Should make all the test cases of the Table App", async ({page}) => {
         tableapp = new TableApp(page);
+        await tableapp.installTableApp();
         await tableapp.createTableApp();
-    });
-
-    test("Should import a csv file", async ({page}) => {
-        await tableapp.Importcsv();
-    });
-    
-    test("Should allow to search data inside the table", async ({page}) => {
-        await tableapp.SearchonTable();
-    });
-    test("Should start the full screen mode", async ({page}) => {
-        await tableapp.Enterfullscreen();
-    });
-
-    test("Should make all the actions possible in the rows and columns", async ({page}) => {
+        await tableapp.importCsv();
+        await tableapp.searchonTable();
+        await tableapp.enterFullscreen();
         await tableapp.insertRowAbove();
         await tableapp.insertRowBelow();
         await tableapp.deleteRow();
         await tableapp.insertColumnRight();
         await tableapp.insertColumnLeft();
         await tableapp.deleteColumn();
+        await tableapp.exportCsv();
+        await tableapp.makeHeaderRow();
+        await tableapp.makeHeaderColumn();
+        await tableapp.sortTable();
+        await tableapp.deleteTable();
+        await tableapp.uninstallTableApp();
     });
     
-    test("Should export the table into a csv file", async ({page}) => {
-        await tableapp.Exportcsv();
-    });
-    test("Should put a row as a header of the table", async ({page}) => {
-        await tableapp.makeHeaderRow();
-    });
-    test("Should put a Column as a header of the table", async ({page}) => {
-        await tableapp.makeHeaderColumn();
-    });
-    test("Should sort the table rows order ascedent or descendent", async ({page}) => {
-        await tableapp.SortTable();
-    });
-
-    test("Should delete the table", async ({page}) => {
-        await tableapp.DeleteTable();
-    });
 
 });
