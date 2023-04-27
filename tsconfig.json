@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "downlevelIteration": true,
     "allowJs": true,
     "skipLibCheck": true,
@@ -24,12 +20,6 @@
     "sourceMap": true,
     "noImplicitAny": false
   },
-  "include": [
-    "src",
-    "webpack.config.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "build"
-  ]
+  "include": ["src", "webpack.config.ts"],
+  "exclude": ["node_modules", "build"]
 }

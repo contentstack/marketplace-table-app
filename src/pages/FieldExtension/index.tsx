@@ -5,6 +5,7 @@ import { Button, Dropdown, ToggleSwitch } from '@contentstack/venus-components';
 import strings from 'common/locale/en-us';
 import utils from '../../common/utils';
 import Table from './table';
+import { eventNames } from '../../common/utils/index';
 import CustomDelete from './customDelete';
 import { ReactComponent as TableActions } from '../../assets/tableActions.svg';
 import { ReactComponent as HeaderRow } from '../../assets/headerRow.svg';
@@ -13,7 +14,8 @@ import { ReactComponent as DeleteTable } from '../../assets/deleteTable.svg';
 import './styles.scss';
 import { fullScreenAtom, useTableData } from './store';
 import useJsErrorTracker from 'hooks/useJsErrorTracker';
-import { useAnalytics, useMixPanelGroups } from 'hooks/useMixPanel';
+import useAnalytics from 'hooks/useAnalytics';
+import { useAppSdk } from 'hooks/useAppSdk';
 import { useAtom } from 'jotai';
 
 export type fullScreenProps = {
@@ -22,7 +24,9 @@ export type fullScreenProps = {
 
 const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   // error tracking hook
+  const [appSdk, setAppSdk] = useAppSdk();
   const { addMetadata } = useJsErrorTracker();
+  const { DELETE_TABLE, ADD_TABLE } = eventNames;
   const [state, setState] = useState<{
     config: any;
     location: Partial<{ customField: { [key: string]: any }; [key: string]: any }>;
@@ -36,60 +40,72 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   const [headerRowChange, setHeaderRowChange] = useState<boolean>(false);
   const [headerColumnChange, setHeaderColumnChange] = useState<boolean>(false);
   const [tableState, dispatch] = useTableData();
-  const { trackEvent, setGlobalData, setUserId } = useAnalytics();
-  const { setGroups } = useMixPanelGroups();
+  const { trackEvent } = useAnalytics();
   const [fullScreenMode] = useAtom(fullScreenAtom);
+  const { APP_INITIALIZE_SUCCESS, APP_INITIALIZE_FAILURE } = eventNames;
 
   useEffect(() => {
-    ContentstackAppSdk.init().then(async (appSdk) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      window.iframeRef = document.getElementById('root');
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      window.postRobot = appSdk.postRobot;
-      const config = await appSdk.getConfig();
-      let initialData = appSdk.location.CustomField?.field.getData();
+    try {
+      ContentstackAppSdk.init().then(async (appSdk) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        window.iframeRef = document.getElementById('root');
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        window.postRobot = appSdk.postRobot;
+        const config = await appSdk.getConfig();
+        let initialData = appSdk.location.CustomField?.field.getData();
 
-      if (
-        !isEmpty(initialData) &&
-        !isEmpty(initialData.tableState.columns) &&
-        !isEmpty(initialData.tableState.data)
-      ) {
-        setTable(true);
-        if (has(initialData.tableState, 'columns[0].label')) {
-          setHeaderRowChange(true);
-          initialData.tableState.headerRowAdded = true;
-        } else {
-          initialData.tableState.headerRowAdded = false;
-        }
-        if (initialData.tableState.headerColumnAdded) {
-          setHeaderColumnChange(true);
-        } else {
-          setHeaderColumnChange(false);
-          initialData.tableState.headerColumnAdded = false;
-        }
+        // app Sdk atom for pulse method being utilized in hooks.
+        setAppSdk(appSdk);
 
-        dispatch({ type: 'initial_data', payload: initialData.tableState });
-      }
-      setUserId(appSdk.currentUser?.uid);
-      // setting metadata for mixpanel
-      setGlobalData({
-        Stack: appSdk?.stack._data.api_key,
-        Organization: appSdk?.currentUser?.defaultOrganization,
-        'Application Type': 'Marketplace',
-        'Application Name': 'Table App',
-        'App Location': 'CustomField',
+        /**
+         * Heap analytic ts ignore would be removed later
+         * Event name would be updated.
+         */
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        appSdk?.pulse(APP_INITIALIZE_SUCCESS);
+
+        if (
+          !isEmpty(initialData) &&
+          !isEmpty(initialData.tableState.columns) &&
+          !isEmpty(initialData.tableState.data)
+        ) {
+          setTable(true);
+          if (has(initialData.tableState, 'columns[0].label')) {
+            setHeaderRowChange(true);
+            initialData.tableState.headerRowAdded = true;
+          } else {
+            initialData.tableState.headerRowAdded = false;
+          }
+          if (initialData.tableState.headerColumnAdded) {
+            setHeaderColumnChange(true);
+          } else {
+            setHeaderColumnChange(false);
+            initialData.tableState.headerColumnAdded = false;
+          }
+
+          dispatch({ type: 'initial_data', payload: initialData.tableState });
+        }
+        // setting metadata for js error tracker
+        addMetadata('stack', `${appSdk?.stack._data.name}`);
+        addMetadata('organization', `${appSdk?.currentUser.defaultOrganization}`);
+        addMetadata('api_key', `${appSdk?.stack._data.api_key}`);
+        // addMetadata('user_uid', `${appSdk?.stack._data.collaborators[0].uid}`);
+        appSdk.location.CustomField?.frame.enableAutoResizing();
+        setState({ config, appSdkInitialized: true, location: appSdk.location });
       });
-      setGroups('Application', ['Table App']);
-      // setting metadata for js error tracker
-      addMetadata('stack', `${appSdk?.stack._data.name}`);
-      addMetadata('organization', `${appSdk?.currentUser.defaultOrganization}`);
-      addMetadata('api_key', `${appSdk?.stack._data.api_key}`);
-      addMetadata('user_uid', `${appSdk?.stack._data.collaborators[0].uid}`);
-      appSdk.location.CustomField?.frame.enableAutoResizing();
-      setState({ config, appSdkInitialized: true, location: appSdk.location });
-    });
+    } catch (error) {
+      console.error(error);
+      /**
+       * Heap analytic ts ignore would be removed later.
+       * Event name would be updated.
+       */
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      appSdk?.pulse(APP_INITIALIZE_FAILURE);
+    }
   }, []);
 
   useEffect(() => {
@@ -112,15 +128,13 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   }, [tableState]);
 
   const handleClick = () => {
-    // mixpanel event
-    trackEvent('Clicked on Add Table');
+    // Heap event ** event text would be updated **
+    trackEvent(ADD_TABLE, { property: 'Add Table' });
     setTable(true);
     dispatch({ type: 'initial_table', payload: utils.makeData(3) });
   };
 
   const handleHeaderRowChange = () => {
-    // mixpanel event
-    trackEvent('Toggled Header Row');
     if (!headerRowChange) {
       dispatch({ type: 'add_row_header' });
     } else {
@@ -141,8 +155,8 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   };
 
   const deleteTable = () => {
-    // mixpanel event
-    trackEvent('Clicked on Delete Table');
+    // Heap event ** event text would be updated **
+    trackEvent(DELETE_TABLE, { property: 'Delete Table' });
     setTable(false);
     dispatch({ type: 'delete_table' });
   };
