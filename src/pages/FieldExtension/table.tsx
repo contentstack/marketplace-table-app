@@ -31,11 +31,10 @@ import strings from 'common/locale/en-us';
 import FullScreenPage from './fullScreenPage';
 import { ReactComponent as MaximizeScreen } from '../../assets/maximize-button.svg';
 import { ReactComponent as DragIcon } from '../../assets/dragIcon.svg';
-import { useAnalytics, useMixPanelGroups } from 'hooks/useMixPanel';
+import useAnalytics from 'hooks/useAnalytics';
+import { eventNames } from '../../common/utils/index';
 import { useAtom } from 'jotai';
 import { fullScreenAtom } from './store';
-
-const { trackEvent } = useAnalytics();
 
 const defaultColumn = {
   minWidth: 50,
@@ -105,6 +104,8 @@ const getItemStyle = ({ isDragging, isDropAnimating }, draggableStyle) => ({
 function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) {
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = React.useState(globalFilter);
+  const { trackEvent } = useAnalytics();
+  const { SEARCH_RECORDS } = eventNames;
   const onChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
   }, 200);
@@ -122,6 +123,8 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
             onChange={(e) => {
               setValue(e.target.value);
               onChange(e.target.value);
+              // Heap event ** event text would be updated **
+              trackEvent(SEARCH_RECORDS, { property: 'Searching records' });
             }}
             placeholder={`Search`}
           />
@@ -140,12 +143,14 @@ export default function Table({
   headerColumnChange,
   fullScreen,
 }) {
+  const { trackEvent } = useAnalytics();
   const [hoveredColumnId, setColumnId] = useState('');
   const [displaySortIcon, setDisplay] = useState('notdisplayed');
   const [appendData, setAppendData] = useState(true);
   const fileElement = useRef(null);
   const currentColOrder = React.useRef<any>();
   const [width, setWidth] = useState(0);
+  const { EXPORT_OPTION, FULLSCREEN_MODE } = eventNames;
   const [, setFullScreenMode] = useAtom(fullScreenAtom);
 
   useEffect(() => {
@@ -330,15 +335,15 @@ export default function Table({
       } else {
         csvString = Papa.unparse({ data });
       }
-      // mixpanel event export
-      trackEvent('Export CSV Completed');
+      // Heap event ** event text would be updated **
+      trackEvent(EXPORT_OPTION, { property: ' Used Export CSV' });
       return new Blob([csvString], { type: 'text/csv' });
     }
   }
 
   const openModal = () => {
-    // mixpanel event
-    trackEvent('Clicked on FullScreen Mode');
+    // Heap event ** event text would be updated **
+    trackEvent(FULLSCREEN_MODE, { property: 'FullScreen Enabled' });
     cbModal({
       component: (modalProps) => <FullScreenPage {...modalProps} fullScreen={true} />,
       modalProps: {
@@ -411,8 +416,6 @@ export default function Table({
                       type: 'drag_column_update',
                       payload: { columns: headerGroups[0].headers, data: rows, skipReset: false },
                     });
-                    // mixpanel event
-                    trackEvent('Column Order Changed');
                   }}
                 >
                   <Droppable droppableId="droppable" direction="horizontal">
@@ -551,8 +554,6 @@ export default function Table({
                 const records = reorder(data, result.source.index, result.destination.index);
 
                 dataDispatch({ type: 'drag_rows_update', payload: records });
-                // mixpanel event
-                trackEvent('Row Order Changed');
               }}
             >
               <Droppable droppableId="table">

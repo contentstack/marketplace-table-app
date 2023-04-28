@@ -6,6 +6,7 @@ module.exports = {
   // This allows us to provide some examples with
   // half-done bits of code
   rules: {
+    '@typescript-eslint/ban-ts-comment': [0],
     '@typescript-eslint/no-explicit-any': [0],
     '@typescript-eslint/explicit-module-boundary-types': [0],
     '@typescript-eslint/no-unused-vars': [0],
