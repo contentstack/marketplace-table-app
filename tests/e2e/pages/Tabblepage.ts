@@ -7,78 +7,10 @@ export class TableApp {
     this.page = page;
   }
 
-  async installTableApp(){
-
-  await this.page
-  .goto('/#!/marketplace');
-    
-  await this.page.locator('#incubation-microapps svg').nth(1).click();
-  await expect(this.page).toHaveURL('/#!/marketplace');
-  
-  await this.page.locator('[data-test-id="cs-search-input-field"]').click();
-  
-  await this.page.locator('[data-test-id="cs-search-input-field"]').press('CapsLock');
-  
-  await this.page.locator('[data-test-id="cs-search-input-field"]').fill('Table');
-  await expect(this.page).toHaveURL('/#!/marketplace?search=Table');
-  
-  await this.page.locator('[data-test-id="apps-table-install-app"]').click();
-  await expect(this.page).toHaveURL(`/#!/apps/625e651a4c5f8f0018356f01/install`); //thats the link of the Tableapp
-  
-  await this.page.locator('[data-test-id="cs-select"] div:has-text("Select Option")').nth(2).click();
-  
-  await this.page.locator('text=Table App E2E Development').click();
-  
-  await this.page.locator('input[type="checkbox"]').check();
-  
-  await this.page.locator('[data-testid="modal-form-install-authorize"]').click();
-  await expect(this.page).toHaveURL('/#!/marketplace/installed-apps');
-  
-  await this.page.locator('#microapps-links [aria-label="Stacks"]').click();
-  await expect(this.page).toHaveURL('/#!/stacks');
-  
-  await this.page.locator('[data-test-id="cs-page-layout"] >> text=Table App E2E Development').click();
-  await expect(this.page).toHaveURL(`/#!/stack/${process.env.STACK_API_KEY}/dashboard`);
-
-  await this.page.locator('[aria-label="Content-models"] svg').click();
-  await expect(this.page).toHaveURL(`/#!/stack/${process.env.STACK_API_KEY}/content-types`);
-  
-  await this.page.locator('[data-test-id="cs-cb-empty-new-ct"]').click();
-  
-  await this.page.locator('[placeholder="Enter content type name"]').press('CapsLock');
-  
-  await this.page.locator('[placeholder="Enter content type name"]').fill('Table');
-  
-  await this.page.locator('[placeholder="Enter content type name"]').press('CapsLock');
-  
-  await this.page.locator('[placeholder="Enter content type name"]').fill('TableApp');
-  
-  await this.page.locator('[data-test-id="cs-cb-edit-ct-details"]').click();
-  await expect(this.page).toHaveURL(`/#!/stack/${process.env.STACK_API_KEY}/content-type/tableapp/content-type-builder`);
-  
-  await this.page.locator('[data-test-id="cs-field-type-selector"] path').click();
-  
-  await this.page.locator('#InfoModalWrapper div:has-text("Custom")').nth(3).click();
-  
-  await this.page.locator('[data-test-id="empty-state"] svg').click();
-  
-  await this.page.locator('div[role="cell"]:has-text("Table")').first().click();
-  
-  await this.page.locator('[data-test-id="cs-new-entry-single-proceed"]').click();
-  
-  await this.page.locator('[data-test-id="cs-ct-save-close"]').click();
-  await expect(this.page).toHaveURL(`/#!/stack/${process.env.STACK_API_KEY}/content-types`);
-  
-  await this.page.locator('[aria-label="Entries"] svg').click();
-  await expect(this.page).toHaveURL(`/#!/stack/${process.env.STACK_API_KEY}/entries`);
-  
-  }
-
-
-  async createTableApp() {
+  async createTable(contentTypeUID: string, entryUID: string) {
 
     await this.page
-      .goto(`/#!/stack/${process.env.STACK_API_KEY}/content-type/tableapp/en-us/entry/create`);
+      .goto(`/#!/stack/${process.env.STACK_API_KEY}/content-type/${contentTypeUID}/en-us/entry/${entryUID}/edit`);
 
     await this.page
     .frameLocator('[data-testid="app-extension-frame"]')
@@ -87,7 +19,10 @@ export class TableApp {
 
   }
 
-  async importCsv(){
+  async importCsv(contentTypeUID: string, entryUID: string){
+    await this.page
+      .goto(`/#!/stack/${process.env.STACK_API_KEY}/content-type/${contentTypeUID}/en-us/entry/${entryUID}/edit`);
+
     await this.page
       .frameLocator('[data-testid="app-extension-frame"]')
       .locator('.importCSV')
@@ -220,56 +155,6 @@ export class TableApp {
 
 
   }
-
-  async uninstallTableApp(){
-
-    await this.page
-      .goto('/#!/marketplace');
-  
-    await this.page
-      .locator('[data-test-id="manage-tab"]')
-      .click();
-
-    await expect(this.page)
-      .toHaveURL('/#!/marketplace/installed-apps?sort=name&order=asc');
-  
-    await this.page
-      .locator('[data-test-id="settings-installed-apps"]')
-      .click();
-  
-    await this.page
-      .locator('[placeholder="Search for apps"]')
-      .click();
-  
-    await this.page
-      .locator('[placeholder="Search for apps"]')
-      .fill('table');
-
-    await expect(this.page)
-      .toHaveURL('/#!/marketplace/installed-apps?order=asc&search=table&sort=name');
-
-    await this.page
-      .locator('[data-test-id="installed-apps-table"]')
-      .click();
-  
-    await this.page
-      .locator(elements.uninstalltableLocator)
-      .click();
-
-    await this.page
-      .locator('[data-testid="app-name-to-uninstall"]')
-      .press('CapsLock');
- 
-    await this.page
-      .locator('[data-testid="app-name-to-uninstall"]')
-      .fill('Table');
-
-    await this.page
-      .locator('[data-testid="modal-form-uninstall"]')
-      .click();
-
-  }
-
 
   async insertRowAbove(){
     await this.page

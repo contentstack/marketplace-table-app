@@ -1,3 +1,4 @@
+import { TableApp } from "../pages/Tabblepage";
 const axios = require('axios');
 const jsonfile = require('jsonfile');
 
@@ -8,6 +9,18 @@ interface ExtensionUid {
 const file = 'data.json';
 
 const savedObj = {};
+
+export const initializeTableApp = async (page) => {
+  return new TableApp(page);
+};
+
+// entry page access
+export const entryPageFlow = async (savedCredentials, entryPage) => {
+  //navigate to stacks page
+  const { STACK_API_KEY } = process.env;
+  const { contentTypeId, entryUid } = savedCredentials;
+  await entryPage.navigateToEntry(STACK_API_KEY, contentTypeId, entryUid);
+};
 
 const writeFile = async (obj: any) => {
   jsonfile
@@ -252,8 +265,10 @@ export const createApp = async (authToken: string) => {
     },
   };
   try {
+    console.info(options);
     return (await axios(options)).data.data.uid;
   } catch (error) {
+    console.error(error);
     return error;
   }
 };
@@ -276,7 +291,7 @@ export const updateApp = async (authToken: string, appId: string) => {
             meta: [
               {
                 name: `Table App ${Math.floor(Math.random() * 1000)}`,
-                path: '/field-extension',
+                path: '#/field-extension',
                 signed: false,
                 enabled: true,
                 data_type: 'json',
@@ -290,8 +305,10 @@ export const updateApp = async (authToken: string, appId: string) => {
     },
   };
   try {
+    console.info(options.data.ui_location.locations[0].meta[0].name);
     return (await axios(options)).data;
   } catch (error) {
+    console.error(error);
     return error;
   }
 };
@@ -316,9 +333,12 @@ export const installApp = async (
     },
   };
   try {
+    console.info(options);
     const result = await axios(options);
+    console.info('success');
     return result.data.data.installation_uid;
   } catch (error) {
+    console.error(error);
     return error;
   }
 };
