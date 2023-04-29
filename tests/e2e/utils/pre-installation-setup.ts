@@ -1,4 +1,4 @@
-import { TableApp } from "../pages/Tabblepage";
+import { MarketplaceTable } from "../pages/marketplace-table";
 const axios = require('axios');
 const jsonfile = require('jsonfile');
 
@@ -11,7 +11,7 @@ const file = 'data.json';
 const savedObj = {};
 
 export const initializeTableApp = async (page) => {
-  return new TableApp(page);
+  return new MarketplaceTable(page);
 };
 
 // entry page access
@@ -291,7 +291,7 @@ export const updateApp = async (authToken: string, appId: string) => {
             meta: [
               {
                 name: `Table App ${Math.floor(Math.random() * 1000)}`,
-                path: '#/field-extension',
+                path: '/field-extension',
                 signed: false,
                 enabled: true,
                 data_type: 'json',

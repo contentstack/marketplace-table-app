@@ -111,16 +111,16 @@ test.describe('Table app operations', () => {
     await MP.saveContent(); // Save table content
   });
 
-  test.skip('row column delete operation', async () => {
+  test('row column delete operation', async () => {
     await MP.deleteCol(0); // Delete column operation
     await MP.deleteRow(0); // Delete row operation
   });
 
-  test.skip('Add Table header operation', async () => {
+  test('Add Table header operation', async () => {
     await MP.enableTableHeader(0); // Create new a header for table
   });
 
-  test.skip('ascending and descending operation', async () => {
+  test('ascending and descending operation', async () => {
     await MP.sortAscending(); // Sort ascending operation
     await MP.checkTableData([
       'a', 'q', 'b', 'c',
@@ -156,7 +156,7 @@ test.describe('Table app operations', () => {
     await MP.saveContent(); // Save table content
   });
 
-  test.skip('Delete table operations', async () => {
+  test('Delete table operations', async () => {
     await MP.deleteTable(); // Delete table from entry
   });
 });
