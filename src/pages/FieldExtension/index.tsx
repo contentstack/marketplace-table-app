@@ -122,9 +122,15 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
     else setHeaderColumnChange(false);
   }, [tableState.headerColumnAdded]);
 
+  const removeHTMLTags = (tableData) => {
+    return tableData.replace(/<[^>]*>?|style="[^"]*"/g, '');
+  };
+
   useEffect(() => {
     const { location } = state;
-    location.CustomField?.field.setData({ tableState: tableState });
+    const newTableState = removeHTMLTags(JSON.stringify(tableState)); // Remove HTML tags and styles introduced due to copying data from the table
+    const parsedTableState = JSON.parse(newTableState); // Convert data back to an object
+    location.CustomField?.field.setData({ tableState: parsedTableState });
   }, [tableState]);
 
   const handleClick = () => {
