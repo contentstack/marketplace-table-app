@@ -131,6 +131,17 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
     const newTableState = removeHTMLTags(JSON.stringify(tableState)); // Remove HTML tags and styles introduced due to copying data from the table
     const parsedTableState = JSON.parse(newTableState); // Convert data back to an object
     location.CustomField?.field.setData({ tableState: parsedTableState });
+
+    const columnIds = parsedTableState.columns.map((column) => column.id);
+    parsedTableState.data.forEach((row) => {
+      Object.keys(row).forEach((key) => {
+        if (!columnIds.includes(key)) {
+          delete row[key];
+        }
+      });
+    });
+
+    location.CustomField?.field.setData({ tableState: parsedTableState });
   }, [tableState]);
 
   const handleClick = () => {
