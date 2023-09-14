@@ -3,8 +3,8 @@
   "version": "0.0.8",
   "private": true,
   "dependencies": {
-    "@contentstack/app-sdk": "^1.4.0",
-    "@contentstack/venus-components": "1.0.73",
+    "@contentstack/app-sdk": "^2.0.0",
+    "@contentstack/venus-components": "^2.1.0",
     "@datadog/browser-rum": "^4.25.0",
     "@types/react": "^17.0.47",
     "@types/react-dom": "^17.0.0",

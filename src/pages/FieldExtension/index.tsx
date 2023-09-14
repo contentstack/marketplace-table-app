@@ -284,7 +284,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
                 buttonType="control"
                 onClick={() => handleClick()}
               >
-                {strings.ctaText}
+                <span className="add-table-cta">{strings.ctaText}</span>
               </Button>
             </span>
           )}
