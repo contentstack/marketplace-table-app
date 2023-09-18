@@ -31,7 +31,7 @@ pipelines:
             REACT_APP_DATADOG_RUM_SERVICE: AES:IItx7McStaVksIPM7KFsoQ==:zL5mq6doM6SJ+mYMdDxVmtfPxiDive/9cTRUo34kE1g=
           jobs:
             lint-test-build:
-              elastic_profile_id: k8s-cicd-publish-npm-package
+              elastic_profile_id: k8s-cicd-publish-npm18-package
               timeout: 0
               artifacts:
                 - build:
@@ -40,17 +40,8 @@ pipelines:
                 - exec:
                     arguments:
                       - -c
-                      - echo //npm.pkg.github.com/:_authToken=$GITHUB_PERSONAL_ACCESS_TOKEN > .npmrc
+                      - npm install --legacy-peer-deps
                     command: sh
-                - exec:
-                    arguments:
-                      - -c
-                      - echo "@contentstack:registry=https://npm.pkg.github.com/contentstack" >> .npmrc
-                    command: sh
-                - exec:
-                    arguments:
-                      - install
-                    command: npm
                 - exec:
                     arguments:
                       - -c
