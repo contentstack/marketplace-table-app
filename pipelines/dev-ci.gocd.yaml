@@ -34,17 +34,7 @@ pipelines:
               artifacts:
                 - build:
                     source: build
-              tasks:
-                - exec:
-                    arguments:
-                      - -c 
-                      - echo //npm.pkg.github.com/:_authToken=$GITHUB_PERSONAL_ACCESS_TOKEN > .npmrc
-                    command: sh
-                - exec:
-                    arguments:
-                      - -c 
-                      - echo "@contentstack:registry=https://npm.pkg.github.com/contentstack" >> .npmrc
-                    command: sh               
+              tasks:               
                 - exec:
                     arguments:
                       - -c
