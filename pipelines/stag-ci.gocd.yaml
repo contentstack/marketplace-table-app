@@ -34,11 +34,12 @@ pipelines:
               artifacts:
                 - build:
                     source: build
-              tasks:              
+              tasks:
                 - exec:
                     arguments:
-                      - install
-                    command: npm
+                      - -c
+                      - npm install --legacy-peer-deps
+                    command: sh
                 - exec:
                     arguments:
                       - -c
