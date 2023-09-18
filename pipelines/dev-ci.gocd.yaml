@@ -29,7 +29,7 @@ pipelines:
             REACT_APP_DATADOG_RUM_SERVICE: AES:fW7enN0Ur6pSwS5CafhCNA==:tMWR3Wy161078H+tnhzGfOdEPnvcARtptdryVPs+Ito=
           jobs:
             lint-test-build:
-              elastic_profile_id: k8s-cicd-publish-npm-package
+              elastic_profile_id: k8s-cicd-publish-npm18-package
               timeout: 0
               artifacts:
                 - build:
