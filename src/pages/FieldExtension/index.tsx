@@ -122,9 +122,24 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
     else setHeaderColumnChange(false);
   }, [tableState.headerColumnAdded]);
 
+  const removeHTMLTags = (tableData) => {
+    return tableData.replace(/<[^>]*>?|style="[^"]*"/g, '');
+  };
+
   useEffect(() => {
     const { location } = state;
-    location.CustomField?.field.setData({ tableState: tableState });
+    const newTableState = removeHTMLTags(JSON.stringify(tableState)); // Remove HTML tags and styles introduced due to copying data from the table
+    const parsedTableState = JSON.parse(newTableState); // Convert data back to an object
+    const columnIds = parsedTableState.columns.map((column) => column.id);
+    parsedTableState.data.forEach((row) => {
+      Object.keys(row).forEach((key) => {
+        if (!columnIds.includes(key)) {
+          delete row[key];
+        }
+      });
+    });
+
+    location.CustomField?.field.setData({ tableState: parsedTableState });
   }, [tableState]);
 
   const handleClick = () => {
@@ -267,7 +282,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
                 buttonType="control"
                 onClick={() => handleClick()}
               >
-                {strings.ctaText}
+                <span className="add-table-cta">{strings.ctaText}</span>
               </Button>
             </span>
           )}
