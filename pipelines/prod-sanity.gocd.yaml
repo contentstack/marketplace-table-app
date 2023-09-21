@@ -38,7 +38,7 @@ pipelines:
             BASE_API_URL: AES:Rt2qzXLt3dkcxT5tz7OxeQ==:qPKSYja4Y3CQdQk3YP3YeCMIuvu6z3Thm5ifQmYE+Rc=
           jobs:
             sanity:
-              elastic_profile_id: k8s-cicd-playwright-1-25-0
+              elastic_profile_id: k8s-cicd-playwright-1-37-1
               timeout: 0
               artifacts:
                 - test:
@@ -47,16 +47,6 @@ pipelines:
               tabs:
                 Report: playwright-report/playwright-report/index.html
               tasks:
-                - exec:
-                    arguments:
-                      - -c
-                      - echo //npm.pkg.github.com/:_authToken=$GITHUB_PERSONAL_ACCESS_TOKEN > .npmrc
-                    command: sh
-                - exec:
-                    arguments:
-                      - -c
-                      - echo "@contentstack:registry=https://npm.pkg.github.com/contentstack" >> .npmrc
-                    command: sh
                 - exec:
                     arguments:
                       - -c
