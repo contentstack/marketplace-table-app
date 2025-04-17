@@ -19,7 +19,7 @@ import { useAppSdk } from 'hooks/useAppSdk';
 import { useAtom } from 'jotai';
 
 export type fullScreenProps = {
-  fullScreen: boolean;
+  fullScreen?: boolean;
 };
 
 const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
