@@ -166,22 +166,30 @@ export default function Cell({
       element = (
         <div
           className="cell"
+          tabIndex={0}
           onFocus={(e: any) => {
             document
               .querySelector('.cs-extension-table .cell.active-cell')
               ?.classList.remove('active-cell');
-
-            e.target?.parentNode.focus();
-
-            e.target?.parentNode.classList.add('active-cell');
+            e.currentTarget.classList.add('active-cell');
           }}
         >
           <ContentEditable
-            html={(value.value && value.value.toString()) || ''}
+            html={value.value || ''}
             onChange={onChange}
             onClick={handleClick}
-            onBlur={() => setValue((old) => ({ value: old.value, update: true }))}
+            onBlur={(e) => {
+              const newHtml = e.target.innerHTML;
+              setValue((old) => ({ value: newHtml, update: true }));
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.stopPropagation(); // Allow multiline without breaking out
+              }
+            }}
             className="data-input"
+            tagName="div"
+            style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
           />
           <div className="cell-dropdown">
             <Dropdown
