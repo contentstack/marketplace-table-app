@@ -44,7 +44,7 @@ const defaultColumn = {
   sortType: 'alphanumericFalsyLast',
 };
 
-const RowContainer = styled.div`
+const RowContainer = styled.div<{ isDragging: boolean }>`
   cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
   position: relative;
 
@@ -62,7 +62,7 @@ const RowContainer = styled.div`
   }
 `;
 
-const HeaderContainer = styled.div`
+const HeaderContainer = styled.div<{ isDragging: boolean; height?: number }>`
   border: ${({ isDragging }) => isDragging && '2px solid #6C5CE7'};
   height: ${({ isDragging, height }) => isDragging && height + 'px !important'};
   opacity: ${({ isDragging }) => isDragging && '0.5'};
@@ -82,7 +82,7 @@ const Clone = styled(HeaderContainer)`
   }
 `;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ width: number; isDraggingOver: boolean }>`
   .tippy-wrapper {
     width: ${({ width, isDraggingOver }) => (isDraggingOver ? width + 'px' : '150px')};
   }
@@ -524,7 +524,9 @@ export default function Table({
                                         </div>
                                       </HeaderContainer>
                                       {snapshot.isDragging && (
-                                        <Clone>{column.render('Header')}</Clone>
+                                        <Clone isDragging={snapshot.isDragging}>
+                                          {column.render('Header')}
+                                        </Clone>
                                       )}
                                     </>
                                   </Tooltip>
