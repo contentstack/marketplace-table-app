@@ -42,6 +42,12 @@ const useColumns = () => {
   };
 };
 
+const stringifyValue = (value: any): string => {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'object' || Array.isArray(value) || Number.isNaN(value)) return '';
+  return String(value);
+};
+
 export default function Cell({
   value: initialValue,
   row: { index },
@@ -51,7 +57,7 @@ export default function Cell({
   setColumnOrder,
 }) {
   const { addColumn } = useColumns();
-  const [value, setValue] = useState({ value: initialValue, update: true });
+  const [value, setValue] = useState({ value: stringifyValue(initialValue), update: true });
   const onChange = (e) => {
     setValue({ value: e.target.value, update: true });
   };
@@ -59,7 +65,7 @@ export default function Cell({
   const [addSelectRef, setAddSelectRef] = useState<any>(null);
 
   useEffect(() => {
-    setValue({ value: initialValue, update: true });
+    setValue({ value: stringifyValue(initialValue), update: true });
   }, [initialValue]);
 
   useEffect(() => {
@@ -175,12 +181,12 @@ export default function Cell({
           }}
         >
           <ContentEditable
-            html={value.value || ''}
+            html={stringifyValue(value?.value)}
             onChange={onChange}
             onClick={handleClick}
             onBlur={(e) => {
               const newHtml = e.target.innerHTML;
-              setValue((old) => ({ value: newHtml, update: true }));
+              setValue((old) => ({ value: stringifyValue(newHtml), update: true }));
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
