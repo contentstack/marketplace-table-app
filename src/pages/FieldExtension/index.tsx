@@ -122,13 +122,15 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
     else setHeaderColumnChange(false);
   }, [tableState.headerColumnAdded]);
 
-  const removeHTMLTags = (tableData) => {
-    return tableData.replace(/<[^>]*>?|style="[^"]*"/g, '');
+  const sanitizeHTMLContent = (tableData) => {
+    // Remove inline styles & HTML tags using improved regex
+    const sanitizedString = tableData.replace(/style="[^"]*"/gi, '');
+    return sanitizedString.replace(/<\/?[a-z][\s\S]*?>/gi, '');
   };
 
   useEffect(() => {
     const { location } = state;
-    const newTableState = removeHTMLTags(JSON.stringify(tableState)); // Remove HTML tags and styles introduced due to copying data from the table
+    const newTableState = sanitizeHTMLContent(JSON.stringify(tableState)); // Sanitize content to remove any HTML tags and styles
     const parsedTableState = JSON.parse(newTableState); // Convert data back to an object
     const columnIds = parsedTableState.columns.map((column) => column.id);
     parsedTableState.data.forEach((row) => {
