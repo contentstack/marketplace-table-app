@@ -188,18 +188,17 @@ function reducer(tableState, action) {
       return { ...tableState };
     case 'add_row_header':
       const firstRow = tableState.data[0];
-      Object.keys(firstRow).map((value, index) => {
-        tableState.columns[index] = {
-          id: value,
-          label: firstRow[value],
-          accessor: value,
-          dataType: 'text',
-        };
-      });
-
+      const updatedColumns = tableState.columns.map((column) => ({
+        ...column,
+        label: firstRow[column.id] || '',
+      }));
       tableState.headerRowAdded = true;
       tableState.data.slice(1);
-      return { ...tableState, data: [...tableState.data.slice(1)] };
+      return {
+        ...tableState,
+        columns: updatedColumns,
+        data: [...tableState.data.slice(1)],
+      };
     case 'remove_row_header':
       let labels = tableState.columns.map((a) => a.label);
       let columnIds = tableState.columns.map((a) => a.id);
