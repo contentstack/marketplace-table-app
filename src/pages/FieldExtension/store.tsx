@@ -188,16 +188,15 @@ function reducer(tableState, action) {
       return { ...tableState };
     case 'add_row_header':
       const firstRow = tableState.data[0];
-      // 🚨 FIX: Only update labels for existing columns, don't recreate from row keys
       const updatedColumns = tableState.columns.map((column) => ({
         ...column,
-        label: firstRow[column.id] || '', // Use value from first row as label
+        label: firstRow[column.id] || '',
       }));
       tableState.headerRowAdded = true;
       tableState.data.slice(1);
       return {
         ...tableState,
-        columns: updatedColumns, // Use updated columns instead of mutating
+        columns: updatedColumns,
         data: [...tableState.data.slice(1)],
       };
     case 'remove_row_header':
