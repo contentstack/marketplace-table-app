@@ -45,7 +45,9 @@ const useColumns = () => {
 const stringifyValue = (value: any): string => {
   if (value === null || value === undefined) return '';
   if (typeof value === 'object' || Array.isArray(value) || Number.isNaN(value)) return '';
-  return String(value);
+  const stringValue = String(value);
+  // Remove HTML tags if present to prevent them from showing as text
+  return stringValue.replace(/<[^>]*>/g, '');
 };
 
 export default function Cell({
@@ -185,8 +187,9 @@ export default function Cell({
             onChange={onChange}
             onClick={handleClick}
             onBlur={(e) => {
-              const newHtml = e.target.innerHTML;
-              setValue((old) => ({ value: stringifyValue(newHtml), update: true }));
+              // Use textContent instead of innerHTML to avoid HTML tags
+              const newText = e.target.textContent || e.target.innerText || '';
+              setValue((old) => ({ value: newText, update: true }));
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {

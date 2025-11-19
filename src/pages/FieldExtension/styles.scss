@@ -1,6 +1,7 @@
 .field-extension {
   width: 100%;
   overflow: auto;
+  max-height: 640px;
   .field-extension-wrapper {
     position: relative;
     padding: 14px 10px;
@@ -324,12 +325,17 @@ html {
   white-space: pre-wrap;
   border: none;
   padding: 0.5rem;
+  padding-right: 20px;
   color: #424242;
   font-size: 1rem;
   resize: none;
   background-color: white;
   box-sizing: border-box;
   flex: 1 1 auto;
+  width: 100%;
+  min-height: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
 
   br {
     display: none;
@@ -438,21 +444,29 @@ html {
 }
 
 .td {
-  overflow: hidden;
+  overflow: visible;
   color: #424242;
   align-items: stretch;
-  padding: 0;
+  // padding: 0.3rem 0;
   display: flex;
   flex-direction: column;
-  height: 46px;
+  min-height: 46px;
+  max-height: 200px;
+  height: auto;
 
   .cell {
+    overflow-y: auto;
     overflow-x: hidden;
     text-overflow: ellipsis;
+    // margin: 0.3rem 0;
     padding: 0.3rem;
+    padding-right: 20px;
     display: flex;
-    align-items: center;
-    height: 46px;
+    align-items: flex-start;
+    min-height: 46px;
+    max-height: 200px;
+    height: auto;
+    position: relative;
 
     &:focus {
       outline: none;
@@ -467,11 +481,19 @@ html {
       }
     }
 
+    // When dropdown is open, allow overflow to escape clipping
+    &:has(.cell-dropdown .Dropdown--open) {
+      overflow: visible;
+    }
+
     .cell-dropdown {
       position: absolute;
       right: 1px;
       top: 1px;
       visibility: hidden;
+      z-index: 1000;
+      pointer-events: auto;
+      overflow: visible;
 
       .Dropdown--open {
         .Dropdown__header {
@@ -508,6 +530,8 @@ html {
         top: 15px !important;
         left: 0px;
         min-width: 200px;
+        z-index: 1001 !important;
+        position: absolute !important;
 
         .Dropdown__menu__list__item {
           display: flex;
