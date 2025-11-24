@@ -186,6 +186,22 @@ function reducer(tableState, action) {
     case 'update_cell':
       tableState.data[action.rowIndex][action.columnId] = action.value;
       return { ...tableState };
+    case 'update_column_header':
+      const headerIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
+      if (headerIndex !== -1) {
+        return {
+          ...tableState,
+          columns: [
+            ...tableState.columns.slice(0, headerIndex),
+            {
+              ...tableState.columns[headerIndex],
+              label: action.label || '',
+            },
+            ...tableState.columns.slice(headerIndex + 1, tableState.columns.length),
+          ],
+        };
+      }
+      return tableState;
     case 'add_row_header':
       const firstRow = tableState.data[0];
       const updatedColumns = tableState.columns.map((column) => ({
