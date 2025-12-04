@@ -111,12 +111,12 @@ test.describe('Table app operations', () => {
     await MP.saveContent(); // Save table content
   });
 
-  test.skip('row column delete operation', async () => {
+  test('row column delete operation', async () => {
     await MP.deleteCol(0); // Delete column operation
     await MP.deleteRow(0); // Delete row operation
   });
 
-  test.skip('Add Table header operation', async () => {
+  test('Add Table header operation', async () => {
     await MP.enableTableHeader(0); // Create new a header for table
   });
 
@@ -156,15 +156,53 @@ test.describe('Table app operations', () => {
     await MP.saveContent(); // Save table content
   });
 
-  test.skip('Delete table operations', async () => {
+  test('Delete table operations', async () => {
     await MP.deleteTable(); // Delete table from entry
+    await MP.saveContent(); // Save table content
+  });
+});
+
+test.describe('Header Row Edit functionality', () => {
+  test('Edit header row cells', async () => {
+    await MP.openEntry(appDetails.entryUID, stackKey, appDetails.contentTypeUID);
+    await MP.createTable();
+    await MP.addTableContent();
+    // Click on first cell to make #table-actions visible
+    await MP.clickFirstCell();
+    await MP.testHeaderRowEdit();
+  });
+
+  test('Edit header row with long text and special characters', async () => {
+    // Table and header row are already created/enabled from previous test
+    // Just open the entry and edit the existing header row
+    await MP.openEntry(appDetails.entryUID, stackKey, appDetails.contentTypeUID);
+    await MP.initializeIframe();
+    await MP.testHeaderRowEditWithLongText();
+    await MP.deleteTable(); // Delete table from entry
+    await MP.saveContent(); // Save table content
+  });
+});
+
+test.describe('Cell Vertical Scroll functionality', () => {
+  test('Cell vertical scroll with long content', async () => {
+    await MP.openEntry(appDetails.entryUID, stackKey, appDetails.contentTypeUID);
+    await MP.testCellVerticalScroll();
+    await MP.deleteTable(); // Delete table from entry
+    await MP.saveContent(); // Save table content
+  });
+
+  test('Multiple cells with vertical scroll', async () => {
+    await MP.openEntry(appDetails.entryUID, stackKey, appDetails.contentTypeUID);
+    await MP.testMultipleCellsWithVerticalScroll();
+    await MP.deleteTable(); // Delete table from entry
+    await MP.saveContent(); // Save table content
   });
 });
 
 test.afterAll(async () => {
   const installations = await getInstalledApp(authToken, appDetails.appUID);
-  if (installations.data.length) {
-    installations.data[0].uid && (await uninstallApp(authToken, installations.data[0].uid));
+  if (installations?.data?.length) {
+    installations?.data[0]?.uid && (await uninstallApp(authToken, installations?.data[0]?.uid));
   }
   await deleteApp(authToken, appDetails.appUID);
   await deleteContentType(authToken, appDetails.contentTypeUID);
