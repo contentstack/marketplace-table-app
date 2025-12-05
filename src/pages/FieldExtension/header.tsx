@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { usePopper } from 'react-popper';
-import ContentEditable from 'react-contenteditable';
-import ArrowUpIcon from '../../assets/ArrowUp';
-import ArrowDownIcon from '../../assets/ArrowDown';
-import ArrowLeftIcon from '../../assets/ArrowLeft';
-import ArrowRightIcon from '../../assets/ArrowRight';
-import TrashIcon from '../../assets/Trash';
-import TextIcon from '../../assets/Text';
-import MultiIcon from '../../assets/Multi';
-import HashIcon from '../../assets/Hash';
-import { ReactComponent as PlusIcon } from '../../assets/plusIcon.svg';
-import utils from '../../common/utils/index';
-import { useAppSdk } from 'hooks/useAppSdk';
+import { useState, useEffect } from "react";
+import { usePopper } from "react-popper";
+import ContentEditable from "react-contenteditable";
+import ArrowUpIcon from "../../assets/ArrowUp.tsx";
+import ArrowDownIcon from "../../assets/ArrowDown.tsx";
+import ArrowLeftIcon from "../../assets/ArrowLeft.tsx";
+import ArrowRightIcon from "../../assets/ArrowRight.tsx";
+import TrashIcon from "../../assets/Trash.tsx";
+import TextIcon from "../../assets/Text.tsx";
+import MultiIcon from "../../assets/Multi.tsx";
+import HashIcon from "../../assets/Hash.tsx";
+import { ReactComponent as PlusIcon } from "../../assets/plusIcon.svg";
+import utils from "common/utils/index";
+import { useAppSdk } from "hooks/useAppSdk";
 
 export default function Header({
   column: { id, created, label, dataType, getResizerProps, getHeaderProps },
@@ -24,8 +24,8 @@ export default function Header({
   const [popperElement, setPopperElement] = useState<any>(null);
   const [inputRef, setInputRef] = useState<any>(null);
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: 'bottom',
-    strategy: 'absolute',
+    placement: "bottom",
+    strategy: "absolute",
   });
   const [header, setHeader] = useState(label);
   const [typeReferenceElement, setTypeReferenceElement] = useState<any>(null);
@@ -34,90 +34,90 @@ export default function Header({
   const buttons = [
     {
       onClick: (e) => {
-        dataDispatch({ type: 'update_column_header', columnId: id, label: header });
+        dataDispatch({ type: "update_column_header", columnId: id, label: header });
         setSortBy([{ id: id, desc: false }]);
         setExpanded(false);
       },
       icon: <ArrowUpIcon />,
-      label: 'Sort ascending',
+      label: "Sort ascending",
     },
     {
       onClick: (e) => {
-        dataDispatch({ type: 'update_column_header', columnId: id, label: header });
+        dataDispatch({ type: "update_column_header", columnId: id, label: header });
         setSortBy([{ id: id, desc: true }]);
         setExpanded(false);
       },
       icon: <ArrowDownIcon />,
-      label: 'Sort descending',
+      label: "Sort descending",
     },
     {
       onClick: (e) => {
-        dataDispatch({ type: 'update_column_header', columnId: id, label: header });
-        dataDispatch({ type: 'add_column_to_left', columnId: id, focus: false });
+        dataDispatch({ type: "update_column_header", columnId: id, label: header });
+        dataDispatch({ type: "add_column_to_left", columnId: id, focus: false });
         setExpanded(false);
       },
       icon: <ArrowLeftIcon />,
-      label: 'Insert left',
+      label: "Insert left",
     },
     {
       onClick: (e) => {
-        dataDispatch({ type: 'update_column_header', columnId: id, label: header });
-        dataDispatch({ type: 'add_column_to_right', columnId: id, focus: false });
+        dataDispatch({ type: "update_column_header", columnId: id, label: header });
+        dataDispatch({ type: "add_column_to_right", columnId: id, focus: false });
         setExpanded(false);
       },
       icon: <ArrowRightIcon />,
-      label: 'Insert right',
+      label: "Insert right",
     },
     {
       onClick: (e) => {
-        dataDispatch({ type: 'update_column_header', columnId: id, label: header });
-        dataDispatch({ type: 'delete_column', columnId: id });
+        dataDispatch({ type: "update_column_header", columnId: id, label: header });
+        dataDispatch({ type: "delete_column", columnId: id });
         setExpanded(false);
       },
       icon: <TrashIcon />,
-      label: 'Delete',
+      label: "Delete",
     },
   ];
 
   const types = [
     {
       onClick: (e) => {
-        dataDispatch({ type: 'update_column_type', columnId: id, dataType: 'select' });
+        dataDispatch({ type: "update_column_type", columnId: id, dataType: "select" });
         setShowType(false);
         setExpanded(false);
       },
       icon: <MultiIcon />,
-      label: 'Select',
+      label: "Select",
     },
     {
       onClick: (e) => {
-        dataDispatch({ type: 'update_column_type', columnId: id, dataType: 'text' });
+        dataDispatch({ type: "update_column_type", columnId: id, dataType: "text" });
         setShowType(false);
         setExpanded(false);
       },
       icon: <TextIcon />,
-      label: 'Text',
+      label: "Text",
     },
     {
       onClick: (e) => {
-        dataDispatch({ type: 'update_column_type', columnId: id, dataType: 'number' });
+        dataDispatch({ type: "update_column_type", columnId: id, dataType: "number" });
         setShowType(false);
         setExpanded(false);
       },
       icon: <HashIcon />,
-      label: 'Number',
+      label: "Number",
     },
   ];
 
   let propertyIcon;
   switch (dataType) {
-    case 'number':
+    case "number":
       propertyIcon = <HashIcon />;
       break;
-    case 'text':
+    case "text":
       propertyIcon = <TextIcon />;
       break;
-    case 'select':
+    case "select":
       propertyIcon = <MultiIcon />;
       break;
     default:
@@ -142,13 +142,13 @@ export default function Header({
   }, [inputRef]);
 
   const typePopper = usePopper(typeReferenceElement, typePopperElement, {
-    placement: 'right',
-    strategy: 'fixed',
+    placement: "right",
+    strategy: "fixed",
   });
 
   function handleKeyDown(e) {
-    if (e.key === 'Enter') {
-      dataDispatch({ type: 'update_column_header', columnId: id, label: header });
+    if (e.key === "Enter") {
+      dataDispatch({ type: "update_column_header", columnId: id, label: header });
       setExpanded(false);
     }
   }
@@ -159,34 +159,33 @@ export default function Header({
 
   function handleBlur(e) {
     e.preventDefault();
-    dataDispatch({ type: 'update_column_header', columnId: id, label: header });
+    dataDispatch({ type: "update_column_header", columnId: id, label: header });
   }
 
   const handleHeaderContentChange = (e) => {
-    const newValue = e.target.value || '';
+    const newValue = e.target.value || "";
     setHeader(newValue);
-    dataDispatch({ type: 'update_column_header', columnId: id, label: newValue });
+    dataDispatch({ type: "update_column_header", columnId: id, label: newValue });
   };
 
   const stringifyLabel = (value: any): string => {
-    if (value === null || value === undefined) return '';
-    if (typeof value === 'object' || Array.isArray(value) || Number.isNaN(value)) return '';
+    if (value === null || value === undefined) return "";
+    if (typeof value === "object" || Array.isArray(value) || Number.isNaN(value)) return "";
     const stringValue = String(value);
     // Remove HTML tags if present to prevent them from showing as text
-    return stringValue.replace(/<[^>]*>/g, '');
+    return stringValue.replace(/<[^>]*>/g, "");
   };
 
   return id !== 999999 ? (
     <>
-      <div {...getHeaderProps({ style: { display: 'inline-block' } })} className="th noselect">
+      <div {...getHeaderProps({ style: { display: "inline-block" } })} className="th noselect">
         <div
           className="th-content"
           ref={setReferenceElement}
           onContextMenu={(e) => {
             e.preventDefault();
             setExpanded(true);
-          }}
-        >
+          }}>
           <ContentEditable
             html={stringifyLabel(label)}
             onChange={handleHeaderContentChange}
@@ -194,7 +193,7 @@ export default function Header({
               e.stopPropagation();
             }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 e.stopPropagation();
               }
             }}
@@ -212,38 +211,33 @@ export default function Header({
             className="bg-white shadow-5 border-radius-md"
             style={{
               width: 240,
-            }}
-          >
-            <div style={{ paddingTop: '0.75rem', paddingLeft: '0.75rem', paddingRight: '0.75rem' }}>
+            }}>
+            <div style={{ paddingTop: "0.75rem", paddingLeft: "0.75rem", paddingRight: "0.75rem" }}>
               <div className="is-fullwidth" style={{ marginBottom: 12 }}>
                 <input
                   className="form-input"
                   ref={setInputRef}
                   type="text"
                   value={header}
-                  style={{ width: '100%' }}
+                  style={{ width: "100%" }}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   onKeyDown={handleKeyDown}
                 />
               </div>
-              <span
-                className="font-weight-600 font-size-75"
-                style={{ textTransform: 'uppercase', color: '#9e9e9e' }}
-              >
+              <span className="font-weight-600 font-size-75" style={{ textTransform: "uppercase", color: "#9e9e9e" }}>
                 Property Type
               </span>
             </div>
-            <div style={{ padding: '4px 0px' }}>
+            <div style={{ padding: "4px 0px" }}>
               <button
                 className="sort-button"
                 type="button"
                 onMouseEnter={() => setShowType(true)}
                 onMouseLeave={() => setShowType(false)}
-                ref={setTypeReferenceElement}
-              >
+                ref={setTypeReferenceElement}>
                 <span className="svg-icon svg-text icon-margin">{propertyIcon}</span>
-                <span style={{ textTransform: 'capitalize' }}>{dataType}</span>
+                <span style={{ textTransform: "capitalize" }}>{dataType}</span>
               </button>
               {showType && (
                 <div
@@ -255,11 +249,10 @@ export default function Header({
                   style={{
                     ...typePopper.styles.popper,
                     width: 200,
-                    backgroundColor: 'white',
+                    backgroundColor: "white",
                     zIndex: 4,
-                    padding: '4px 0px',
-                  }}
-                >
+                    padding: "4px 0px",
+                  }}>
                   {types.map((type) => (
                     <button className="sort-button" onClick={type.onClick}>
                       <span className="svg-icon svg-text icon-margin">{type.icon}</span>
@@ -273,9 +266,8 @@ export default function Header({
               key={utils.shortId()}
               style={{
                 borderTop: `2px solid #eeeeee`,
-                padding: '4px 0px',
-              }}
-            >
+                padding: "4px 0px",
+              }}>
               {buttons.map((button) => (
                 <button type="button" className="sort-button" onMouseDown={button.onClick}>
                   <span className="svg-icon svg-text icon-margin">{button.icon}</span>
@@ -288,12 +280,11 @@ export default function Header({
       )}
     </>
   ) : (
-    <div {...getHeaderProps({ style: { display: 'inline-block' } })} className="th noselect">
+    <div {...getHeaderProps({ style: { display: "inline-block" } })} className="th noselect">
       <div
         className="th-content"
-        style={{ display: 'flex', justifyContent: 'center' }}
-        onClick={(e) => dataDispatch({ type: 'add_column_to_left', columnId: 999999, focus: true })}
-      >
+        style={{ display: "flex", justifyContent: "center" }}
+        onClick={(e) => dataDispatch({ type: "add_column_to_left", columnId: 999999, focus: true })}>
         <span className="svg-icon-sm svg-gray">
           <PlusIcon />
         </span>

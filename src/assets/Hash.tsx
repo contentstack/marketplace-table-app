@@ -1,6 +1,4 @@
-import React from 'react';
-
-export default function Arrow() {
+export default function Hash() {
   return (
     <svg
       width="44"
@@ -10,12 +8,12 @@ export default function Arrow() {
       stroke="#2c3e50"
       fill="none"
       strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+      strokeLinejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <line x1="5" y1="12" x2="19" y2="12" />
-      <line x1="13" y1="18" x2="19" y2="12" />
-      <line x1="13" y1="6" x2="19" y2="12" />
+      <line x1="5" y1="9" x2="19" y2="9" />
+      <line x1="5" y1="15" x2="19" y2="15" />
+      <line x1="11" y1="4" x2="7" y2="20" />
+      <line x1="17" y1="4" x2="13" y2="20" />
     </svg>
   );
 }
