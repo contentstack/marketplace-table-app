@@ -1,6 +1,7 @@
 fileignoreconfig:
   - filename: package-lock.json
-    checksum: ignore
+    ignore_detectors:
+      - base64content
   - filename: .env.sample
     checksum: ignore
 threshold: medium
