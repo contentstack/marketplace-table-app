@@ -3,7 +3,7 @@ fileignoreconfig:
   ignore_detectors:
     - filecontent
 - filename: package-lock.json
-  checksum: e26c536ea7a95b3c17b41bd59e8791167ee4a9936a0d256e7322a60f91c4638e    
+  checksum: ae6ac237de059e3d60488320d340281f80677f9d2633bd697b0d1d8b8336616b    
 - filename: tests/e2e/test-spec/entry-flow.spec.ts
   checksum: 56dd66d3cfc947855351be306f850fbeb9562276f20443301002cb87186207f8
 version: "1.0"
