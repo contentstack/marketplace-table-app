@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { usePopper } from 'react-popper';
+import ContentEditable from 'react-contenteditable';
 import ArrowUpIcon from '../../assets/ArrowUp';
 import ArrowDownIcon from '../../assets/ArrowDown';
 import ArrowLeftIcon from '../../assets/ArrowLeft';
@@ -161,11 +162,45 @@ export default function Header({
     dataDispatch({ type: 'update_column_header', columnId: id, label: header });
   }
 
+  const handleHeaderContentChange = (e) => {
+    const newValue = e.target.value || '';
+    setHeader(newValue);
+    dataDispatch({ type: 'update_column_header', columnId: id, label: newValue });
+  };
+
+  const stringifyLabel = (value: any): string => {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'object' || Array.isArray(value) || Number.isNaN(value)) return '';
+    const stringValue = String(value);
+    // Remove HTML tags if present to prevent them from showing as text
+    return stringValue.replace(/<[^>]*>/g, '');
+  };
+
   return id !== 999999 ? (
     <>
       <div {...getHeaderProps({ style: { display: 'inline-block' } })} className="th noselect">
-        <div className="th-content" ref={setReferenceElement}>
-          {label}
+        <div
+          className="th-content"
+          ref={setReferenceElement}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setExpanded(true);
+          }}
+        >
+          <ContentEditable
+            html={stringifyLabel(label)}
+            onChange={handleHeaderContentChange}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.stopPropagation();
+              }
+            }}
+            className="header-editable"
+            tagName="div"
+          />
           <div className="sort-box"></div>
         </div>
         <div {...getResizerProps()} className="resizer" />
