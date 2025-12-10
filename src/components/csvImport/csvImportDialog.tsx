@@ -1,17 +1,10 @@
-import React, { useState } from 'react';
-import {
-  Button,
-  cbModal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Radio,
-} from '@contentstack/venus-components';
-import './styles.scss';
-import strings from 'common/locale/en-us';
-import useAnalytics from 'hooks/useAnalytics';
-import { eventNames } from '../../common/utils/index';
-import { ReactComponent as ImportTableIcon } from '../../assets/importTableIcon.svg';
+import React, { useState } from "react";
+import { Button, cbModal, ModalBody, ModalFooter, ModalHeader, Radio } from "@contentstack/venus-components";
+import "./styles.scss";
+import strings from "common/locale/en-us";
+import useAnalytics from "hooks/useAnalytics";
+import { eventNames } from "common/utils/index";
+import { ReactComponent as ImportTableIcon } from "../../assets/importTableIcon.svg";
 
 export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) => void }) => {
   const onClose = () => {
@@ -33,15 +26,15 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
         modalProps.closeModal();
         props.onSave(appendData);
         // Heap event ** event text would be updated **
-        trackEvent(USED_IMPORT_CSV, { property: 'Used import CSV' });
+        trackEvent(USED_IMPORT_CSV, { property: "Used import CSV" });
       };
 
       const handleToggleAppendData = (value) => {
         setAppendData(value);
         // Heap event ** event text would be updated **
         trackEvent(IMPORT_RADIO_OPTIONS, {
-          property: 'Import CSV Radio Option Changed',
-          'Clicked Option': value === true ? 'Append Data' : 'Replace Data',
+          property: "Import CSV Radio Option Changed",
+          "Clicked Option": value === true ? "Append Data" : "Replace Data",
         });
       };
 
@@ -73,11 +66,11 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
           <ModalFooter>
             <div className="footer--actions">
               <Button buttonType="outline" onClick={onCancel}>
-                {' '}
-                {strings.cancelText}{' '}
+                {" "}
+                {strings.cancelText}{" "}
               </Button>
               <Button buttonType="primary" onClick={onSave}>
-                <ImportTableIcon /> {strings.importTableText}{' '}
+                <ImportTableIcon /> {strings.importTableText}{" "}
               </Button>
             </div>
           </ModalFooter>
@@ -87,7 +80,7 @@ export const ImportCSVModal = (props: { onCancel: () => void; onSave: (bAppend) 
     modalProps: {
       onClose: onClose,
       shouldCloseOnOverlayClick: true,
-      size: 'xsmall',
+      size: "xsmall",
     },
   });
 };

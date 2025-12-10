@@ -1,10 +1,7 @@
 fileignoreconfig:
-- filename: .github/workflows/secrets-scan.yml
-  ignore_detectors:
-    - filecontent   
-- filename: tests/e2e/test-spec/entry-flow.spec.ts
-  checksum: 56dd66d3cfc947855351be306f850fbeb9562276f20443301002cb87186207f8
-- filename: package-lock.json
-  ignore_detectors:
-    - base64content
-version: "1.0"
+  - filename: package-lock.json
+    ignore_detectors:
+      - base64content
+  - filename: .env.sample
+    checksum: ignore
+threshold: medium

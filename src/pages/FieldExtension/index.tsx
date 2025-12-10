@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { isEmpty, has } from 'lodash';
-import ContentstackAppSdk from '@contentstack/app-sdk';
-import { Button, Dropdown, ToggleSwitch } from '@contentstack/venus-components';
-import strings from 'common/locale/en-us';
-import utils from '../../common/utils';
-import Table from './table';
-import { eventNames } from '../../common/utils/index';
-import CustomDelete from './customDelete';
-import { ReactComponent as TableActions } from '../../assets/tableActions.svg';
-import { ReactComponent as HeaderRow } from '../../assets/headerRow.svg';
-import { ReactComponent as HeaderColumn } from '../../assets/headerColumn.svg';
-import { ReactComponent as DeleteTable } from '../../assets/deleteTable.svg';
-import './styles.scss';
-import { fullScreenAtom, useTableData } from './store';
-import useJsErrorTracker from 'hooks/useJsErrorTracker';
-import useAnalytics from 'hooks/useAnalytics';
-import { useAppSdk } from 'hooks/useAppSdk';
-import { useAtom } from 'jotai';
+import React, { useState, useEffect } from "react";
+import { isEmpty, has } from "lodash";
+import ContentstackAppSdk from "@contentstack/app-sdk";
+import { Button, Dropdown, ToggleSwitch } from "@contentstack/venus-components";
+import strings from "common/locale/en-us";
+import utils from "common/utils";
+import Table from "./table";
+import { eventNames } from "common/utils/index";
+import CustomDelete from "./customDelete";
+import { ReactComponent as TableActions } from "../../assets/tableActions.svg";
+import { ReactComponent as HeaderRow } from "../../assets/headerRow.svg";
+import { ReactComponent as HeaderColumn } from "../../assets/headerColumn.svg";
+import { ReactComponent as DeleteTable } from "../../assets/deleteTable.svg";
+import "./styles.scss";
+import { fullScreenAtom, useTableData } from "./store";
+import useJsErrorTracker from "hooks/useJsErrorTracker";
+import useAnalytics from "hooks/useAnalytics";
+import { useAppSdk } from "hooks/useAppSdk";
+import { useAtom } from "jotai";
 
 export type fullScreenProps = {
   fullScreen?: boolean;
@@ -49,7 +49,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
       ContentstackAppSdk.init().then(async (appSdk) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        window.iframeRef = document.getElementById('root');
+        window.iframeRef = document.getElementById("root");
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         window.postRobot = appSdk.postRobot;
@@ -73,7 +73,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
           !isEmpty(initialData.tableState.data)
         ) {
           setTable(true);
-          if (has(initialData.tableState, 'columns[0].label')) {
+          if (has(initialData.tableState, "columns[0].label")) {
             setHeaderRowChange(true);
             initialData.tableState.headerRowAdded = true;
           } else {
@@ -86,12 +86,12 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
             initialData.tableState.headerColumnAdded = false;
           }
 
-          dispatch({ type: 'initial_data', payload: initialData.tableState });
+          dispatch({ type: "initial_data", payload: initialData.tableState });
         }
         // setting metadata for js error tracker
-        addMetadata('stack', `${appSdk?.stack._data.name}`);
-        addMetadata('organization', `${appSdk?.currentUser.defaultOrganization}`);
-        addMetadata('api_key', `${appSdk?.stack._data.api_key}`);
+        addMetadata("stack", `${appSdk?.stack._data.name}`);
+        addMetadata("organization", `${appSdk?.currentUser.defaultOrganization}`);
+        addMetadata("api_key", `${appSdk?.stack._data.api_key}`);
         // addMetadata('user_uid', `${appSdk?.stack._data.collaborators[0].uid}`);
         appSdk.location.CustomField?.frame.enableAutoResizing();
         setState({ config, appSdkInitialized: true, location: appSdk.location });
@@ -109,11 +109,11 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   }, []);
 
   useEffect(() => {
-    dispatch({ type: 'enable_reset' });
+    dispatch({ type: "enable_reset" });
   }, [tableState.data, tableState.columns]);
 
   useEffect(() => {
-    if (has(tableState, 'columns[0].label')) setHeaderRowChange(true);
+    if (has(tableState, "columns[0].label")) setHeaderRowChange(true);
     else setHeaderRowChange(false);
   }, [tableState.headerRowAdded]);
 
@@ -124,8 +124,8 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
 
   const sanitizeHTMLContent = (tableData) => {
     // Remove inline styles & HTML tags using improved regex
-    const sanitizedString = tableData.replace(/style="[^"]*"/gi, '');
-    return sanitizedString.replace(/<\/?[a-z][\s\S]*?>/gi, '');
+    const sanitizedString = tableData.replace(/style="[^"]*"/gi, "");
+    return sanitizedString.replace(/<\/?[a-z][\s\S]*?>/gi, "");
   };
 
   useEffect(() => {
@@ -146,16 +146,16 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
 
   const handleClick = () => {
     // Heap event ** event text would be updated **
-    trackEvent(ADD_TABLE, { property: 'Add Table' });
+    trackEvent(ADD_TABLE, { property: "Add Table" });
     setTable(true);
-    dispatch({ type: 'initial_table', payload: utils.makeData(3) });
+    dispatch({ type: "initial_table", payload: utils.makeData(3) });
   };
 
   const handleHeaderRowChange = () => {
     if (!headerRowChange) {
-      dispatch({ type: 'add_row_header' });
+      dispatch({ type: "add_row_header" });
     } else {
-      dispatch({ type: 'remove_row_header' });
+      dispatch({ type: "remove_row_header" });
     }
 
     setHeaderRowChange(!headerRowChange);
@@ -163,9 +163,9 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
 
   const handleHeaderColumnChange = () => {
     if (!headerColumnChange) {
-      dispatch({ type: 'add_col_header' });
+      dispatch({ type: "add_col_header" });
     } else {
-      dispatch({ type: 'remove_col_header' });
+      dispatch({ type: "remove_col_header" });
     }
 
     setHeaderColumnChange(!headerColumnChange);
@@ -173,9 +173,9 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
 
   const deleteTable = () => {
     // Heap event ** event text would be updated **
-    trackEvent(DELETE_TABLE, { property: 'Delete Table' });
+    trackEvent(DELETE_TABLE, { property: "Delete Table" });
     setTable(false);
-    dispatch({ type: 'delete_table' });
+    dispatch({ type: "delete_table" });
   };
 
   if (fullScreenMode && !fullScreen) {
@@ -183,7 +183,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   }
 
   return (
-    <div className={'field-extension' + (fullScreen ? ' app-height' : '')}>
+    <div className={"field-extension" + (fullScreen ? " app-height" : "")}>
       {state.appSdkInitialized && (
         <div className="field-extension-wrapper">
           {table ? (
@@ -191,13 +191,10 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
               {tableState.tableActionEnabled && (
                 <div
                   className={
-                    'table-actions' +
-                    (fullScreen
-                      ? ' table-action-fullscreen-placement'
-                      : ' table-action-normal-placement')
+                    "table-actions" +
+                    (fullScreen ? " table-action-fullscreen-placement" : " table-action-normal-placement")
                   }
-                  id="table-actions"
-                >
+                  id="table-actions">
                   <Dropdown
                     adjustWidthForContent={false}
                     arrowSecondary={false}
@@ -245,19 +242,12 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
                       },
                       {
                         action: deleteTable,
-                        label: (
-                          <CustomDelete
-                            text={'Delete Table'}
-                            Icon={<DeleteTable />}
-                            type={'table'}
-                          />
-                        ),
+                        label: <CustomDelete text={"Delete Table"} Icon={<DeleteTable />} type={"table"} />,
                       },
                     ]}
                     testId="cs-dropdown"
                     type="click"
-                    viewAs="label"
-                  >
+                    viewAs="label">
                     <TableActions />
                   </Dropdown>
                 </div>
@@ -279,11 +269,7 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
           )}
           {!table && (
             <span>
-              <Button
-                className="add-product-btn"
-                buttonType="control"
-                onClick={() => handleClick()}
-              >
+              <Button className="add-product-btn" buttonType="control" onClick={() => handleClick()}>
                 <span className="add-table-cta">{strings.ctaText}</span>
               </Button>
             </span>

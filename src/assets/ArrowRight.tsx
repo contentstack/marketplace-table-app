@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function Arrow() {
   return (
@@ -10,12 +10,11 @@ export default function Arrow() {
       stroke="#2c3e50"
       fill="none"
       strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+      strokeLinejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <line x1="5" y1="12" x2="19" y2="12" />
-      <line x1="5" y1="12" x2="11" y2="18" />
-      <line x1="5" y1="12" x2="11" y2="6" />
+      <line x1="13" y1="18" x2="19" y2="12" />
+      <line x1="13" y1="6" x2="19" y2="12" />
     </svg>
   );
 }

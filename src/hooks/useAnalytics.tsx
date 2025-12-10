@@ -1,4 +1,4 @@
-import { useAppSdk } from './useAppSdk';
+import { useAppSdk } from "./useAppSdk";
 
 const useAnalytics = () => {
   const [appSdk] = useAppSdk();

@@ -1,11 +1,12 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
-require('dotenv').config();
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const config: PlaywrightTestConfig = {
   /* Maximum time one test can run for. */
-  globalSetup: require.resolve('./global-setup'),
-  // testDir: './tests/test-spec',
+  globalSetup: './global-setup.ts',
   timeout: 30 * 10000,
   expect: {
     timeout: 5000,
