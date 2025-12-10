@@ -52,8 +52,6 @@ npm run lint
 # Format code
 npm run format
 
-# Type check
-npm run typecheck
 ```
 
 ### Testing
@@ -77,10 +75,6 @@ npm run test:chrome-headed
 # Build the application
 npm run build
 
-# Preview production build
-npm run preview
-
-# The built files will be in the `build` directory
 ```
 
 ## 🏗️ Project Structure
@@ -157,18 +151,6 @@ npm run format:check       # Check formatting
 npm run typecheck          # TypeScript type checking
 ```
 
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-# Tracker js configuration
-VITE_TRACKER_TOKEN=your_tracker_token
-VITE_TRACKER_ENV=your_tracker_environment
-```
-
 ### App Configuration
 
 The app configuration is defined in `update-app-info.json`:
@@ -239,7 +221,7 @@ refactor: improve table state management
 For local development with Contentstack:
 
 1. Use Contentstack's local development tools
-2. Configure your stack API key
+2. npm install
 3. Run `npm start` for development server
 
 ## 🤝 Contributing
@@ -260,9 +242,6 @@ We welcome contributions!
 # Install dependencies
 npm install
 
-# Set up git hooks
-npm run prepare
-
 # Start development
 npm start
 ```
@@ -274,8 +253,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - [Contentstack](https://www.contentstack.com/) for the marketplace platform
-- [React Table](https://react-table.tanstack.com/) for the table functionality
-- [Venus Components](https://www.contentstack.com/) for the UI components
+- [Table App Documentation](https://www.contentstack.com/docs/developers/marketplace-apps/table) for the table functionality
 - [Vite](https://vitejs.dev/) for the build tool
 
 ## 📞 Support
