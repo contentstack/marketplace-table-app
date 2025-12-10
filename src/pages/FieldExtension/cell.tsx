@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
-import ContentEditable from 'react-contenteditable';
-import { Dropdown, Icon } from '@contentstack/venus-components';
-import { ReactComponent as InsertRowAbove } from '../../assets/insertRowAbove.svg';
-import { ReactComponent as InsertRowBelow } from '../../assets/insertRowBelow.svg';
-import { ReactComponent as DeleteRow } from '../../assets/deleteRow.svg';
-import { ReactComponent as InsertColumnLeft } from '../../assets/insertColumnLeft.svg';
-import { ReactComponent as InsertColumnRight } from '../../assets/insertColumnRight.svg';
-import { ReactComponent as DeleteColumn } from '../../assets/deleteColumn.svg';
-import CustomDelete from './customDelete';
-import { useTableData } from './store';
-import utils from '../../common/utils';
-import { map } from 'lodash';
+import { useCallback, useEffect, useState } from "react";
+import ContentEditable from "react-contenteditable";
+import { Dropdown, Icon } from "@contentstack/venus-components";
+import { ReactComponent as InsertRowAbove } from "../../assets/insertRowAbove.svg";
+import { ReactComponent as InsertRowBelow } from "../../assets/insertRowBelow.svg";
+import { ReactComponent as DeleteRow } from "../../assets/deleteRow.svg";
+import { ReactComponent as InsertColumnLeft } from "../../assets/insertColumnLeft.svg";
+import { ReactComponent as InsertColumnRight } from "../../assets/insertColumnRight.svg";
+import { ReactComponent as DeleteColumn } from "../../assets/deleteColumn.svg";
+import CustomDelete from "./customDelete";
+import { useTableData } from "./store";
+import utils from "common/utils";
+import { map } from "lodash";
 
 const useColumns = () => {
   const [tableState, dispatch] = useTableData();
@@ -19,23 +19,23 @@ const useColumns = () => {
       (direction: string, columnId: string): string[] => {
         const index = tableState.columns.findIndex((column) => column.id === columnId);
         const newId: string = utils.shortId();
-        const flag = direction === 'right' ? 1 : 0;
+        const flag = direction === "right" ? 1 : 0;
 
         // create the new columns array
         const columns = [
           ...tableState.columns.slice(0, index + flag),
           {
             id: newId,
-            label: '',
+            label: "",
             accessor: newId,
-            dataType: 'text',
+            dataType: "text",
             created: false,
             options: [],
           },
           ...tableState.columns.slice(index + flag, tableState.columns.length),
         ];
         dispatch({ type: `insert_column_${direction}`, columns });
-        return map(columns, 'id');
+        return map(columns, "id");
       },
       [tableState],
     ),
@@ -43,8 +43,8 @@ const useColumns = () => {
 };
 
 const stringifyValue = (value: any): string => {
-  if (value === null || value === undefined) return '';
-  if (typeof value === 'object' || Array.isArray(value) || Number.isNaN(value)) return '';
+  if (value === null || value === undefined) return "";
+  if (typeof value === "object" || Array.isArray(value) || Number.isNaN(value)) return "";
   return String(value);
 };
 
@@ -70,38 +70,38 @@ export default function Cell({
 
   useEffect(() => {
     if (value.update) {
-      dataDispatch({ type: 'update_cell', columnId: id, rowIndex: index, value: value.value });
+      dataDispatch({ type: "update_cell", columnId: id, rowIndex: index, value: value.value });
     }
   }, [value, dataDispatch, id, index]);
 
   const handleClick = (e) => {
-    dataDispatch({ type: 'enable_table_action' });
+    dataDispatch({ type: "enable_table_action" });
   };
 
   const insertRowAbove = () => {
-    dataDispatch({ type: 'insert_row_above', rowIndex: index });
+    dataDispatch({ type: "insert_row_above", rowIndex: index });
   };
 
   const insertRowBelow = () => {
-    dataDispatch({ type: 'insert_row_below', rowIndex: index });
+    dataDispatch({ type: "insert_row_below", rowIndex: index });
   };
 
   const deleteRow = () => {
-    dataDispatch({ type: 'delete_row', rowIndex: index });
+    dataDispatch({ type: "delete_row", rowIndex: index });
   };
 
   const insertColumnLeft = () => {
-    const newColumns = addColumn('left', id);
+    const newColumns = addColumn("left", id);
     setColumnOrder(newColumns);
   };
 
   const insertColumnRight = () => {
-    const newColumns = addColumn('right', id);
+    const newColumns = addColumn("right", id);
     setColumnOrder(newColumns);
   };
 
   const deleteColumn = () => {
-    dataDispatch({ type: 'delete_column', columnId: id });
+    dataDispatch({ type: "delete_column", columnId: id });
   };
 
   useEffect(() => {
@@ -133,7 +133,7 @@ export default function Cell({
     },
     {
       action: deleteRow,
-      label: <CustomDelete text={'Delete Row'} Icon={<DeleteRow />} type={'row'} />,
+      label: <CustomDelete text={"Delete Row"} Icon={<DeleteRow />} type={"row"} />,
     },
     {
       default: true,
@@ -161,25 +161,22 @@ export default function Cell({
       },
       {
         action: deleteColumn,
-        label: <CustomDelete text={'Delete Column'} Icon={<DeleteColumn />} type={'column'} />,
+        label: <CustomDelete text={"Delete Column"} Icon={<DeleteColumn />} type={"column"} />,
       },
     );
   }
 
   let element;
   switch (dataType) {
-    case 'text':
+    case "text":
       element = (
         <div
           className="cell"
           tabIndex={0}
           onFocus={(e: any) => {
-            document
-              .querySelector('.cs-extension-table .cell.active-cell')
-              ?.classList.remove('active-cell');
-            e.currentTarget.classList.add('active-cell');
-          }}
-        >
+            document.querySelector(".cs-extension-table .cell.active-cell")?.classList.remove("active-cell");
+            e.currentTarget.classList.add("active-cell");
+          }}>
           <ContentEditable
             html={stringifyValue(value?.value)}
             onChange={onChange}
@@ -189,13 +186,13 @@ export default function Cell({
               setValue((old) => ({ value: stringifyValue(newHtml), update: true }));
             }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 e.stopPropagation(); // Allow multiline without breaking out
               }
             }}
             className="data-input"
             tagName="div"
-            style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+            style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
           />
           <div className="cell-dropdown">
             <Dropdown
@@ -209,9 +206,8 @@ export default function Cell({
               list={list}
               testId="cs-dropdown"
               type="click"
-              viewAs="label"
-            >
-              <Icon icon={'DownArrowEnabled'} size="small" />
+              viewAs="label">
+              <Icon icon={"DownArrowEnabled"} size="small" />
             </Dropdown>
           </div>
         </div>

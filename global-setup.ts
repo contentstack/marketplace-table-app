@@ -1,6 +1,6 @@
-import { chromium, FullConfig } from '@playwright/test';
-import { AppLogin } from './tests/e2e/pages/login';
-import { getAuthToken } from './tests/e2e/utils/pre-installation-setup';
+import { chromium } from "@playwright/test";
+import { AppLogin } from "./tests/e2e/pages/login";
+import { getAuthToken } from "./tests/e2e/utils/pre-installation-setup";
 
 const globalSetup = async () => {
   const stackEmail = process.env.CONTENTSTACK_LOGIN;
@@ -9,8 +9,8 @@ const globalSetup = async () => {
   const browser = await chromium.launch();
   const stagLogin = await browser.newPage({
     httpCredentials: {
-      username: process.env.BASIC_AUTH_USERNAME || '',
-      password: process.env.BASIC_AUTH_PASSWORD || '',
+      username: process.env.BASIC_AUTH_USERNAME || "",
+      password: process.env.BASIC_AUTH_PASSWORD || "",
     },
   });
   const loginSetup = new AppLogin(stagLogin);

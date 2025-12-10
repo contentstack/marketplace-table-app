@@ -1,22 +1,22 @@
-import utils from '../../common/utils';
-import { map, omit, pick } from 'lodash';
-import { atom } from 'jotai';
-import { useReducerAtom } from 'jotai/utils';
+import utils from "common/utils";
+import { map, omit, pick } from "lodash";
+import { atom } from "jotai";
+import { useReducerAtom } from "jotai/utils";
 
 function createEmptyRow(columnCount) {
   let row = {};
   for (let colIndex = 0; colIndex < columnCount; colIndex++) {
     let columnKey: string;
-    columnKey = 'column' + (colIndex + 1);
+    columnKey = "column" + (colIndex + 1);
 
-    row[columnKey] = '';
+    row[columnKey] = "";
   }
   return row;
 }
 
 function reducer(tableState, action) {
   switch (action.type) {
-    case 'add_option_to_column':
+    case "add_option_to_column":
       const optionIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
       return {
         ...tableState,
@@ -33,13 +33,13 @@ function reducer(tableState, action) {
           ...tableState.columns.slice(optionIndex + 1, tableState.columns.length),
         ],
       };
-    case 'add_row':
+    case "add_row":
       return {
         ...tableState,
         skipReset: true,
         data: [...tableState.data, {}, []],
       };
-    case 'insert_row_above':
+    case "insert_row_above":
       const emptyRowAbove = createEmptyRow(tableState.columns.length);
       return {
         ...tableState,
@@ -50,7 +50,7 @@ function reducer(tableState, action) {
           ...tableState.data.slice(action.rowIndex, tableState.data.length),
         ],
       };
-    case 'insert_row_below':
+    case "insert_row_below":
       const emptyRowBelow = createEmptyRow(tableState.columns.length);
       return {
         ...tableState,
@@ -61,7 +61,7 @@ function reducer(tableState, action) {
           ...tableState.data.slice(action.rowIndex + 1, tableState.data.length),
         ],
       };
-    case 'delete_row':
+    case "delete_row":
       // tableState.data[action.rowIndex].classList.add('delete-option');
       //TODO : If table has only one row then delete the table
       return {
@@ -72,11 +72,11 @@ function reducer(tableState, action) {
           ...tableState.data.slice(action.rowIndex + 1, tableState.data.length),
         ],
       };
-    case 'update_column_type':
+    case "update_column_type":
       const typeIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
       switch (action.dataType) {
-        case 'number':
-          if (tableState.columns[typeIndex].dataType === 'number') {
+        case "number":
+          if (tableState.columns[typeIndex].dataType === "number") {
             return tableState;
           } else {
             return {
@@ -88,14 +88,12 @@ function reducer(tableState, action) {
               ],
               data: tableState.data.map((row) => ({
                 ...row,
-                [action.columnId]: isNaN(row[action.columnId])
-                  ? ''
-                  : Number.parseInt(row[action.columnId]),
+                [action.columnId]: isNaN(row[action.columnId]) ? "" : Number.parseInt(row[action.columnId]),
               })),
             };
           }
-        case 'select':
-          if (tableState.columns[typeIndex].dataType === 'select') {
+        case "select":
+          if (tableState.columns[typeIndex].dataType === "select") {
             return {
               ...tableState,
               columns: [
@@ -129,10 +127,10 @@ function reducer(tableState, action) {
               skipReset: true,
             };
           }
-        case 'text':
-          if (tableState.columns[typeIndex].dataType === 'text') {
+        case "text":
+          if (tableState.columns[typeIndex].dataType === "text") {
             return tableState;
-          } else if (tableState.columns[typeIndex].dataType === 'select') {
+          } else if (tableState.columns[typeIndex].dataType === "select") {
             return {
               ...tableState,
               skipReset: true,
@@ -153,7 +151,7 @@ function reducer(tableState, action) {
               ],
               data: tableState.data.map((row) => ({
                 ...row,
-                [action.columnId]: row[action.columnId] + '',
+                [action.columnId]: row[action.columnId] + "",
               })),
             };
           }
@@ -161,14 +159,14 @@ function reducer(tableState, action) {
           return tableState;
       }
 
-    case 'insert_column_right':
-    case 'insert_column_left':
+    case "insert_column_right":
+    case "insert_column_left":
       return {
         ...tableState,
         skipReset: true,
         columns: action.columns,
       };
-    case 'delete_column':
+    case "delete_column":
       const deleteIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
       return {
         ...tableState,
@@ -178,15 +176,15 @@ function reducer(tableState, action) {
           ...tableState.columns.slice(deleteIndex + 1, tableState.columns.length),
         ],
       };
-    case 'enable_reset':
+    case "enable_reset":
       return {
         ...tableState,
         skipReset: false,
       };
-    case 'update_cell':
+    case "update_cell":
       tableState.data[action.rowIndex][action.columnId] = action.value;
       return { ...tableState };
-    case 'update_column_header':
+    case "update_column_header":
       const headerIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
       if (headerIndex !== -1) {
         return {
@@ -195,18 +193,18 @@ function reducer(tableState, action) {
             ...tableState.columns.slice(0, headerIndex),
             {
               ...tableState.columns[headerIndex],
-              label: action.label || '',
+              label: action.label || "",
             },
             ...tableState.columns.slice(headerIndex + 1, tableState.columns.length),
           ],
         };
       }
       return tableState;
-    case 'add_row_header':
+    case "add_row_header":
       const firstRow = tableState.data[0];
       const updatedColumns = tableState.columns.map((column) => ({
         ...column,
-        label: firstRow[column.id] || '',
+        label: firstRow[column.id] || "",
       }));
       tableState.headerRowAdded = true;
       tableState.data.slice(1);
@@ -215,7 +213,7 @@ function reducer(tableState, action) {
         columns: updatedColumns,
         data: [...tableState.data.slice(1)],
       };
-    case 'remove_row_header':
+    case "remove_row_header":
       let labels = tableState.columns.map((a) => a.label);
       let columnIds = tableState.columns.map((a) => a.id);
       let row: any = {};
@@ -223,7 +221,7 @@ function reducer(tableState, action) {
         row[value] = labels[index];
       });
 
-      let columns = map(tableState.columns, (o) => omit(o, ['label']));
+      let columns = map(tableState.columns, (o) => omit(o, ["label"]));
       tableState.headerRowAdded = false;
       return {
         ...tableState,
@@ -231,17 +229,17 @@ function reducer(tableState, action) {
         columns: [...columns],
         data: [row, ...tableState.data],
       };
-    case 'add_col_header':
+    case "add_col_header":
       tableState.headerColumnAdded = true;
 
       return { ...tableState };
-    case 'remove_col_header':
+    case "remove_col_header":
       tableState.headerColumnAdded = false;
 
       return { ...tableState };
-    case 'delete_table':
+    case "delete_table":
       return { ...tableState, columns: [], data: [] };
-    case 'initial_data':
+    case "initial_data":
       return {
         ...tableState,
         ...action.payload,
@@ -249,13 +247,13 @@ function reducer(tableState, action) {
         // columns: [...action.payload.columns],
         // data: [...action.payload.data],
       };
-    case 'initial_table':
+    case "initial_table":
       return {
         ...tableState,
         columns: [...action.payload.columns],
         data: [...action.payload.data],
       };
-    case 'update_sort_type':
+    case "update_sort_type":
       const colIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
       return {
         ...tableState,
@@ -266,7 +264,7 @@ function reducer(tableState, action) {
         ],
         //data: [...tableState.data],
       };
-    case 'append_data_to_table':
+    case "append_data_to_table":
       const columnsArray = [
         ...tableState.columns.slice(0, tableState.columns.length),
         ...action.payload.columns.slice(tableState.columns.length, action.payload.columns.length),
@@ -276,21 +274,19 @@ function reducer(tableState, action) {
         columns: columnsArray,
         data: [...tableState.data.slice(0, tableState.data.length), ...action.payload.data],
       };
-    case 'enable_table_action':
+    case "enable_table_action":
       tableState.tableActionEnabled = true;
       return {
         ...tableState,
         tableActionEnabled: true,
       };
-    case 'drag_rows_update':
+    case "drag_rows_update":
       return {
         ...tableState,
         data: action.payload.data,
       };
-    case 'drag_column_update':
-      let cols = map(action.payload.columns, (o) =>
-        pick(o, ['id', 'label', 'accessor', 'dataType']),
-      );
+    case "drag_column_update":
+      let cols = map(action.payload.columns, (o) => pick(o, ["id", "label", "accessor", "dataType"]));
 
       cols.map((o) => {
         o.accessor = o.id;

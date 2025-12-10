@@ -1,0 +1,19 @@
+{
+  "name": "Table",
+  "target_type": "stack",
+  "ui_location": {
+    "locations": [
+      {
+        "type": "cs.cm.stack.custom_field",
+        "meta": [
+          {
+            "signed": true,
+            "path": "/field-extension",
+            "data_type": "json"
+          }
+        ]
+      }
+    ]
+  }
+}
+

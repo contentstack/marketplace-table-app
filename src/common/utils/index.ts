@@ -3,9 +3,9 @@ function makeData(count) {
 
   for (let i = 0; i < count; i++) {
     let row = {
-      column1: '',
-      column2: '',
-      column3: '',
+      column1: "",
+      column2: "",
+      column3: "",
     };
 
     data.push(row);
@@ -13,19 +13,19 @@ function makeData(count) {
 
   let columns = [
     {
-      id: 'column1',
-      accessor: 'column1',
-      dataType: 'text',
+      id: "column1",
+      accessor: "column1",
+      dataType: "text",
     },
     {
-      id: 'column2',
-      accessor: 'column2',
-      dataType: 'text',
+      id: "column2",
+      accessor: "column2",
+      dataType: "text",
     },
     {
-      id: 'column3',
-      accessor: 'column3',
-      dataType: 'text',
+      id: "column3",
+      accessor: "column3",
+      dataType: "text",
     },
   ];
 
@@ -33,7 +33,7 @@ function makeData(count) {
 }
 
 function shortId() {
-  return '_' + Math.random().toString(36).substr(2, 9);
+  return "_" + Math.random().toString(36).substr(2, 9);
 }
 
 function randomColor() {
@@ -47,15 +47,15 @@ const utils = {
 };
 
 export const eventNames = Object.freeze({
-  USED_IMPORT_CSV: 'Clicked',
-  IMPORT_RADIO_OPTIONS: 'Clicked',
-  EXPORT_OPTION: 'Clicked',
-  ADD_TABLE: 'Clicked',
-  DELETE_TABLE: 'Clicked',
-  SEARCH_RECORDS: 'Viewed',
-  FULLSCREEN_MODE: 'Viewed',
-  APP_INITIALIZE_SUCCESS: 'App Loaded Successfully',
-  APP_INITIALIZE_FAILURE: 'App Load Failure',
+  USED_IMPORT_CSV: "Clicked",
+  IMPORT_RADIO_OPTIONS: "Clicked",
+  EXPORT_OPTION: "Clicked",
+  ADD_TABLE: "Clicked",
+  DELETE_TABLE: "Clicked",
+  SEARCH_RECORDS: "Viewed",
+  FULLSCREEN_MODE: "Viewed",
+  APP_INITIALIZE_SUCCESS: "App Loaded Successfully",
+  APP_INITIALIZE_FAILURE: "App Load Failure",
 });
 
 export default utils;
