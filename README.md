@@ -220,9 +220,8 @@ refactor: improve table state management
 
 For local development with Contentstack:
 
-1. Use Contentstack's local development tools
-2. npm install
-3. Run `npm start` for development server
+1. npm install
+2. Run `npm start` for development server
 
 ## 🤝 Contributing
 
