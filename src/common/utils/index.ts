@@ -1,3 +1,21 @@
+import DOMPurify from "dompurify";
+
+function safePopperAttributes(attrs: Record<string, string> | undefined): Record<string, string> {
+  if (!attrs) return {};
+  const allowedKeys = ["data-popper-placement", "data-popper-reference-hidden", "data-popper-escaped"];
+  return Object.fromEntries(Object.entries(attrs).filter(([key]) => allowedKeys.includes(key)));
+}
+
+function sanitizeForDisplay(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "object" || Array.isArray(value) || Number.isNaN(value)) return "";
+  const stringValue = String(value);
+  return DOMPurify.sanitize(stringValue, {
+    ALLOWED_TAGS: ["br", "div"],
+    ALLOWED_ATTR: [],
+  });
+}
+
 function makeData(count) {
   let data: any = [];
 
@@ -44,6 +62,8 @@ const utils = {
   makeData,
   shortId,
   randomColor,
+  sanitizeForDisplay,
+  safePopperAttributes,
 };
 
 export const eventNames = Object.freeze({
