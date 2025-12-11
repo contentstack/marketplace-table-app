@@ -13,6 +13,8 @@ import { ReactComponent as PlusIcon } from "../../assets/plusIcon.svg";
 import utils from "common/utils/index";
 import { useAppSdk } from "hooks/useAppSdk";
 
+const { sanitizeForDisplay, safePopperAttributes } = utils;
+
 export default function Header({
   column: { id, created, label, dataType, getResizerProps, getHeaderProps },
   setSortBy,
@@ -206,7 +208,10 @@ export default function Header({
       </div>
       {expanded && <div className="overlay" onClick={() => setExpanded(false)} />}
       {expanded && (
-        <div ref={setPopperElement} style={{ ...styles.popper, zIndex: 3 }} {...attributes.popper}>
+        <div
+          ref={setPopperElement}
+          style={{ ...styles.popper, zIndex: 3 }}
+          {...safePopperAttributes(attributes.popper)}>
           <div
             className="bg-white shadow-5 border-radius-md"
             style={{
@@ -245,7 +250,7 @@ export default function Header({
                   ref={setTypePopperElement}
                   onMouseEnter={() => setShowType(true)}
                   onMouseLeave={() => setShowType(false)}
-                  {...typePopper.attributes.popper}
+                  {...safePopperAttributes(typePopper.attributes.popper)}
                   style={{
                     ...typePopper.styles.popper,
                     width: 200,

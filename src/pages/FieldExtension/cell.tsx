@@ -12,6 +12,8 @@ import { useTableData } from "./store";
 import utils from "common/utils";
 import { map } from "lodash";
 
+const { sanitizeForDisplay } = utils;
+
 const useColumns = () => {
   const [tableState, dispatch] = useTableData();
   return {
@@ -43,9 +45,7 @@ const useColumns = () => {
 };
 
 const stringifyValue = (value: any): string => {
-  if (value === null || value === undefined) return "";
-  if (typeof value === "object" || Array.isArray(value) || Number.isNaN(value)) return "";
-  return String(value);
+  return sanitizeForDisplay(value);
 };
 
 export default function Cell({
