@@ -6,7 +6,7 @@
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-45ba4b?logo=playwright&logoColor=white)
 
-A modern, feature-rich table custom field extension for Contentstack marketplace apps. This React-based application provides an intuitive table editing interface that integrates seamlessly with Contentstack's content management system.
+A modern, feature-rich table custom field extension for Contentstack marketplace apps. This React-based application provides an intuitive table editing interface that integrates seamlessly with Contentstack's content management system
 
 ## 🎨 Features
 
