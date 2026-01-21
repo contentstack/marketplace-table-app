@@ -94,6 +94,9 @@
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^4.0.15"
   },
+  "overrides": {
+    "@babel/runtime": "^7.26.10"
+  },
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --fix",
