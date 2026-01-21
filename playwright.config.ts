@@ -1,12 +1,14 @@
-import type { PlaywrightTestConfig } from '@playwright/test';
-import { devices } from '@playwright/test';
-import dotenv from 'dotenv';
+import type { PlaywrightTestConfig } from "@playwright/test";
+import { devices } from "@playwright/test";
+import dotenv from "dotenv";
 
 dotenv.config();
 
 const config: PlaywrightTestConfig = {
   /* Maximum time one test can run for. */
-  globalSetup: './global-setup.ts',
+  globalSetup: "./global-setup.ts",
+  // Align with calendar app pattern: add a centralized global teardown
+  globalTeardown: "./tests/e2e/global-teardown.ts",
   timeout: 30 * 10000,
   expect: {
     timeout: 5000,
@@ -18,15 +20,15 @@ const config: PlaywrightTestConfig = {
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html', { open: 'never' }]],
+  reporter: [["html", { open: "never" }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    storageState: 'storageState.json',
+    storageState: "storageState.json",
     actionTimeout: 0,
-    screenshot: 'off',
-    video: 'off',
+    screenshot: "off",
+    video: "off",
     viewport: { width: 1200, height: 720 },
-    trace: 'on-first-retry',
+    trace: "on-first-retry",
     baseURL: process.env.APP_HOST_URL,
     launchOptions: {
       logger: {
@@ -41,19 +43,19 @@ const config: PlaywrightTestConfig = {
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'Chromium',
+      name: "Chromium",
       use: {
-        browserName: 'chromium',
+        browserName: "chromium",
       },
     },
     {
-      name: 'safari',
-      use: { ...devices['Desktop Safari'] },
+      name: "safari",
+      use: { ...devices["Desktop Safari"] },
     },
     {
-      name: 'firefox',
+      name: "firefox",
       use: {
-        browserName: 'firefox',
+        browserName: "firefox",
       },
     },
   ],

@@ -1,11 +1,9 @@
-const axios = require('axios');
-const jsonfile = require('jsonfile');
+import axios from "axios";
+import * as jsonfile from "jsonfile";
 
-interface ExtensionUid {
-  uid: string;
-}
+type ExtensionUid = string;
 
-const file = 'data.json';
+const file = "data.json";
 
 const savedObj = {};
 
@@ -22,9 +20,9 @@ const writeFile = async (obj: any) => {
 export const getAuthToken = async (): Promise<string> => {
   let options = {
     url: `https://${process.env.BASE_API_URL}/v3/user-session`,
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-type': 'application/json',
+      "Content-type": "application/json",
     },
     data: {
       user: {
@@ -35,7 +33,7 @@ export const getAuthToken = async (): Promise<string> => {
   };
   try {
     const result = await axios(options);
-    savedObj['authToken'] = result.data.user.authtoken;
+    savedObj["authToken"] = result.data.user.authtoken;
     await writeFile(savedObj);
     return result.data.user.authtoken;
   } catch (error) {
@@ -46,27 +44,27 @@ export const getAuthToken = async (): Promise<string> => {
 // create content-type
 export const createContentType = async (
   authToken: string,
-  extension_uid: ExtensionUid[],
+  extension_uid: ExtensionUid,
   stackApiKey: string | undefined,
 ) => {
   const generateUid = `Test Content Type_${Math.floor(Math.random() * 10000)}`;
   let options = {
     url: `https://${process.env.BASE_API_URL}/v3/content_types`,
-    method: 'POST',
+    method: "POST",
     headers: {
       api_key: stackApiKey,
       authtoken: authToken,
-      'Content-type': 'application/json',
+      "Content-type": "application/json",
     },
     data: {
       content_type: {
         title: generateUid,
-        uid: generateUid.replace(/\s/g, '_').toLowerCase(),
+        uid: generateUid.replace(/\s/g, "_").toLowerCase(),
         schema: [
           {
-            display_name: 'Title',
-            uid: 'title',
-            data_type: 'text',
+            display_name: "Title",
+            uid: "title",
+            data_type: "text",
             field_metadata: {
               _default: true,
             },
@@ -75,9 +73,9 @@ export const createContentType = async (
             multiple: false,
           },
           {
-            display_name: 'URL',
-            uid: 'url',
-            data_type: 'text',
+            display_name: "URL",
+            uid: "url",
+            data_type: "text",
             field_metadata: {
               _default: true,
             },
@@ -85,9 +83,9 @@ export const createContentType = async (
             multiple: false,
           },
           {
-            display_name: 'Table App',
-            uid: 'table_app',
-            data_type: 'json',
+            display_name: "Table App",
+            uid: "table_app",
+            data_type: "json",
             extension_uid: extension_uid,
             config: {},
             mandatory: true,
@@ -109,25 +107,21 @@ export const createContentType = async (
 };
 
 // create entry
-export const createEntry = async (
-  authToken: string,
-  contentTypeId: string,
-  stackApiKey: string | undefined,
-) => {
+export const createEntry = async (authToken: string, contentTypeId: string, stackApiKey: string | undefined) => {
   let generateTitle = `Test Entry ${Math.floor(Math.random() * 1000)}`;
   let options = {
     url: `https://${process.env.BASE_API_URL}/v3/content_types/${contentTypeId}/entries`,
-    params: { locale: 'en-us' },
-    method: 'POST',
+    params: { locale: "en-us" },
+    method: "POST",
     headers: {
       api_key: stackApiKey,
       authtoken: authToken,
-      'Content-type': 'application/json',
+      "Content-type": "application/json",
     },
     data: {
       entry: {
         title: generateTitle,
-        url: 'test-entry',
+        url: "test-entry",
       },
     },
   };
@@ -142,13 +136,14 @@ export const createEntry = async (
 export const getExtensionFieldUid = async (
   authToken: string,
   stackApiKey: string | undefined,
-): Promise<ExtensionUid[]> => {
-  let options = {
+  opts?: { nameContains?: string },
+): Promise<string> => {
+  const options = {
     url: `https://${process.env.BASE_API_URL}/v3/extensions`,
-    method: 'GET',
+    method: "GET" as const,
     params: {
       query: {
-        type: 'field',
+        type: "field",
       },
       include_marketplace_extensions: true,
     },
@@ -158,19 +153,33 @@ export const getExtensionFieldUid = async (
     },
   };
   try {
-    let result = await axios(options);
-    return result.data.extensions[0].uid;
-  } catch (error) {
-    return error;
+    const result = await axios(options);
+    const list = (result.data?.extensions ?? []) as Array<any>;
+    if (!Array.isArray(list) || list.length === 0) {
+      throw new Error("No field extensions found in stack");
+    }
+    const nameNeedle = (opts?.nameContains || process.env.TABLE_APP_NAME || "Table").toLowerCase();
+    // Try to find extension that matches the Table app
+    const match =
+      list.find((e) => (e?.title || "").toLowerCase().includes(nameNeedle)) ||
+      list.find((e) => (e?.name || "").toLowerCase().includes(nameNeedle)) ||
+      list[0];
+    const uid = match?.uid || match;
+    if (!uid || typeof uid !== "string") {
+      throw new Error("Unable to resolve extension uid");
+    }
+    return uid;
+  } catch (error: any) {
+    throw new Error(`Failed to get extension uid: ${error?.message || JSON.stringify(error)}`);
   }
 };
 
 export const getInstalledApp = async (authToken: string, appId: string) => {
   let options = {
     url: `https://${process.env.DEVELOPER_HUB_API}/apps/${appId}/installations`,
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       organization_uid: process.env.CONTENTSTACK_ORGANIZATION_UID,
       authtoken: authToken,
     },
@@ -186,9 +195,9 @@ export const getInstalledApp = async (authToken: string, appId: string) => {
 export const uninstallApp = async (authToken: string, installId: string) => {
   let options = {
     url: `https://${process.env.DEVELOPER_HUB_API}/installations/${installId}`,
-    method: 'DELETE',
+    method: "DELETE",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       organization_uid: process.env.CONTENTSTACK_ORGANIZATION_UID,
       authtoken: authToken,
     },
@@ -204,9 +213,9 @@ export const uninstallApp = async (authToken: string, installId: string) => {
 export const deleteApp = async (token, appId) => {
   let options = {
     url: `https://${process.env.DEVELOPER_HUB_API}/apps/${appId}`,
-    method: 'DELETE',
+    method: "DELETE",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       organization_uid: process.env.CONTENTSTACK_ORGANIZATION_UID,
       authtoken: token,
     },
@@ -222,11 +231,11 @@ export const deleteApp = async (token, appId) => {
 export const deleteContentType = async (token, contentTypeId) => {
   let options = {
     url: `https://${process.env.BASE_API_URL}/v3/content_types/${contentTypeId}`,
-    method: 'DELETE',
+    method: "DELETE",
     headers: {
       api_key: process.env.STACK_API_KEY,
       authtoken: token,
-      'Content-type': 'application/json',
+      "Content-type": "application/json",
     },
   };
   try {
@@ -240,15 +249,15 @@ export const deleteContentType = async (token, contentTypeId) => {
 export const createApp = async (authToken: string) => {
   let options = {
     url: `https://${process.env.DEVELOPER_HUB_API}/apps`,
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       organization_uid: process.env.CONTENTSTACK_ORGANIZATION_UID,
       authtoken: authToken,
     },
     data: {
       name: `Table App ${Math.floor(Math.random() * 1000)}`,
-      target_type: 'stack',
+      target_type: "stack",
     },
   };
   try {
@@ -262,9 +271,9 @@ export const createApp = async (authToken: string) => {
 export const updateApp = async (authToken: string, appId: string) => {
   let options = {
     url: `https://${process.env.DEVELOPER_HUB_API}/apps/${appId}`,
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       organization_uid: process.env.CONTENTSTACK_ORGANIZATION_UID,
       authtoken: authToken,
     },
@@ -272,14 +281,14 @@ export const updateApp = async (authToken: string, appId: string) => {
       ui_location: {
         locations: [
           {
-            type: 'cs.cm.stack.custom_field',
+            type: "cs.cm.stack.custom_field",
             meta: [
               {
                 name: `Table App ${Math.floor(Math.random() * 1000)}`,
-                path: '/field-extension',
+                path: "/field-extension",
                 signed: false,
                 enabled: true,
-                data_type: 'json',
+                data_type: "json",
               },
             ],
           },
@@ -297,21 +306,17 @@ export const updateApp = async (authToken: string, appId: string) => {
 };
 
 // install app in stack & return installation id
-export const installApp = async (
-  authToken: string,
-  appId: string,
-  stackApiKey: string | undefined,
-) => {
+export const installApp = async (authToken: string, appId: string, stackApiKey: string | undefined) => {
   let options = {
     url: `https://${process.env.DEVELOPER_HUB_API}/apps/${appId}/install`,
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       organization_uid: process.env.CONTENTSTACK_ORGANIZATION_UID,
       authtoken: authToken,
     },
     data: {
-      target_type: 'stack',
+      target_type: "stack",
       target_uid: stackApiKey,
     },
   };
