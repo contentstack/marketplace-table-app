@@ -41,6 +41,7 @@ yarn-error.log*
 # Playwright
 storageState.json
 data.json
+/tests/e2e/.state.json
 
 # TypeScript cache
 *.tsbuildinfo
