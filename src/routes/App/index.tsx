@@ -1,19 +1,32 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import FieldExtension from "../../pages/FieldExtension";
 import ErrorBoundary from "components/ErrorBoundary";
 import "@contentstack/venus-components/build/main.css";
 import "./styles.scss";
 
+const getRouter = (): typeof BrowserRouter | typeof HashRouter => {
+  const { hash } = window.location;
+
+  // Check if URL has a hash-based path (e.g., /#/field-extension)
+  if (hash && hash.startsWith("#/")) {
+    return HashRouter;
+  }
+
+  return BrowserRouter;
+};
+
+const Router = getRouter();
+
 const App: React.FC = () => {
   return (
     <div className="app">
       <ErrorBoundary>
-        <BrowserRouter>
+        <Router>
           <Routes>
             <Route path="/field-extension" element={<FieldExtension />} />
           </Routes>
-        </BrowserRouter>
+        </Router>
       </ErrorBoundary>
     </div>
   );
