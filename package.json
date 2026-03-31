@@ -1,6 +1,6 @@
 {
   "name": "marketplace-table-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A modern, feature-rich table custom field extension for Contentstack marketplace apps.",
   "private": true,
   "type": "module",
