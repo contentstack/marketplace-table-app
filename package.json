@@ -92,7 +92,7 @@
     "vite": "^6.0.3",
     "vite-plugin-singlefile": "^2.0.3",
     "vite-plugin-svgr": "^4.3.0",
-    "vitest": "^4.0.15"
+    "vitest": "^4.1.0"
   },
   "overrides": {
     "@babel/runtime": "^7.26.10"
