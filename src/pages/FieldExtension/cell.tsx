@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ContentEditable from "react-contenteditable";
 import { Dropdown, Icon } from "@contentstack/venus-components";
 import { ReactComponent as InsertRowAbove } from "../../assets/insertRowAbove.svg";
@@ -12,7 +12,7 @@ import { useTableData } from "./store";
 import utils from "common/utils";
 import { map } from "lodash";
 
-const { sanitizeForDisplay } = utils;
+const { escapeHtml } = utils;
 
 const useColumns = () => {
   const [tableState, dispatch] = useTableData();
@@ -44,8 +44,13 @@ const useColumns = () => {
   };
 };
 
-const stringifyValue = (value: any): string => {
-  return sanitizeForDisplay(value);
+// Cell content is treated as plain text: coerce to a string and store it
+// verbatim. It is HTML-escaped only at render time (see escapeHtml below) so
+// any markup is shown as literal, visible text rather than being interpreted.
+const toPlainText = (value: any): string => {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "object" || Array.isArray(value) || Number.isNaN(value)) return "";
+  return String(value);
 };
 
 export default function Cell({
@@ -57,15 +62,19 @@ export default function Cell({
   setColumnOrder,
 }) {
   const { addColumn } = useColumns();
-  const [value, setValue] = useState({ value: stringifyValue(initialValue), update: true });
-  const onChange = (e) => {
-    setValue({ value: e.target.value, update: true });
+  const editableRef = useRef<HTMLElement>(null);
+  const [value, setValue] = useState({ value: toPlainText(initialValue), update: true });
+  // Read the editable's rendered text (tags visible as literal characters, line
+  // breaks as newlines) — this is the raw value we store, unescaped.
+  const readPlainText = () => editableRef.current?.innerText ?? "";
+  const onChange = () => {
+    setValue({ value: readPlainText(), update: true });
   };
   const [showAdd, setShowAdd] = useState(false);
   const [addSelectRef, setAddSelectRef] = useState<any>(null);
 
   useEffect(() => {
-    setValue({ value: stringifyValue(initialValue), update: true });
+    setValue({ value: toPlainText(initialValue), update: true });
   }, [initialValue]);
 
   useEffect(() => {
@@ -178,13 +187,11 @@ export default function Cell({
             e.currentTarget.classList.add("active-cell");
           }}>
           <ContentEditable
-            html={stringifyValue(value?.value)}
+            innerRef={editableRef}
+            html={escapeHtml(value?.value)}
             onChange={onChange}
             onClick={handleClick}
-            onBlur={(e) => {
-              const newHtml = e.target.innerHTML;
-              setValue((old) => ({ value: stringifyValue(newHtml), update: true }));
-            }}
+            onBlur={onChange}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.stopPropagation(); // Allow multiline without breaking out

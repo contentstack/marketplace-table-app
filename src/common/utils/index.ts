@@ -6,12 +6,25 @@ function safePopperAttributes(attrs: Record<string, string> | undefined): Record
   return Object.fromEntries(Object.entries(attrs).filter(([key]) => allowedKeys.includes(key)));
 }
 
-function sanitizeForDisplay(value: unknown): string {
+// Escapes HTML so a raw string is displayed as literal text (tags visible)
+// instead of being interpreted as markup. Only &, < and > are escaped — this
+// matches how the browser serializes a contenteditable text node's innerHTML,
+// which keeps the caret stable while typing. Rendering the result is XSS-safe
+// because the value is never interpreted as markup.
+function escapeHtml(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "object" || Array.isArray(value) || Number.isNaN(value)) return "";
+  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// Strips all HTML and returns plain text. Used for fields (e.g. column headers)
+// that are intentionally plain text — safer than a naive tag-stripping regex.
+function stripHtml(value: unknown): string {
   if (value === null || value === undefined) return "";
   if (typeof value === "object" || Array.isArray(value) || Number.isNaN(value)) return "";
   const stringValue = String(value);
   return DOMPurify.sanitize(stringValue, {
-    ALLOWED_TAGS: ["br", "div"],
+    ALLOWED_TAGS: [],
     ALLOWED_ATTR: [],
   });
 }
@@ -62,7 +75,8 @@ const utils = {
   makeData,
   shortId,
   randomColor,
-  sanitizeForDisplay,
+  escapeHtml,
+  stripHtml,
   safePopperAttributes,
 };
 

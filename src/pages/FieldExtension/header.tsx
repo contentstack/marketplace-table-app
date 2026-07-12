@@ -13,7 +13,7 @@ import { ReactComponent as PlusIcon } from "../../assets/plusIcon.svg";
 import utils from "common/utils/index";
 import { useAppSdk } from "hooks/useAppSdk";
 
-const { sanitizeForDisplay, safePopperAttributes } = utils;
+const { stripHtml, safePopperAttributes } = utils;
 
 export default function Header({
   column: { id, created, label, dataType, getResizerProps, getHeaderProps },
@@ -170,13 +170,9 @@ export default function Header({
     dataDispatch({ type: "update_column_header", columnId: id, label: newValue });
   };
 
-  const stringifyLabel = (value: any): string => {
-    if (value === null || value === undefined) return "";
-    if (typeof value === "object" || Array.isArray(value) || Number.isNaN(value)) return "";
-    const stringValue = String(value);
-    // Remove HTML tags if present to prevent them from showing as text
-    return stringValue.replace(/<[^>]*>/g, "");
-  };
+  // Column headers are plain text; strip any HTML safely (DOMPurify handles
+  // malformed/unclosed tags that a naive regex would miss).
+  const stringifyLabel = (value: any): string => stripHtml(value);
 
   return id !== 999999 ? (
     <>
