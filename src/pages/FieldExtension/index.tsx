@@ -21,7 +21,6 @@ import { useAtom } from "jotai";
 export type fullScreenProps = {
   fullScreen?: boolean;
 };
-
 const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
   // error tracking hook
   const [appSdk, setAppSdk] = useAppSdk();
@@ -54,7 +53,10 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
         // @ts-ignore
         window.postRobot = appSdk.postRobot;
         const config = await appSdk.getConfig();
-        let initialData = appSdk.location.CustomField?.field.getData();
+        const initialData = appSdk.location.CustomField?.field.getData();
+        // Stored content is preserved verbatim. XSS is prevented at render time:
+        // cells escape their value (utils.escapeHtml) so markup shows as literal
+        // text, and headers strip HTML (utils.stripHtml).
 
         // app Sdk atom for pulse method being utilized in hooks.
         setAppSdk(appSdk);
@@ -122,16 +124,11 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
     else setHeaderColumnChange(false);
   }, [tableState.headerColumnAdded]);
 
-  const sanitizeHTMLContent = (tableData) => {
-    // Remove inline styles & HTML tags using improved regex
-    const sanitizedString = tableData.replace(/style="[^"]*"/gi, "");
-    return sanitizedString.replace(/<\/?[a-z][\s\S]*?>/gi, "");
-  };
-
   useEffect(() => {
     const { location } = state;
-    const newTableState = sanitizeHTMLContent(JSON.stringify(tableState)); // Sanitize content to remove any HTML tags and styles
-    const parsedTableState = JSON.parse(newTableState); // Convert data back to an object
+    // Deep-copy so the stray-key cleanup below doesn't mutate live table state.
+    // HTML content is intentionally preserved; XSS is handled at render time.
+    const parsedTableState = JSON.parse(JSON.stringify(tableState));
     const columnIds = parsedTableState.columns.map((column) => column.id);
     parsedTableState.data.forEach((row) => {
       Object.keys(row).forEach((key) => {
