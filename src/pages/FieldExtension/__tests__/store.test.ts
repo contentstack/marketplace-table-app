@@ -92,3 +92,47 @@ describe("reducer – update_column_tooltip", () => {
     expect(next.columns[0].tooltip).toBeUndefined();
   });
 });
+
+describe("reducer – toggle_column_sortable", () => {
+  it("toggle_column_sortable toggles sortable from false to true", () => {
+    const state = makeState([{ id: "col1", accessor: "col1", dataType: "text", label: "Rate", sortable: false }]);
+    const next = reducer(state, { type: "toggle_column_sortable", columnId: "col1" });
+    expect(next.columns[0].sortable).toBe(true);
+  });
+
+  it("toggle_column_sortable toggles sortable from true to false", () => {
+    const state = makeState([{ id: "col1", accessor: "col1", dataType: "text", label: "Rate", sortable: true }]);
+    const next = reducer(state, { type: "toggle_column_sortable", columnId: "col1" });
+    expect(next.columns[0].sortable).toBe(false);
+  });
+
+  it("toggle_column_sortable toggles twice and returns to original value", () => {
+    const state = makeState([{ id: "col1", accessor: "col1", dataType: "text", label: "Rate", sortable: false }]);
+    const next = reducer(state, { type: "toggle_column_sortable", columnId: "col1" });
+    expect(next.columns[0].sortable).toBe(true);
+    const next2 = reducer(next, { type: "toggle_column_sortable", columnId: "col1" });
+    expect(next2.columns[0].sortable).toBe(false);
+  });
+
+  it("toggle_column_sortable treats undefined sortable as falsy (toggles to true)", () => {
+    const state = makeState([{ id: "col1", accessor: "col1", dataType: "text", label: "Rate" }]);
+    const next = reducer(state, { type: "toggle_column_sortable", columnId: "col1" });
+    expect(next.columns[0].sortable).toBe(true);
+  });
+
+  it("does not mutate other columns", () => {
+    const state = makeState([
+      { id: "col1", accessor: "col1", dataType: "text", label: "Rate", sortable: false },
+      { id: "col2", accessor: "col2", dataType: "number", label: "Amount", sortable: false },
+    ]);
+    const next = reducer(state, { type: "toggle_column_sortable", columnId: "col1" });
+    expect(next.columns[0].sortable).toBe(true);
+    expect(next.columns[1].sortable).toBe(false);
+  });
+
+  it("does nothing when columnId does not match", () => {
+    const state = makeState([{ id: "col1", accessor: "col1", dataType: "text", label: "Rate", sortable: false }]);
+    const next = reducer(state, { type: "toggle_column_sortable", columnId: "nonexistent" });
+    expect(next.columns[0].sortable).toBe(false);
+  });
+});
