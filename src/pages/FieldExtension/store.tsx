@@ -285,6 +285,14 @@ function reducer(tableState, action) {
         ...tableState,
         data: action.payload.data,
       };
+    case "update_column_tooltip":
+      return {
+        ...tableState,
+        skipReset: true,
+        columns: tableState.columns.map((col) =>
+          col.id === action.columnId ? { ...col, tooltip: action.tooltip } : col,
+        ),
+      };
     case "drag_column_update":
       let cols = map(action.payload.columns, (o) => pick(o, ["id", "label", "accessor", "dataType"]));
 
@@ -295,6 +303,16 @@ function reducer(tableState, action) {
       return {
         ...tableState,
         columns: cols,
+      };
+    // Toggles the renderer-level sortable flag on a column.
+    // NOTE: This is NOT authoring-time sort (reorder rows). It is a per-column boolean
+    // that the live website renderer reads to show/hide sort controls on the published page.
+    case "toggle_column_sortable":
+      return {
+        ...tableState,
+        columns: tableState.columns.map((col) =>
+          col.id === action.columnId ? { ...col, sortable: !col.sortable } : col,
+        ),
       };
     default:
       return tableState;
