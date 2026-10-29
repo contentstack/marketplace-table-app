@@ -24,10 +24,9 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "build:check": "tsc && vite build",
+    "build:check": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "lint": "eslint src/**/*.{ts,tsx} --quiet --fix",
-    "lint:check": "eslint src/**/*.{ts,tsx}",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "format": "prettier --write \"src/**/*.{ts,tsx,scss,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,scss,css,json}\"",
     "typecheck": "tsc --noEmit",
@@ -40,7 +39,9 @@
     "test:safari": "npx playwright test --config=playwright.config.ts --project=safari",
     "test:chrome-headed": "npx playwright test --headed --config=playwright.config.ts --project=Chromium",
     "test:firefox-headed": "npx playwright test --headed --config=playwright.config.ts --project=firefox",
-    "test:safari-headed": "npx playwright test --headed --config=playwright.config.ts --project=safari"
+    "test:safari-headed": "npx playwright test --headed --config=playwright.config.ts --project=safari",
+    "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@contentstack/app-sdk": "^2.3.4",
@@ -66,6 +67,9 @@
     "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
     "@playwright/test": "^1.49.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.3",
     "@types/lodash": "^4.17.13",
     "@types/node": "^22.10.2",
     "@types/papaparse": "^5.3.15",
@@ -75,15 +79,14 @@
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^4.1.10",
     "axios": "^1.13.2",
     "dotenv": "^16.4.7",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react": "^7.37.2",
-    "eslint-plugin-react-hooks": "^5.1.0",
     "husky": "^9.1.7",
+    "jsdom": "^26.1.0",
     "jsonfile": "^6.2.0",
     "lint-staged": "^15.2.11",
     "prettier": "^3.4.2",
@@ -117,5 +120,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

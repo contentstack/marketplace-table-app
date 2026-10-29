@@ -18,12 +18,12 @@ A modern, feature-rich table custom field extension for Contentstack marketplace
 - **Full Screen Mode**: Expand table to full screen for better editing
 - **Accessibility**: Full keyboard navigation support
 - **TypeScript**: Fully typed for better development experience
-- **Testing**: Comprehensive test suite with Playwright for E2E testing
+- **Testing**: Vitest unit tests (90% coverage gate over all of `src`) and a Playwright E2E suite (needs a Contentstack account, not run in CI)
 - **Modern UI**: Clean, professional interface using Contentstack's Venus components
 
 ## 📋 Prerequisites
 
-- Node.js (v20 or higher)
+- Node.js 22 or higher (`.nvmrc` pins 22)
 - npm
 - Contentstack account (for marketplace deployment)
 
@@ -57,8 +57,10 @@ npm run format
 ### Testing
 
 ```bash
-# Run unit tests
+# Run unit tests (once), in watch mode, and with the coverage gate
 npm test
+npm run test:watch
+npm run test:coverage
 
 # Run E2E tests
 npm run test:chrome
@@ -85,13 +87,10 @@ marketplace-table-app/
 │   ├── assets/              # SVG icons and static assets
 │   ├── common/
 │   │   ├── locale/          # Internationalization strings
-│   │   ├── ui/              # Shared UI components
 │   │   └── utils/           # Utility functions
 │   ├── components/          # Reusable React components
 │   │   ├── csvImport/       # CSV import dialog
-│   │   ├── ErrorBoundary/   # Error boundary component
-│   │   ├── Home/            # Home page component
-│   │   └── PageLayout/      # Page layout component
+│   │   └── ErrorBoundary/   # Error boundary component
 │   ├── hooks/               # Custom React hooks
 │   │   ├── useAnalytics.tsx # Analytics tracking hook
 │   │   ├── useAppSdk.ts     # Contentstack App SDK hook
