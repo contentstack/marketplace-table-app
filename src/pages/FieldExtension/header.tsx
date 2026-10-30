@@ -9,7 +9,6 @@ import TrashIcon from "../../assets/Trash.tsx";
 import TextIcon from "../../assets/Text.tsx";
 import MultiIcon from "../../assets/Multi.tsx";
 import HashIcon from "../../assets/Hash.tsx";
-import { ReactComponent as PlusIcon } from "../../assets/plusIcon.svg";
 import utils from "common/utils/index";
 import { useAppSdk } from "hooks/useAppSdk";
 
@@ -174,7 +173,7 @@ export default function Header({
   // malformed/unclosed tags that a naive regex would miss).
   const stringifyLabel = (value: any): string => stripHtml(value);
 
-  return id !== 999999 ? (
+  return (
     <>
       <div {...getHeaderProps({ style: { display: "inline-block" } })} className="th noselect">
         <div
@@ -280,16 +279,5 @@ export default function Header({
         </div>
       )}
     </>
-  ) : (
-    <div {...getHeaderProps({ style: { display: "inline-block" } })} className="th noselect">
-      <div
-        className="th-content"
-        style={{ display: "flex", justifyContent: "center" }}
-        onClick={(e) => dataDispatch({ type: "add_column_to_left", columnId: 999999, focus: true })}>
-        <span className="svg-icon-sm svg-gray">
-          <PlusIcon />
-        </span>
-      </div>
-    </div>
   );
 }

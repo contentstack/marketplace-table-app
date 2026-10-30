@@ -23,5 +23,5 @@ declare module "*.scss" {
 }
 
 declare module "react-table-plugins" {
-  export function useExportData<D extends object = {}>(hooks: any): void;
+  export function useExportData<D extends object = object>(hooks: any): void;
 }
