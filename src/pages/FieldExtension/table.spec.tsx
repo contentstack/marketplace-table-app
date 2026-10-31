@@ -71,7 +71,7 @@ describe("header menu", () => {
     return m;
   };
 
-  // BUG (suspected): the menu saves the label before sorting; that state change hands react-table a new data array
+  // Needs owner (suspected, not confirmed): the menu saves the label before sorting; that state change hands react-table a new data array
   // and its auto-reset clears the sort, so the rows stay unsorted.
   it.skip("sorts ascending and descending from the menu", async () => {
     const { container } = await open(withLabels(["F"], [["b"], ["a"]]));
@@ -99,7 +99,7 @@ describe("header menu", () => {
     expect(lastSaved(setData).columns[0].dataType).toBe("text");
   });
 
-  // BUG: a column made by Add Table has no `options`, so choosing Select throws "options is not iterable" in the
+  // BUG: MKT-19818 - a column made by Add Table has no `options`, so choosing Select throws "options is not iterable" in the
   // reducer (only columns inserted from the cell menu carry options: []).
   it.skip("changes the column type to select", async () => {
     const { setData } = await open(withLabels(["A"], [["x"]]));
@@ -127,7 +127,7 @@ describe("header menu", () => {
     expect(container.ownerDocument.querySelector(".overlay")).toBeNull();
   });
 
-  // BUG: "Insert left" and "Insert right" in the header menu dispatch add_column_to_left/right, which the
+  // BUG: MKT-19818 - "Insert left" and "Insert right" in the header menu dispatch add_column_to_left/right, which the
   // reducer does not handle, so no column is inserted (the cell menu works).
   it.skip("inserts a column left and right from the header menu", async () => {
     const { setData } = await open(withLabels(["A"], [["1"]]));

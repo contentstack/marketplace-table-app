@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import ContentstackAppSdk from "@contentstack/app-sdk";
 import { TrackJS } from "trackjs";
-import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import FieldExtension from ".";
 import { lastSaved, makeSdk, renderWithStore, savedTable } from "../../test-utils/sdk";
 
@@ -260,7 +260,7 @@ describe("init", () => {
     spy.mockRestore();
   });
 
-  // BUG: init failure shows the user nothing (blank field) and the App Load Failure event is never sent
+  // BUG: MKT-19818 - init failure shows the user nothing (blank field) and the App Load Failure event is never sent
   // (the catch calls pulse on the still-null SDK state, and a rejected init() promise is not caught at all).
   it.skip("tells the user the field could not load when init fails", async () => {
     vi.mocked(ContentstackAppSdk.init).mockRejectedValue(new Error("sdk down"));
@@ -270,12 +270,11 @@ describe("init", () => {
 });
 
 describe("size limit", () => {
-  // BUG: the public docs say only 10 KB of JSON can be stored in a custom field but do not say what the user
-  // should see when a table grows past it; the app has no check, so setData is called with an oversized value.
-  it.skip("warns the user and does not save when the table exceeds 10 KB of JSON", async () => {
+  // Needs owner: the public docs say only 10 KB of JSON can be stored in a custom field, but not what the user should
+  // see past it. The app has no check, so setData is called with an oversized value. Only "not saved" is asserted.
+  it.skip("does not save when the table exceeds 10 KB of JSON", async () => {
     const big = "x".repeat(11 * 1024);
     const { setData } = await mount(savedTable([[big]]));
-    expect(within(document.body).getByRole("alert")).toBeInTheDocument();
     expect(JSON.stringify(lastSaved(setData)).length).toBeLessThanOrEqual(10 * 1024);
   });
 });
