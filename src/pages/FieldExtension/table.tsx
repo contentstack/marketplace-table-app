@@ -35,10 +35,10 @@ import { eventNames } from "common/utils/index";
 import { useAtom } from "jotai";
 import { fullScreenAtom } from "./store";
 
-const defaultColumn = {
+const defaultColumn: any = {
   minWidth: 50,
   maxWidth: 400,
-  Cell: Cell,
+  Cell: Cell as any,
   Header: Header,
   sortType: "alphanumericFalsyLast",
 };
@@ -61,7 +61,7 @@ const RowContainer = styled.div<{ isDragging: boolean }>`
   }
 `;
 
-const HeaderContainer = styled.div<{ isDragging: boolean; height?: number }>`
+const HeaderContainer = styled.div<{ isDragging?: boolean; height?: number }>`
   border: ${({ isDragging }) => isDragging && "2px solid #6C5CE7"};
   height: ${({ isDragging, height }) => isDragging && height + "px !important"};
   opacity: ${({ isDragging }) => isDragging && "0.5"};
@@ -285,7 +285,7 @@ export default function Table({
 
     Papa.parse(fileObj, {
       complete: (results) => {
-        const newData = convertCSVToTableData(results.data);
+        const newData = convertCSVToTableData(results.data as string[][]);
         if (appendData) dataDispatch({ type: "append_data_to_table", payload: newData });
         else dataDispatch({ type: "initial_table", payload: newData });
       },
@@ -334,7 +334,7 @@ export default function Table({
         const headerNames = columns.map((col) => col.label);
         csvString = Papa.unparse({ fields: headerNames, data });
       } else {
-        csvString = Papa.unparse({ data });
+        csvString = Papa.unparse({ data } as any);
       }
       // Heap event ** event text would be updated **
       trackEvent(EXPORT_OPTION, { property: " Used Export CSV" });

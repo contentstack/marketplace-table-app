@@ -53,13 +53,13 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
         // @ts-ignore
         window.postRobot = appSdk.postRobot;
         const config = await appSdk.getConfig();
-        const initialData = appSdk.location.CustomField?.field.getData();
+        const initialData: any = appSdk.location.CustomField?.field.getData();
         // Stored content is preserved verbatim. XSS is prevented at render time:
         // cells escape their value (utils.escapeHtml) so markup shows as literal
         // text, and headers strip HTML (utils.stripHtml).
 
         // app Sdk atom for pulse method being utilized in hooks.
-        setAppSdk(appSdk);
+        setAppSdk(appSdk as any);
 
         /**
          * Heap analytic ts ignore would be removed later
@@ -104,8 +104,6 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
        * Heap analytic ts ignore would be removed later.
        * Event name would be updated.
        */
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
       appSdk?.pulse(APP_INITIALIZE_FAILURE);
     }
   }, []);
