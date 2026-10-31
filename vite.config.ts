@@ -56,7 +56,8 @@ export default defineConfig({
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
       exclude: ["src/**/*.spec.{ts,tsx}", "src/**/*.d.ts", "src/setupTests.ts", "src/test-utils/**"],
-      thresholds: { lines: 90, branches: 90, functions: 90, statements: 90 },
+      // Measured floor (97.46 / 93.09 / 97.71 / 97.61), rounded down; all above 90, so no ratchet is needed.
+      thresholds: { lines: 97, branches: 93, functions: 97, statements: 97 },
     },
   },
   css: {
