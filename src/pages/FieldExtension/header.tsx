@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { ENABLE_TOOLTIP, ENABLE_SORTABLE } from "../../common/config";
 import { usePopper } from "react-popper";
 import ContentEditable from "react-contenteditable";
 import ArrowUpIcon from "../../assets/ArrowUp.tsx";
@@ -16,7 +17,7 @@ import { useAppSdk } from "hooks/useAppSdk";
 const { stripHtml, safePopperAttributes } = utils;
 
 export default function Header({
-  column: { id, created, label, dataType, getResizerProps, getHeaderProps },
+  column: { id, created, label, dataType, tooltip, sortable, getResizerProps, getHeaderProps },
   setSortBy,
   dataDispatch,
 }) {
@@ -25,6 +26,8 @@ export default function Header({
   const [referenceElement, setReferenceElement] = useState<any>(null);
   const [popperElement, setPopperElement] = useState<any>(null);
   const [inputRef, setInputRef] = useState<any>(null);
+  const [tooltipValue, setTooltipValue] = useState(tooltip || "");
+  const [showTooltipInput, setShowTooltipInput] = useState(false);
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: "bottom",
     strategy: "absolute",
@@ -263,6 +266,77 @@ export default function Header({
                 </div>
               )}
             </div>
+            {ENABLE_TOOLTIP && (
+              <div
+                style={{
+                  borderTop: `2px solid #eeeeee`,
+                  padding: "8px 12px",
+                }}>
+                <div style={{ marginBottom: 4 }}>
+                  <span
+                    className="font-weight-600 font-size-75"
+                    style={{ textTransform: "uppercase", color: "#9e9e9e" }}>
+                    Tooltip
+                  </span>
+                </div>
+                {showTooltipInput ? (
+                  <div style={{ display: "flex", gap: 4 }}>
+                    <input
+                      className="form-input"
+                      type="text"
+                      value={tooltipValue}
+                      style={{ width: "100%", flex: 1 }}
+                      autoFocus
+                      onChange={(e) => setTooltipValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          dataDispatch({ type: "update_column_tooltip", columnId: id, tooltip: tooltipValue });
+                          setShowTooltipInput(false);
+                          setExpanded(false);
+                        } else if (e.key === "Escape") {
+                          setTooltipValue(tooltip || "");
+                          setShowTooltipInput(false);
+                        }
+                      }}
+                      onBlur={() => {
+                        dataDispatch({ type: "update_column_tooltip", columnId: id, tooltip: tooltipValue });
+                        setShowTooltipInput(false);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="sort-button"
+                    style={{ width: "100%", textAlign: "left" }}
+                    onClick={() => setShowTooltipInput(true)}>
+                    {tooltipValue || <span style={{ color: "#9e9e9e" }}>Set tooltip…</span>}
+                  </button>
+                )}
+              </div>
+            )}
+            {/* ENABLE_SORTABLE: renderer-level sortable flag — NOT authoring-time sort.
+                This boolean is read by the live website renderer to show/hide sort controls
+                on the published page. Default OFF; set VITE_ENABLE_SORTABLE=true to enable. */}
+            {ENABLE_SORTABLE && (
+              <div
+                style={{
+                  borderTop: `2px solid #eeeeee`,
+                  padding: "4px 12px",
+                }}>
+                <button
+                  type="button"
+                  className="sort-button"
+                  style={{ width: "100%", textAlign: "left" }}
+                  onClick={() => {
+                    dataDispatch({ type: "toggle_column_sortable", columnId: id });
+                    setExpanded(false);
+                  }}>
+                  <span style={{ marginRight: 8 }}>{sortable ? "✓" : " "}</span>
+                  {sortable ? "Unmark as Sortable" : "Mark as Sortable"}
+                </button>
+              </div>
+            )}
             <div
               key={utils.shortId()}
               style={{
