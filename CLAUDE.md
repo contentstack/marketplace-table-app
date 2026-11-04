@@ -13,12 +13,12 @@ Bug fixes and support cases keep this repo's usual path. Not sure which applies?
 
 Table: a Marketplace custom field (Tier 1, UI-only) built on `react-table`. It saves `{ tableState: { columns, data, ... } }` via `location.CustomField.field.setData` and reads it back with `getData`; the manifest path is `/field-extension` (json). Contentstack stores only 10 KB of JSON per custom field and this app does not check the size. Wiki: `marketplace-apps/table/` in `contentstack/product-wiki` if present.
 
-| Task             | Command (Node >=22, `.nvmrc` = 22)                                                                       |
+| Task             | Command (Node >=22, `.nvmrc` = 24)                                                                       |
 | ---------------- | -------------------------------------------------------------------------------------------------------- |
 | Install          | `npm ci`                                                                                                 |
 | Run locally      | `npm start` (http://localhost:3000; the field only renders inside Contentstack, at `/#/field-extension`) |
 | Lint / typecheck | `npm run lint` · `npm run typecheck`                                                                     |
-| Unit tests       | `npm test` · `npm run test:coverage` (fails under 90%)                                                   |
+| Unit tests       | `npm test` · `npm run test:coverage` (gate: lines 97, statements 97, functions 96, branches 92)                                                   |
 | Build            | `npm run build` (output `build/`, git-ignored)                                                           |
 
 - Routing is hybrid: `HashRouter` when the URL starts with `#/`, else `BrowserRouter` (decided once at load in `src/routes/App`); both serve `/field-extension`.

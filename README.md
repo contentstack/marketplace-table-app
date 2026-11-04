@@ -18,12 +18,12 @@ A modern, feature-rich table custom field extension for Contentstack marketplace
 - **Full Screen Mode**: Expand table to full screen for better editing
 - **Accessibility**: Full keyboard navigation support
 - **TypeScript**: Fully typed for better development experience
-- **Testing**: Vitest unit tests (90% coverage gate over all of `src`) and a Playwright E2E suite (needs a Contentstack account, not run in CI)
+- **Testing**: Vitest unit tests (coverage gate over all of `src`: lines 97, statements 97, functions 96, branches 92) and a Playwright E2E suite (needs a Contentstack account, not run in CI)
 - **Modern UI**: Clean, professional interface using Contentstack's Venus components
 
 ## 📋 Prerequisites
 
-- Node.js 22 or higher (`.nvmrc` pins 22)
+- Node.js 22 or higher (`engines`; `.nvmrc` pins 24)
 - npm
 - Contentstack account (for marketplace deployment)
 
