@@ -1,3 +1,4 @@
+import type { TableState } from "pages/FieldExtension/types";
 import DOMPurify from "dompurify";
 
 function safePopperAttributes(attrs: Record<string, string> | undefined): Record<string, string> {
@@ -29,8 +30,8 @@ function stripHtml(value: unknown): string {
   });
 }
 
-function makeData(count) {
-  let data: any = [];
+function makeData(count: number): TableState {
+  const data: TableState["data"] = [];
 
   for (let i = 0; i < count; i++) {
     let row = {
@@ -42,7 +43,7 @@ function makeData(count) {
     data.push(row);
   }
 
-  let columns = [
+  const columns: TableState["columns"] = [
     {
       id: "column1",
       accessor: "column1",

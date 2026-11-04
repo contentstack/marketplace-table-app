@@ -6,7 +6,7 @@
 import { atom, useAtom } from "jotai";
 
 // Type for the appSdk instance
-type AppSdkInstance = {
+export type AppSdkInstance = {
   pulse: (event: string, data?: any) => void;
   stack: {
     _data: {

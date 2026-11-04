@@ -1,4 +1,5 @@
 import utils from "common/utils";
+import type { TableState } from "./types";
 import { map, omit, pick } from "lodash";
 import { atom } from "jotai";
 import { useReducerAtom } from "jotai/utils";
@@ -301,7 +302,7 @@ export function reducer(tableState, action) {
   }
 }
 
-export const tableStateAtom = atom<any>(utils.makeData(3));
+export const tableStateAtom = atom<TableState>(utils.makeData(3));
 
 export const fullScreenAtom = atom(false);
 
