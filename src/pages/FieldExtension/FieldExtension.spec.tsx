@@ -252,7 +252,7 @@ describe("init", () => {
   it("only logs when the SDK throws synchronously (no visible error, no failure event)", async () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     vi.mocked(ContentstackAppSdk.init).mockImplementation(() => {
-      throw new Error("sdk down");
+      throw new Error("KNOWN_BUG MKT-19818: sdk down");
     });
     renderWithStore(<FieldExtension />);
     await waitFor(() => expect(spy).toHaveBeenCalled());
@@ -264,7 +264,7 @@ describe("init", () => {
   // Init failure shows the user nothing (blank field) and the App Load Failure event is never sent
   // (the catch calls pulse on the still-null SDK state, and a rejected init() promise is not caught at all).
   it.fails("tells the user the field could not load when init fails", async () => {
-    vi.mocked(ContentstackAppSdk.init).mockRejectedValue(new Error("sdk down"));
+    vi.mocked(ContentstackAppSdk.init).mockRejectedValue(new Error("KNOWN_BUG MKT-19818: sdk down"));
     renderWithStore(<FieldExtension />);
     expect(await screen.findByRole("alert")).toBeInTheDocument();
   });

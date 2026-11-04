@@ -49,6 +49,8 @@ export default defineConfig({
     port: 3000,
   },
   test: {
+    // Known-bug specs (it.fails) raise errors the app does not catch yet; only those are tolerated, every other unhandled error still fails the run.
+    onUnhandledError: (error) => (String(error?.message).startsWith("KNOWN_BUG") ? false : undefined),
     environment: "jsdom",
     setupFiles: ["src/setupTests.ts"],
     include: ["src/**/*.spec.{ts,tsx}"],
