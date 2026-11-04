@@ -152,3 +152,19 @@ describe("reducer: whole table", () => {
     expect(reducer(s, { type: "nope" })).toBe(s);
   });
 });
+
+// No UI path dispatches these actions today; the reducer still handles them, so they are pinned here.
+describe("reducer: actions with no UI dispatcher", () => {
+  it("add_option_to_column appends a select option to the column", () => {
+    const s = reducer(base(), { type: "add_option_to_column", columnId: "b", option: "Red", backgroundColor: "#f00" });
+    expect(s.columns[1].options).toEqual([{ label: "Red", backgroundColor: "#f00" }]);
+    expect(s.skipReset).toBe(true);
+  });
+  it("add_row appends to the data (current shape: an empty object and an empty array)", () => {
+    expect(reducer(base(), { type: "add_row" }).data.slice(2)).toEqual([{}, []]);
+  });
+  it("update_sort_type stores the sort state on the column", () => {
+    const s = reducer(base(), { type: "update_sort_type", columnId: "a", newSortType: "asc" });
+    expect(s.columns[0].sortState).toBe("asc");
+  });
+});

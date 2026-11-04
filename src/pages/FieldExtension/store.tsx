@@ -16,6 +16,29 @@ function createEmptyRow(columnCount) {
 
 export function reducer(tableState, action) {
   switch (action.type) {
+    case "add_option_to_column":
+      const optionIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
+      return {
+        ...tableState,
+        skipReset: true,
+        columns: [
+          ...tableState.columns.slice(0, optionIndex),
+          {
+            ...tableState.columns[optionIndex],
+            options: [
+              ...tableState.columns[optionIndex].options,
+              { label: action.option, backgroundColor: action.backgroundColor },
+            ],
+          },
+          ...tableState.columns.slice(optionIndex + 1, tableState.columns.length),
+        ],
+      };
+    case "add_row":
+      return {
+        ...tableState,
+        skipReset: true,
+        data: [...tableState.data, {}, []],
+      };
     case "insert_row_above":
       const emptyRowAbove = createEmptyRow(tableState.columns.length);
       return {
@@ -229,6 +252,17 @@ export function reducer(tableState, action) {
         ...tableState,
         columns: [...action.payload.columns],
         data: [...action.payload.data],
+      };
+    case "update_sort_type":
+      const colIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
+      return {
+        ...tableState,
+        columns: [
+          ...tableState.columns.slice(0, colIndex),
+          { ...tableState.columns[colIndex], sortState: action.newSortType },
+          ...tableState.columns.slice(colIndex + 1, tableState.columns.length),
+        ],
+        //data: [...tableState.data],
       };
     case "append_data_to_table":
       const columnsArray = [

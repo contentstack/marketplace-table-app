@@ -70,6 +70,8 @@ export default function Cell({
   const onChange = () => {
     setValue({ value: readPlainText(), update: true });
   };
+  const [showAdd, setShowAdd] = useState(false);
+  const [addSelectRef, setAddSelectRef] = useState<any>(null);
 
   useEffect(() => {
     setValue({ value: toPlainText(initialValue), update: true });
@@ -110,6 +112,12 @@ export default function Cell({
   const deleteColumn = () => {
     dataDispatch({ type: "delete_column", columnId: id });
   };
+
+  useEffect(() => {
+    if (addSelectRef && showAdd) {
+      addSelectRef.focus();
+    }
+  }, [addSelectRef, showAdd]);
 
   let list = [
     {
