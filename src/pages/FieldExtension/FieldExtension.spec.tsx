@@ -253,12 +253,12 @@ describe("init", () => {
   // Init failure shows the user nothing (blank field) and the App Load Failure event is never sent
   // (the catch calls pulse on the still-null SDK state, and a rejected init() promise is not caught at all).
   it.fails.each([
-    ["rejects", () => vi.mocked(ContentstackAppSdk.init).mockRejectedValue(new Error("sdk down"))],
+    ["rejects", () => vi.mocked(ContentstackAppSdk.init).mockRejectedValue(new Error("KNOWN_BUG MKT-19818: sdk down"))],
     [
       "throws synchronously",
       () =>
         vi.mocked(ContentstackAppSdk.init).mockImplementation(() => {
-          throw new Error("sdk down");
+          throw new Error("KNOWN_BUG MKT-19818: sdk down");
         }),
     ],
   ])("tells the user the field could not load when init %s", async (_how, fail) => {
