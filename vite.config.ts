@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import svgr from 'vite-plugin-svgr';
-import { resolve } from 'path';
-import { viteSingleFile } from 'vite-plugin-singlefile';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import svgr from "vite-plugin-svgr";
+import { resolve } from "path";
+import { viteSingleFile } from "vite-plugin-singlefile";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,29 +10,31 @@ export default defineConfig({
     react(),
     svgr({
       svgrOptions: {
-        exportType: 'named',
+        exportType: "named",
         ref: true,
         svgo: false,
         titleProp: true,
       },
-      include: '**/*.svg',
+      include: "**/*.svg",
     }),
     viteSingleFile(),
   ],
   resolve: {
     alias: {
-      assets: resolve(__dirname, 'src/assets'),
-      common: resolve(__dirname, 'src/common'),
-      components: resolve(__dirname, 'src/components'),
-      containers: resolve(__dirname, 'src/containers'),
-      hooks: resolve(__dirname, 'src/hooks'),
-      pages: resolve(__dirname, 'src/pages'),
-      routes: resolve(__dirname, 'src/routes'),
-      styles: resolve(__dirname, 'src/styles'),
+      assets: resolve(__dirname, "src/assets"),
+      common: resolve(__dirname, "src/common"),
+      components: resolve(__dirname, "src/components"),
+      containers: resolve(__dirname, "src/containers"),
+      hooks: resolve(__dirname, "src/hooks"),
+      pages: resolve(__dirname, "src/pages"),
+      routes: resolve(__dirname, "src/routes"),
+      styles: resolve(__dirname, "src/styles"),
     },
   },
   build: {
-    outDir: 'build',
+    outDir: "build",
+    // venus-components 3.0.6 ships a require("void-elements") inside ES modules; convert it, or the field throws on load.
+    commonjsOptions: { transformMixedEsModules: true },
     emptyOutDir: true,
     cssCodeSplit: false,
     rollupOptions: {
@@ -51,9 +53,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        api: 'modern-compiler',
+        api: "modern-compiler",
       },
     },
   },
 });
-
