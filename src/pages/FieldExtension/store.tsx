@@ -1,4 +1,5 @@
 import utils from "common/utils";
+import type { TableState } from "./types";
 import { map, omit, pick } from "lodash";
 import { atom } from "jotai";
 import { useReducerAtom } from "jotai/utils";
@@ -14,7 +15,7 @@ function createEmptyRow(columnCount) {
   return row;
 }
 
-function reducer(tableState, action) {
+export function reducer(tableState, action) {
   switch (action.type) {
     case "add_option_to_column":
       const optionIndex = tableState.columns.findIndex((column) => column.id === action.columnId);
@@ -301,7 +302,7 @@ function reducer(tableState, action) {
   }
 }
 
-export const tableStateAtom = atom(utils.makeData(3));
+export const tableStateAtom = atom<TableState>(utils.makeData(3));
 
 export const fullScreenAtom = atom(false);
 

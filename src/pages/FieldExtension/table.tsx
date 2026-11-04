@@ -2,6 +2,7 @@ import React, { useMemo, useState, useRef, useEffect } from "react";
 import clsx from "clsx";
 import {
   useTable,
+  Column,
   useFlexLayout,
   useResizeColumns,
   useSortBy,
@@ -35,13 +36,14 @@ import { eventNames } from "common/utils/index";
 import { useAtom } from "jotai";
 import { fullScreenAtom } from "./store";
 
+// Cast: react-table's HeaderProps/CellProps omit setSortBy and the custom dataDispatch option that useTable passes to them.
 const defaultColumn = {
   minWidth: 50,
   maxWidth: 400,
   Cell: Cell,
   Header: Header,
   sortType: "alphanumericFalsyLast",
-};
+} as unknown as Partial<Column<object>>;
 
 const RowContainer = styled.div<{ isDragging: boolean }>`
   cursor: ${({ isDragging }) => (isDragging ? "grabbing" : "grab")};
@@ -61,7 +63,7 @@ const RowContainer = styled.div<{ isDragging: boolean }>`
   }
 `;
 
-const HeaderContainer = styled.div<{ isDragging: boolean; height?: number }>`
+const HeaderContainer = styled.div<{ isDragging?: boolean; height?: number }>`
   border: ${({ isDragging }) => isDragging && "2px solid #6C5CE7"};
   height: ${({ isDragging, height }) => isDragging && height + "px !important"};
   opacity: ${({ isDragging }) => isDragging && "0.5"};
@@ -285,7 +287,8 @@ export default function Table({
 
     Papa.parse(fileObj, {
       complete: (results) => {
-        const newData = convertCSVToTableData(results.data);
+        // Papa types rows as any[] when no header option is set; each row is an array of strings.
+        const newData = convertCSVToTableData(results.data as string[][]);
         if (appendData) dataDispatch({ type: "append_data_to_table", payload: newData });
         else dataDispatch({ type: "initial_table", payload: newData });
       },
@@ -334,7 +337,8 @@ export default function Table({
         const headerNames = columns.map((col) => col.label);
         csvString = Papa.unparse({ fields: headerNames, data });
       } else {
-        csvString = Papa.unparse({ data });
+        // @types/papaparse wrongly requires `fields` here; omitting it is what exports rows without a header line.
+        csvString = Papa.unparse({ data } as unknown as Papa.UnparseObject<unknown>);
       }
       // Heap event ** event text would be updated **
       trackEvent(EXPORT_OPTION, { property: " Used Export CSV" });

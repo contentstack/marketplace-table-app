@@ -13,9 +13,10 @@ import { ReactComponent as HeaderColumn } from "../../assets/headerColumn.svg";
 import { ReactComponent as DeleteTable } from "../../assets/deleteTable.svg";
 import "./styles.scss";
 import { fullScreenAtom, useTableData } from "./store";
+import type { TableState } from "./types";
 import useJsErrorTracker from "hooks/useJsErrorTracker";
 import useAnalytics from "hooks/useAnalytics";
-import { useAppSdk } from "hooks/useAppSdk";
+import { useAppSdk, type AppSdkInstance } from "hooks/useAppSdk";
 import { useAtom } from "jotai";
 
 export type fullScreenProps = {
@@ -53,13 +54,15 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
         // @ts-ignore
         window.postRobot = appSdk.postRobot;
         const config = await appSdk.getConfig();
-        const initialData = appSdk.location.CustomField?.field.getData();
+        // getData returns the SDK's untyped GenericObjectType; the shape below is what this app saves.
+        const initialData = appSdk.location.CustomField?.field.getData() as { tableState: TableState } | undefined;
         // Stored content is preserved verbatim. XSS is prevented at render time:
         // cells escape their value (utils.escapeHtml) so markup shows as literal
         // text, and headers strip HTML (utils.stripHtml).
 
         // app Sdk atom for pulse method being utilized in hooks.
-        setAppSdk(appSdk);
+        // The SDK's User type omits defaultOrganization, which the host provides and this app reads.
+        setAppSdk(appSdk as unknown as AppSdkInstance);
 
         /**
          * Heap analytic ts ignore would be removed later
@@ -104,8 +107,6 @@ const FieldExtension: React.FC<fullScreenProps> = ({ fullScreen = false }) => {
        * Heap analytic ts ignore would be removed later.
        * Event name would be updated.
        */
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
       appSdk?.pulse(APP_INITIALIZE_FAILURE);
     }
   }, []);
