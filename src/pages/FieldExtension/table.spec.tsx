@@ -71,9 +71,10 @@ describe("header menu", () => {
     return m;
   };
 
-  // Needs owner (suspected, not confirmed): the menu saves the label before sorting; that state change hands react-table a new data array
+  // KNOWN BUG (to file) (it.fails: passes while the bug exists; turn into it() when fixed).
+  // Suspected cause, not confirmed: the menu saves the label before sorting; that state change hands react-table a new data array
   // and its auto-reset clears the sort, so the rows stay unsorted.
-  it.skip("sorts ascending and descending from the menu", async () => {
+  it.fails("sorts ascending and descending from the menu", async () => {
     const { container } = await open(withLabels(["F"], [["b"], ["a"]]));
     fireEvent.mouseDown(screen.getByText("Sort ascending"));
     expect(texts(container)).toEqual(["a", "b"]);
@@ -99,9 +100,10 @@ describe("header menu", () => {
     expect(lastSaved(setData).columns[0].dataType).toBe("text");
   });
 
-  // BUG: MKT-19818 - a column made by Add Table has no `options`, so choosing Select throws "options is not iterable" in the
+  // KNOWN BUG MKT-19818 (it.fails: passes while the bug exists; turn into it() when fixed).
+  // A column made by Add Table has no `options`, so choosing Select throws "options is not iterable" in the
   // reducer (only columns inserted from the cell menu carry options: []).
-  it.skip("changes the column type to select", async () => {
+  it.fails("changes the column type to select", async () => {
     const { setData } = await open(withLabels(["A"], [["x"]]));
     fireEvent.mouseEnter(screen.getByText("text"));
     fireEvent.click(screen.getByText("Select"));
@@ -127,9 +129,10 @@ describe("header menu", () => {
     expect(container.ownerDocument.querySelector(".overlay")).toBeNull();
   });
 
-  // BUG: MKT-19818 - "Insert left" and "Insert right" in the header menu dispatch add_column_to_left/right, which the
+  // KNOWN BUG MKT-19818 (it.fails: passes while the bug exists; turn into it() when fixed).
+  // "Insert left" and "Insert right" in the header menu dispatch add_column_to_left/right, which the
   // reducer does not handle, so no column is inserted (the cell menu works).
-  it.skip("inserts a column left and right from the header menu", async () => {
+  it.fails("inserts a column left and right from the header menu", async () => {
     const { setData } = await open(withLabels(["A"], [["1"]]));
     fireEvent.mouseDown(screen.getByText("Insert right"));
     expect(lastSaved(setData).columns).toHaveLength(2);
